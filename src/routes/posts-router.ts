@@ -6,7 +6,7 @@ import { inputValidationMiddleware, postValidationMiddleware } from "../middlewa
 import { blogsRepository } from "../repositories/blogs-repositiory"
 
 export const basicAuth = require('express-basic-auth')
-export const adminAuth = basicAuth({users: { 'admin': 'querty' }});
+export const adminAuth = basicAuth({users: { 'admin': 'qwerty' }});
 
 //GET - return all
 postsRouter.get('/', (req: Request, res: Response) => {

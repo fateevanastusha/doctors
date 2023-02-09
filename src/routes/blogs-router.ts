@@ -5,7 +5,7 @@ import { blogsRepository } from "../repositories/blogs-repositiory"
 import { inputValidationMiddleware, blogValidationMiddleware } from "../middlewares/input-valudation-middleware"
 
 export const basicAuth = require('express-basic-auth')
-export const adminAuth = basicAuth({users: { 'admin': 'querty' }});
+export const adminAuth = basicAuth({users: { 'admin': 'qwerty' }});
 
 //GET - return all
 blogsRouter.get('/',  (req: Request, res: Response) =>{
