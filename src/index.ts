@@ -1,4 +1,4 @@
-import express, {Request, Response} from 'express'
+import express, {Request, Response, NextFunction} from 'express'
 import bodyParser from 'body-parser';
 import { blogsRouter } from './routes/blogs-router';
 import { postsRouter } from './routes/posts-router';
@@ -8,6 +8,7 @@ import { blogsRepository } from './repositories/blogs-repositiory';
 const app = express();
 const port = 652;
 const parserMiddleware = bodyParser({})
+
 app.use(parserMiddleware)
 
 app.use('/blogs', blogsRouter)

@@ -4,9 +4,11 @@ import {Request, Response} from 'express'
 import { blogsRepository } from "../repositories/blogs-repositiory"
 import { inputValidationMiddleware, blogValidationMiddleware } from "../middlewares/input-valudation-middleware"
 
+export const basicAuth = require('express-basic-auth')
+export const adminAuth = basicAuth({users: { 'admin': 'querty' }});
 
 //GET - return all
-blogsRouter.get('/', (req: Request, res: Response) =>{
+blogsRouter.get('/',  (req: Request, res: Response) =>{
     let allBlogs = blogsRepository.returnAllBlogs();
     res.status(200).send(allBlogs);
 })
@@ -20,7 +22,7 @@ blogsRouter.get('/:id', (req: Request, res: Response)=>{
     }
 })
 //DELETE - delete by ID
-blogsRouter.delete('/:id', (req: Request, res: Response) => {
+blogsRouter.delete('/:id', adminAuth, (req: Request, res: Response) => {
     let status = blogsRepository.deleteBlogById(req.params.id);
     if (status){
         res.send(204);
@@ -29,13 +31,13 @@ blogsRouter.delete('/:id', (req: Request, res: Response) => {
     }
 })
 //POST - create new
-blogsRouter.post('/', blogValidationMiddleware, inputValidationMiddleware, (req: Request, res: Response)=> {
+blogsRouter.post('/', adminAuth, blogValidationMiddleware, inputValidationMiddleware, (req: Request, res: Response)=> {
     
     let newVideo = blogsRepository.createNewBlog(req.body);
     res.status(201).send(newVideo);
 })
 //PUT - update
-blogsRouter.put('/:id', blogValidationMiddleware, inputValidationMiddleware, (req: Request, res: Response) => {
+blogsRouter.put('/:id', adminAuth, blogValidationMiddleware, inputValidationMiddleware, (req: Request, res: Response) => {
     blogsRepository.updateBlogById(req.body, req.params.id)
     res.sendStatus(204)
 })

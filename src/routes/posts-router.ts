@@ -5,6 +5,9 @@ import { postsRepository } from "../repositories/posts-repositiory"
 import { inputValidationMiddleware, postValidationMiddleware } from "../middlewares/input-valudation-middleware"
 import { blogsRepository } from "../repositories/blogs-repositiory"
 
+export const basicAuth = require('express-basic-auth')
+export const adminAuth = basicAuth({users: { 'admin': 'querty' }});
+
 //GET - return all
 postsRouter.get('/', (req: Request, res: Response) => {
     let newPost = postsRepository.returnAllPost()
@@ -20,7 +23,7 @@ postsRouter.get('/:id', (req: Request, res: Response) => {
     }
 })
 //DELETE - delete by ID
-postsRouter.delete('/:delete', (req: Request, res: Response) => {
+postsRouter.delete('/:delete', adminAuth, (req: Request, res: Response) => {
     let status = postsRepository.deletePostById(req.params.id)
     if (status){
         res.send(204)
@@ -29,14 +32,14 @@ postsRouter.delete('/:delete', (req: Request, res: Response) => {
     }
 })
 //POST - create new 
-postsRouter.post('/', postValidationMiddleware, inputValidationMiddleware, (req: Request, res: Response) => {
+postsRouter.post('/', adminAuth, postValidationMiddleware, inputValidationMiddleware, (req: Request, res: Response) => {
     const blog = blogsRepository.returnBlogById(req.body.blogId)
     let newPost = postsRepository.createNewPost(req.body, blog!.name);
     
     res.status(201).send(newPost)
 })
 //PUT - update
-postsRouter.put('/:id', postValidationMiddleware, inputValidationMiddleware, (req: Request, res: Response) => {
+postsRouter.put('/:id', adminAuth, postValidationMiddleware, inputValidationMiddleware, (req: Request, res: Response) => {
     postsRepository.updatePostById(req.body, req.params.id)
     res.sendStatus(204)
 })
