@@ -1,28 +1,35 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.blogValidationMiddleware = exports.inputValidationMiddleware = void 0;
+exports.postValidationMiddleware = exports.blogValidationMiddleware = exports.inputValidationMiddleware = exports.findByIdBlogs = void 0;
 const blogs_repositiory_1 = require("../repositories/blogs-repositiory");
-const { body, validationResult } = require('express-validator');
+const express_validator_1 = require("express-validator");
+const findByIdBlogs = value => {
+    let blog = blogs_repositiory_1.blogsRepository.returnBlogById(value);
+    if (!blog) {
+        throw new Error('Invalid blogId');
+    }
+    return true;
+};
+exports.findByIdBlogs = findByIdBlogs;
 const inputValidationMiddleware = (req, res, next) => {
-    const errors = validationResult(req);
+    const errors = (0, express_validator_1.validationResult)(req);
     if (!errors.isEmpty()) {
-        res.status(400).json({ errors: errors.array() });
+        res.status(404).json({ errors: errors.array() });
     }
     else {
         next();
     }
+    ;
 };
 exports.inputValidationMiddleware = inputValidationMiddleware;
 exports.blogValidationMiddleware = [
-    body('id').isLength({ min: 1, max: 15 }).custom((value) => {
-        return blogs_repositiory_1.blogsRepository === null || blogs_repositiory_1.blogsRepository === void 0 ? void 0 : blogs_repositiory_1.blogsRepository.returnBlogById(value).then(id => {
-            if (id) {
-                return Promise.reject;
-            }
-        });
-    }),
-    body('name').isLength({ min: 1, max: 15 }),
-    body('description').isLength({ min: 1, max: 500 }),
-    body('websiteUrl').isLength({ min: 1, max: 100 }).matches(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/)
+    (0, express_validator_1.body)('name').isLength({ min: 1, max: 15 }),
+    (0, express_validator_1.body)('description').isLength({ min: 1, max: 500 }),
+    (0, express_validator_1.body)('websiteUrl').isLength({ min: 1, max: 100 }).matches(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/),
 ];
-//check for ID
+exports.postValidationMiddleware = [
+    (0, express_validator_1.body)('title').isLength({ min: 1, max: 30 }),
+    (0, express_validator_1.body)('shortDescription').isLength({ min: 1, max: 100 }),
+    (0, express_validator_1.body)('content').isLength({ min: 1, max: 1000 }),
+    (0, express_validator_1.body)('blogId').custom(exports.findByIdBlogs)
+];

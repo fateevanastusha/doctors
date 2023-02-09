@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.blogsRepository = void 0;
-const blogs = [
+exports.blogsRepository = exports.blogs = void 0;
+exports.blogs = [
     {
         "id": "string",
         "name": "string",
@@ -12,36 +12,46 @@ const blogs = [
 exports.blogsRepository = {
     //GET - return all
     returnAllBlogs() {
-        return blogs;
+        return exports.blogs;
     },
     //GET - return by ID
     returnBlogById(id) {
-        let blog = blogs.find(p => p.id === id);
+        let blog = exports.blogs.find(p => p.id === id);
         return blog;
     },
     //DELETE - delete by ID
     deleteBlogById(id) {
-        let index = blogs.findIndex(p => p.id === id);
+        let index = exports.blogs.findIndex(p => p.id === id);
         if (index > -1) {
-            blogs.splice(index, 1);
+            exports.blogs.splice(index, 1);
             return true;
         }
         else {
             return false;
         }
     },
+    //delete all data
+    deleteAllData() {
+        exports.blogs.splice(0, exports.blogs.length);
+        return exports.blogs;
+    },
     //POST - create new 
     createNewBlog(blog) {
         const newBlog = {
-            id: blog.id,
+            id: '' + (+(new Date())),
             name: blog.name,
             description: blog.description,
             websiteUrl: blog.websiteUrl
         };
-        blogs.push(newBlog);
+        exports.blogs.push(newBlog);
         return newBlog;
     },
     //PUT - update
-    updateBlogById() {
+    updateBlogById(blog, id) {
+        let oldBlog = exports.blogsRepository.returnBlogById(id);
+        let newBlog = Object.assign(Object.assign({}, oldBlog), blog);
+        exports.blogsRepository.deleteBlogById(id);
+        exports.blogs.push(newBlog);
+        return newBlog;
     },
 };

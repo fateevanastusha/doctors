@@ -30,9 +30,14 @@ blogsRouter.delete('/:id', (req: Request, res: Response) => {
 })
 //POST - create new
 blogsRouter.post('/', blogValidationMiddleware, inputValidationMiddleware, (req: Request, res: Response)=> {
+    
     let newVideo = blogsRepository.createNewBlog(req.body);
     res.status(201).send(newVideo);
 })
-
 //PUT - update
+blogsRouter.put('/:id', blogValidationMiddleware, inputValidationMiddleware, (req: Request, res: Response) => {
+    blogsRepository.updateBlogById(req.body, req.params.id)
+    res.sendStatus(204)
+})
+
 

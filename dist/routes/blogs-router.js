@@ -36,3 +36,7 @@ exports.blogsRouter.post('/', input_valudation_middleware_1.blogValidationMiddle
     res.status(201).send(newVideo);
 });
 //PUT - update
+exports.blogsRouter.put('/:id', input_valudation_middleware_1.blogValidationMiddleware, input_valudation_middleware_1.inputValidationMiddleware, (req, res) => {
+    blogs_repositiory_1.blogsRepository.updateBlogById(req.body, req.params.id);
+    res.sendStatus(204);
+});

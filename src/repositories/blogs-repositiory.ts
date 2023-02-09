@@ -5,7 +5,7 @@ export type Blog = {
     websiteUrl: string
 }
 
-const blogs = [  
+export const blogs = [  
     {
     "id": "string",
     "name": "string",
@@ -33,10 +33,15 @@ export const blogsRepository = {
             return false;
         }
     },
+    //delete all data
+    deleteAllData(){
+        blogs.splice(0,blogs.length)
+        return blogs
+    },
     //POST - create new 
     createNewBlog(blog: Blog){
         const newBlog = {
-            id: blog.id,
+            id: '' + (+(new Date())),
             name: blog.name,
             description: blog.description,
             websiteUrl: blog.websiteUrl
@@ -45,8 +50,12 @@ export const blogsRepository = {
         return newBlog;
     },
     //PUT - update
-    updateBlogById(){
-
+    updateBlogById(blog : Blog, id: string){
+        let oldBlog = blogsRepository.returnBlogById(id)
+        let newBlog = {...oldBlog, ...blog}
+        blogsRepository.deleteBlogById(id)
+        blogs.push(newBlog)
+        return newBlog;
     },
 };
 
