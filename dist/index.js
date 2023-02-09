@@ -19,7 +19,8 @@ app.use('/posts', posts_router_1.postsRouter);
 app.delete('/testing/all-data', (req, res) => {
     posts_repositiory_1.postsRepository.deleteAllData();
     blogs_repositiory_1.blogsRepository.deleteAllData();
-    res.send(204);
+    res.sendStatus(204);
+    return;
 });
 app.listen(port, () => {
     console.log(`App listening on port ${port}`);

@@ -12,24 +12,28 @@ const findByIdBlogs = value => {
 };
 exports.findByIdBlogs = findByIdBlogs;
 const inputValidationMiddleware = (req, res, next) => {
-    const errors = (0, express_validator_1.validationResult)(req);
-    if (!errors.isEmpty()) {
-        res.status(404).json({ errors: errors.array() });
+    const error = (0, express_validator_1.validationResult)(req);
+    if (!error.isEmpty()) {
+        return res.status(400).send({
+            errorsMessages: error.array({ onlyFirstError: true }).map(e => {
+                return {
+                    message: e.msg,
+                    field: e.param
+                };
+            })
+        });
     }
-    else {
-        next();
-    }
-    ;
+    next();
 };
 exports.inputValidationMiddleware = inputValidationMiddleware;
 exports.blogValidationMiddleware = [
-    (0, express_validator_1.body)('name').isLength({ min: 1, max: 15 }),
-    (0, express_validator_1.body)('description').isLength({ min: 1, max: 500 }),
-    (0, express_validator_1.body)('websiteUrl').isLength({ min: 1, max: 100 }).matches(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/),
+    (0, express_validator_1.body)('name').trim().isLength({ min: 1, max: 15 }).isString(),
+    (0, express_validator_1.body)('description').trim().isLength({ min: 1, max: 500 }).isString(),
+    (0, express_validator_1.body)('websiteUrl').trim().isLength({ min: 1, max: 100 }).matches(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/).isString(),
 ];
 exports.postValidationMiddleware = [
-    (0, express_validator_1.body)('title').isLength({ min: 1, max: 30 }),
-    (0, express_validator_1.body)('shortDescription').isLength({ min: 1, max: 100 }),
-    (0, express_validator_1.body)('content').isLength({ min: 1, max: 1000 }),
-    (0, express_validator_1.body)('blogId').custom(exports.findByIdBlogs)
+    (0, express_validator_1.body)('title').trim().isLength({ min: 1, max: 30 }).isString(),
+    (0, express_validator_1.body)('shortDescription').trim().isLength({ min: 1, max: 100 }).isString(),
+    (0, express_validator_1.body)('content').trim().isLength({ min: 1, max: 1000 }).isString(),
+    (0, express_validator_1.body)('blogId').trim().custom(exports.findByIdBlogs).isString()
 ];

@@ -15,32 +15,30 @@ export const findByIdBlogs : CustomValidator = value => {
 };
 
 export const inputValidationMiddleware = (req: Request, res: Response, next: NextFunction) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()){
-        res.status(400).send({
-            errorsMessages: errors.array({onlyFirstError:true}).map (e => {
+    const error = validationResult(req)
+    if (!error.isEmpty()) {
+        return res.status(400).send({
+            errorsMessages: error.array({onlyFirstError: true}).map(e => {
                 return {
                     message: e.msg,
                     field: e.param
                 }
             })
         })
-    } else {
-        next();
-    };
-};
-
+    }
+    next()
+}
 export const blogValidationMiddleware = [
-body('name').isLength({min: 1, max: 15}), 
-body('description').isLength({min: 1, max: 500}), 
-body('websiteUrl').isLength({min: 1, max: 100}).matches(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/),
+body('name').trim().isLength({min: 1, max: 15}).isString(), 
+body('description').trim().isLength({min: 1, max: 500}).isString(), 
+body('websiteUrl').trim().isLength({min: 1, max: 100}).matches(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/).isString(),
 ];
 
 export const postValidationMiddleware = [
-body('title').isLength({min:1, max: 30}),
-body('shortDescription').isLength({min:1,max:100}),
-body('content').isLength({min:1, max: 1000}),
-body('blogId').custom(findByIdBlogs)
+body('title').trim().isLength({min:1, max: 30}).isString(),
+body('shortDescription').trim().isLength({min:1,max:100}).isString(),
+body('content').trim().isLength({min:1, max: 1000}).isString(),
+body('blogId').trim().custom(findByIdBlogs).isString()
 ];
 
 
