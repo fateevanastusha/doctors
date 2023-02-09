@@ -18,7 +18,8 @@ app.use('/posts', postsRouter)
 app.delete('/testing/all-data', (req: Request,res: Response) => {
     postsRepository.deleteAllData();
     blogsRepository.deleteAllData();
-    res.send(204)
+    res.sendStatus(204)
+    return
 });
 
 app.listen(port, () => {

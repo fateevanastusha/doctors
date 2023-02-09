@@ -17,7 +17,14 @@ export const findByIdBlogs : CustomValidator = value => {
 export const inputValidationMiddleware = (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()){
-        res.status(400).json({errors : errors.array()})
+        res.status(400).send({
+            errorsMessages: errors.array({onlyFirstError:true}).map (e => {
+                return {
+                    message: e.msg,
+                    field: e.param
+                }
+            })
+        })
     } else {
         next();
     };
