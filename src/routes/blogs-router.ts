@@ -11,35 +11,41 @@ export const adminAuth = basicAuth({users: { 'admin': 'querty' }});
 blogsRouter.get('/',  (req: Request, res: Response) =>{
     let allBlogs = blogsRepository.returnAllBlogs();
     res.status(200).send(allBlogs);
+    return
 })
 //GET - return by ID
 blogsRouter.get('/:id', (req: Request, res: Response)=>{
     let blog = blogsRepository.returnBlogById(req.params.id);
     if (blog) {
         res.status(200).send(blog);
+        return
     } else {
-        res.send(404)
+        res.sendStatus(404)
+        return
     }
 })
 //DELETE - delete by ID
 blogsRouter.delete('/:id', adminAuth, (req: Request, res: Response) => {
     let status = blogsRepository.deleteBlogById(req.params.id);
     if (status){
-        res.send(204);
+        res.sendStatus(204);
+        return
     } else {
-        res.send(404)
+        res.sendStatus(404)
+        return
     }
 })
 //POST - create new
 blogsRouter.post('/', adminAuth, blogValidationMiddleware, inputValidationMiddleware, (req: Request, res: Response)=> {
-    
     let newVideo = blogsRepository.createNewBlog(req.body);
     res.status(201).send(newVideo);
+    return
 })
 //PUT - update
 blogsRouter.put('/:id', adminAuth, blogValidationMiddleware, inputValidationMiddleware, (req: Request, res: Response) => {
     blogsRepository.updateBlogById(req.body, req.params.id)
     res.sendStatus(204)
+    return
 })
 
 
