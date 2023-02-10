@@ -60,6 +60,6 @@ export const blogsRepository = {
         } else {
             return false
         }
-    },
+    }, 
 };
 

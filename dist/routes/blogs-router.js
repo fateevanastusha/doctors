@@ -45,7 +45,11 @@ exports.blogsRouter.post('/', exports.adminAuth, input_valudation_middleware_1.b
 });
 //PUT - update
 exports.blogsRouter.put('/:id', exports.adminAuth, input_valudation_middleware_1.blogValidationMiddleware, input_valudation_middleware_1.inputValidationMiddleware, (req, res) => {
-    blogs_repositiory_1.blogsRepository.updateBlogById(req.body, req.params.id);
-    res.sendStatus(204);
-    return;
+    const status = blogs_repositiory_1.blogsRepository.updateBlogById(req.body, req.params.id);
+    if (status) {
+        res.sendStatus(204);
+    }
+    else {
+        res.send(404);
+    }
 });

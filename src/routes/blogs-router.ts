@@ -48,7 +48,7 @@ blogsRouter.put('/:id', adminAuth, blogValidationMiddleware, inputValidationMidd
         res.sendStatus(204)
     } else {
         res.send(404)
-    }
+    } 
 })
 
 

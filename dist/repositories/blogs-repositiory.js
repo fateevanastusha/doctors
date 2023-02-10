@@ -48,10 +48,15 @@ exports.blogsRepository = {
     },
     //PUT - update
     updateBlogById(blog, id) {
-        let oldBlog = exports.blogsRepository.returnBlogById(id);
-        let newBlog = Object.assign(Object.assign({}, oldBlog), blog);
-        exports.blogsRepository.deleteBlogById(id);
-        exports.blogs.push(newBlog);
-        return newBlog;
+        const oldBlog = exports.blogs.find(p => p.id === id);
+        if (oldBlog) {
+            oldBlog.name = blog.name;
+            oldBlog.description = blog.description;
+            oldBlog.websiteUrl = blog.websiteUrl;
+            return true;
+        }
+        else {
+            return false;
+        }
     },
 };
