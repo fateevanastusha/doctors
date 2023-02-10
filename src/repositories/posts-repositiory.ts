@@ -50,17 +50,22 @@ export const postsRepository = {
       shortDescription: post.shortDescription,
       content: post.content,
       blogId: post.blogId,
-      blogName: blogName
+      blogName: blogName 
     }
     posts.push(newPost);
     return newPost;
   },
   //update post by id
   updatePostById(post : Post, id : string){
-    let oldPost = postsRepository.returnPostById(id)
-    let newPost = {...oldPost, ...post}
-    postsRepository.deletePostById(id)
-    posts.push(newPost)
-    return newPost;
+    const oldPost = posts.find(p => p.id === id);
+    if (oldPost){
+      oldPost.title = post.title;
+      oldPost.shortDescription = post.shortDescription;
+      oldPost.content = post.content
+      oldPost.blogId = post.blogId
+      return true;
+    } else {
+      return false;
+    }
   }
 };

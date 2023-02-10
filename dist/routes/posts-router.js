@@ -47,6 +47,11 @@ exports.postsRouter.post('/', exports.adminAuth, input_valudation_middleware_1.p
 });
 //PUT - update
 exports.postsRouter.put('/:id', exports.adminAuth, input_valudation_middleware_1.postValidationMiddleware, input_valudation_middleware_1.inputValidationMiddleware, (req, res) => {
-    posts_repositiory_1.postsRepository.updatePostById(req.body, req.params.id);
-    res.sendStatus(204);
+    const status = posts_repositiory_1.postsRepository.updatePostById(req.body, req.params.id);
+    if (status) {
+        res.sendStatus(204);
+    }
+    else {
+        res.sendStatus(404);
+    }
 });

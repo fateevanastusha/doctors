@@ -52,10 +52,16 @@ exports.postsRepository = {
     },
     //update post by id
     updatePostById(post, id) {
-        let oldPost = exports.postsRepository.returnPostById(id);
-        let newPost = Object.assign(Object.assign({}, oldPost), post);
-        exports.postsRepository.deletePostById(id);
-        exports.posts.push(newPost);
-        return newPost;
+        const oldPost = exports.posts.find(p => p.id === id);
+        if (oldPost) {
+            oldPost.title = post.title;
+            oldPost.shortDescription = post.shortDescription;
+            oldPost.content = post.content;
+            oldPost.blogId = post.blogId;
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 };
