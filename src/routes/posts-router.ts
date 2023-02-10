@@ -26,7 +26,7 @@ postsRouter.get('/:id', (req: Request, res: Response) => {
     }
 })
 //DELETE - delete by ID
-postsRouter.delete('/:delete', adminAuth, (req: Request, res: Response) => {
+postsRouter.delete('/:id', adminAuth, (req: Request, res: Response) => {
     let status = postsRepository.deletePostById(req.params.id)
     if (status){
         res.sendStatus(204)
@@ -34,7 +34,7 @@ postsRouter.delete('/:delete', adminAuth, (req: Request, res: Response) => {
     } else{
         res.sendStatus(404)
         return
-    }
+    } 
 })
 //POST - create new 
 postsRouter.post('/', adminAuth, postValidationMiddleware, inputValidationMiddleware, (req: Request, res: Response) => {

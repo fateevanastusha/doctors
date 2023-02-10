@@ -27,7 +27,7 @@ exports.postsRouter.get('/:id', (req, res) => {
     }
 });
 //DELETE - delete by ID
-exports.postsRouter.delete('/:delete', exports.adminAuth, (req, res) => {
+exports.postsRouter.delete('/:id', exports.adminAuth, (req, res) => {
     let status = posts_repositiory_1.postsRepository.deletePostById(req.params.id);
     if (status) {
         res.sendStatus(204);
