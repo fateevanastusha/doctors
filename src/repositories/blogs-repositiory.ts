@@ -51,11 +51,15 @@ export const blogsRepository = {
     },
     //PUT - update
     updateBlogById(blog : Blog, id: string){
-        let oldBlog = blogsRepository.returnBlogById(id)
-        let newBlog = {...oldBlog, ...blog}
-        blogsRepository.deleteBlogById(id)
-        blogs.push(newBlog)
-        return newBlog;
+        const oldBlog = blogs.find(p => p.id === id)
+        if (oldBlog){
+            oldBlog.name = blog.name;
+            oldBlog.description = blog.description;
+            oldBlog.websiteUrl = blog.websiteUrl
+            return true
+        } else {
+            return false
+        }
     },
 };
 

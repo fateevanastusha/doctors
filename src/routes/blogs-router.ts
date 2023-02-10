@@ -43,9 +43,12 @@ blogsRouter.post('/', adminAuth, blogValidationMiddleware, inputValidationMiddle
 })
 //PUT - update
 blogsRouter.put('/:id', adminAuth, blogValidationMiddleware, inputValidationMiddleware, (req: Request, res: Response) => {
-    blogsRepository.updateBlogById(req.body, req.params.id)
-    res.sendStatus(204)
-    return
+    const status = blogsRepository.updateBlogById(req.body, req.params.id)
+    if (status){
+        res.sendStatus(204)
+    } else {
+        res.send(404)
+    }
 })
 
 
