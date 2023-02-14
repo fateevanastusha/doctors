@@ -1,21 +1,23 @@
 import { Router } from "express"
 export const blogsRouter = Router()
 import {Request, Response} from 'express'
-import { blogsRepository } from "../repositories/blogs-repositiory"
+import { blogsRepository, Blog } from "../repositories/blogs-repositiory"
 import { inputValidationMiddleware, blogValidationMiddleware } from "../middlewares/input-valudation-middleware"
+
 
 export const basicAuth = require('express-basic-auth')
 export const adminAuth = basicAuth({users: { 'admin': 'qwerty' }});
 
 //GET - return all
-blogsRouter.get('/',  (req: Request, res: Response) =>{
-    let allBlogs = blogsRepository.returnAllBlogs();
+blogsRouter.get('/', async (req: Request, res: Response) =>{
+    let allBlogs = await blogsRepository.returnAllBlogs();
     res.status(200).send(allBlogs);
     return
 })
 //GET - return by ID
-blogsRouter.get('/:id', (req: Request, res: Response)=>{
-    let blog = blogsRepository.returnBlogById(req.params.id);
+blogsRouter.get('/:id', async(req: Request, res: Response)=>{
+    const foundBlog : Promise <Blog | undefined>= blogsRepository.returnBlogById(req.params.id);
+    let blog : Blog | undefined = await foundBlog
     if (blog) {
         res.status(200).send(blog);
         return
@@ -25,8 +27,8 @@ blogsRouter.get('/:id', (req: Request, res: Response)=>{
     }
 })
 //DELETE - delete by ID
-blogsRouter.delete('/:id', adminAuth, (req: Request, res: Response) => {
-    let status = blogsRepository.deleteBlogById(req.params.id);
+blogsRouter.delete('/:id', adminAuth, async(req: Request, res: Response) => {
+    let status = await blogsRepository.deleteBlogById(req.params.id);
     if (status){
         res.sendStatus(204);
         return
@@ -36,14 +38,15 @@ blogsRouter.delete('/:id', adminAuth, (req: Request, res: Response) => {
     }
 })
 //POST - create new
-blogsRouter.post('/', adminAuth, blogValidationMiddleware, inputValidationMiddleware, (req: Request, res: Response)=> {
-    let newVideo = blogsRepository.createNewBlog(req.body);
-    res.status(201).send(newVideo);
+blogsRouter.post('/', adminAuth, blogValidationMiddleware, inputValidationMiddleware, async(req: Request, res: Response)=> {
+    const newBlogPromise : Promise<Blog> = blogsRepository.createNewBlog(req.body);
+    const newBlog : Blog = await newBlogPromise
+    res.status(201).send(newBlog);
     return
 })
 //PUT - update
-blogsRouter.put('/:id', adminAuth, blogValidationMiddleware, inputValidationMiddleware, (req: Request, res: Response) => {
-    const status = blogsRepository.updateBlogById(req.body, req.params.id)
+blogsRouter.put('/:id', adminAuth, blogValidationMiddleware, inputValidationMiddleware, async(req: Request, res: Response) => {
+    const status : boolean = await blogsRepository.updateBlogById(req.body, req.params.id)
     if (status){
         res.sendStatus(204)
     } else {
