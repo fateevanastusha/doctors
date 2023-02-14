@@ -2,8 +2,8 @@ import exp from "constants";
 import { NextFunction } from "express";
 import { Response, Request } from "express";
 import { CustomValidator } from "express-validator/src/base";
-import { blogs, blogsRepository } from "../repositories/blogs-repositiory";
-import { posts, postsRepository } from "../repositories/posts-repositiory";
+import { blogsRepository } from "../repositories/blogs-db-repositiory";
+import { postsRepository } from "../repositories/posts-db-repositiory";
 import { body, validationResult } from 'express-validator';
 
 export const findByIdBlogs : CustomValidator = value => {

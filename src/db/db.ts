@@ -1,6 +1,6 @@
 import {MongoClient} from "mongodb";
-import {Blog} from "../repositories/blogs-repositiory";
-import {Post} from "../repositories/posts-repositiory";
+
+import {Blog,Post} from "../types/types";
 
 
 const mongoUri = process.env.mongoURI || "mongodb://0.0.0.0:27017";

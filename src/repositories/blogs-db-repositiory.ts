@@ -1,23 +1,4 @@
-export type Blog = {
-    id: string,
-    name: string,
-    description: string, 
-    websiteUrl: string
-    createdAt : string
-    isMembership : boolean
-}
-
-export const blogs = [  
-    {
-    "id": "string",
-    "name": "string",
-    "description": "string",
-    "websiteUrl": "string",
-    "createdAt" : "string",
-    "isMembership" : false
-  }
-];
-
+import {Blog} from "../types/types";
 import {blogsCollection} from "../db/db";
 
 
@@ -38,8 +19,8 @@ export const blogsRepository = {
     },
     //delete all data
     async deleteAllData(){
-        blogs.splice(0,blogs.length)
-        return blogs;
+        await blogsCollection.deleteMany({})
+        return []
     },
     //POST - create new 
     async createNewBlog(blog: Blog) : Promise<Blog>{
@@ -51,7 +32,7 @@ export const blogsRepository = {
             createdAt: "" + new Date(),
             isMembership: false
         }
-        const result = await blogsCollection.insertOne(newBlog)
+        await blogsCollection.insertOne(newBlog)
         return newBlog
     },
     //PUT - update

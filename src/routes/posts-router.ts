@@ -1,9 +1,11 @@
 import { Router } from "express"
 export const postsRouter = Router()
 import {Request, Response} from 'express'
-import {Post, postsRepository} from "../repositories/posts-repositiory"
+import {postsRepository} from "../repositories/posts-db-repositiory"
+import { blogsRepository } from "../repositories/blogs-db-repositiory"
+import {Post} from "../types/types";
 import { inputValidationMiddleware, postValidationMiddleware } from "../middlewares/input-valudation-middleware"
-import { blogsRepository } from "../repositories/blogs-repositiory"
+
 
 export const basicAuth = require('express-basic-auth')
 export const adminAuth = basicAuth({users: { 'admin': 'qwerty' }});
@@ -16,8 +18,8 @@ postsRouter.get('/', async (req: Request, res: Response) => {
 })
 //GET - return by ID
 postsRouter.get('/:id', async (req: Request, res: Response) => {
-    const foundPost : Promise<Post | undefined> = postsRepository.returnPostById(req.params.id)
-    const post : Post | undefined = await  foundPost
+    const foundPost : Promise<Post | null> = postsRepository.returnPostById(req.params.id)
+    const post : Post | null = await  foundPost
     if (post){
         res.status(200).send(post)
         return
@@ -39,7 +41,7 @@ postsRouter.delete('/:id', adminAuth, async (req: Request, res: Response) => {
 })
 //POST - create new 
 postsRouter.post('/', adminAuth, postValidationMiddleware, inputValidationMiddleware, async (req: Request, res: Response) => {
-    const blog = blogsRepository.returnBlogById(req.body.blogId)
+    const blog = await blogsRepository.returnBlogById(req.body.blogId)
     const newPostPromise : Promise<Post> = postsRepository.createNewPost(req.body, blog!.name);
     const newPost : Post = await newPostPromise
     res.status(201).send(newPost)
