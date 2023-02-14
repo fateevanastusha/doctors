@@ -1,7 +1,7 @@
 import { Router } from "express"
 export const blogsRouter = Router()
 import {Request, Response} from 'express'
-import { blogsRepository, Blog } from "../repositories/blogs-repositiory"
+import { blogsRepository, Blog } from "../repositories/blogs-db-repositiory"
 import { inputValidationMiddleware, blogValidationMiddleware } from "../middlewares/input-valudation-middleware"
 
 
@@ -16,8 +16,8 @@ blogsRouter.get('/', async (req: Request, res: Response) =>{
 })
 //GET - return by ID
 blogsRouter.get('/:id', async(req: Request, res: Response)=>{
-    const foundBlog : Promise <Blog | undefined>= blogsRepository.returnBlogById(req.params.id);
-    let blog : Blog | undefined = await foundBlog
+    const foundBlog : Promise <Blog | null>= blogsRepository.returnBlogById(req.params.id);
+    let blog : Blog | null = await foundBlog
     if (blog) {
         res.status(200).send(blog);
         return

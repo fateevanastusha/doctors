@@ -17,25 +17,24 @@ export const blogs = [
     "isMembership" : false
   }
 ];
+
+import {blogsCollection} from "../db/db";
+
+
 export const blogsRepository = {
     //GET - return all
     async returnAllBlogs() : Promise<Blog []>{
-        return blogs
+        return blogsCollection.find({}).toArray()
     },
     //GET - return by ID
-    async returnBlogById(id: string) : Promise<Blog | undefined>{
-        let blog : Blog | undefined = blogs.find(p => p.id === id);
+    async returnBlogById(id: string) : Promise<Blog | null>{
+        let blog : Blog | null = await blogsCollection.findOne({id : id})
         return blog
     },
     //DELETE - delete by ID
     async deleteBlogById(id: string) : Promise<boolean>{
-        let index = blogs.findIndex(p => p.id === id);
-        if (index > -1) {
-            blogs.splice(index,1);
-            return true;
-        } else {
-            return false;
-        }
+        const result = await blogsCollection.deleteOne({id: id})
+        return result.deletedCount === 1
     },
     //delete all data
     async deleteAllData(){
@@ -52,21 +51,19 @@ export const blogsRepository = {
             createdAt: "" + new Date(),
             isMembership: false
         }
-        blogs.push(newBlog);
-        return newBlog;
+        const result = await blogsCollection.insertOne(newBlog)
+        return newBlog
     },
     //PUT - update
     async updateBlogById(blog : Blog, id: string) : Promise <boolean>{
-        const oldBlog = blogs.find(p => p.id === id)
-        if (oldBlog){
-            oldBlog.name = blog.name;
-            oldBlog.description = blog.description;
-            oldBlog.websiteUrl = blog.websiteUrl
-            oldBlog.createdAt  = blog.createdAt
-            return true
-        } else {
-            return false
-        }
+        const result = await blogsCollection.updateOne({id: id}, { $set:
+                {
+                name : blog.name,
+                description : blog.description,
+                websiteUrl : blog.websiteUrl,
+                }
+        })
+        return result.matchedCount === 1
     }, 
 };
 
