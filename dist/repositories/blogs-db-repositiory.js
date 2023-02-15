@@ -21,13 +21,14 @@ exports.blogsRepository = {
     //GET - return by ID
     returnBlogById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return db_1.blogsCollection.findOne({ id });
+            const blog = yield db_1.blogsCollection.findOne({ id: id });
+            return blog;
         });
     },
     //DELETE - delete by ID
     deleteBlogById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.blogsCollection.deleteOne({ id });
+            const result = yield db_1.blogsCollection.deleteOne({ id: id });
             return result.deletedCount === 1;
         });
     },

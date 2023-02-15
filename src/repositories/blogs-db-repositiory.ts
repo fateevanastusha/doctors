@@ -9,11 +9,12 @@ export const blogsRepository = {
     },
     //GET - return by ID
     async returnBlogById(id: string) : Promise<Blog | null>{
-        return blogsCollection.findOne({id})
+        const blog : Blog | null = await blogsCollection.findOne({id: id})
+        return blog
     },
     //DELETE - delete by ID
     async deleteBlogById(id: string) : Promise<boolean>{
-        const result = await blogsCollection.deleteOne({id})
+        const result = await blogsCollection.deleteOne({id: id})
         return result.deletedCount === 1
     },
     //delete all data
