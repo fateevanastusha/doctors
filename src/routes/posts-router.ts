@@ -19,7 +19,7 @@ postsRouter.get('/', async (req: Request, res: Response) => {
 postsRouter.get('/:id', async (req: Request, res: Response) => {
     const foundPost : Post | null = await postsRepository.returnPostById(req.params.id)
     if (foundPost){
-        res.send(200).send(foundPost)
+        res.status(200).send(foundPost)
 
     } else {
         res.sendStatus(404)

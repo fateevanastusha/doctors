@@ -26,7 +26,7 @@ exports.postsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, fun
 exports.postsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const foundPost = yield posts_db_repositiory_1.postsRepository.returnPostById(req.params.id);
     if (foundPost) {
-        res.send(200).send(foundPost);
+        res.status(200).send(foundPost);
     }
     else {
         res.sendStatus(404);
