@@ -15,13 +15,13 @@ exports.blogsRepository = {
     //GET - return all
     returnAllBlogs() {
         return __awaiter(this, void 0, void 0, function* () {
-            return db_1.blogsCollection.find({}).toArray();
+            return db_1.blogsCollection.find({}, { projection: { _id: 0 } }).toArray();
         });
     },
     //GET - return by ID
     returnBlogById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const blog = yield db_1.blogsCollection.findOne({ id: id });
+            const blog = yield db_1.blogsCollection.findOne({ id: id }, { projection: { _id: 0 } });
             return blog;
         });
     },

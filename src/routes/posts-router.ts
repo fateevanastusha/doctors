@@ -44,8 +44,8 @@ postsRouter.post('/', adminAuth, postValidationMiddleware, inputValidationMiddle
         res.sendStatus(404)
     } else {
         const blogName = foundBlog.name
-        const newPostPromise: Post = await postsRepository.createNewPost(req.body, blogName);
-        res.status(201).send(newPostPromise)
+        const newPost: Post = await postsRepository.createNewPost(req.body, blogName);
+        res.status(201).send(newPost)
     }
 })
 //PUT - update
