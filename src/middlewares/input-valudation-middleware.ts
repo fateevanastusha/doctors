@@ -6,13 +6,13 @@ import { blogsRepository } from "../repositories/blogs-db-repositiory";
 import { postsRepository } from "../repositories/posts-db-repositiory";
 import { body, validationResult } from 'express-validator';
 
-export const findByIdBlogs : CustomValidator = value => {
-    let blog = blogsRepository.returnBlogById(value)
-    if (!blog){
-        throw new Error('Invalid blogId')
+export const findByIdBlogs : CustomValidator = async value => {
+    const foundBlog = await blogsRepository.returnBlogById(value);
+    if (foundBlog === null) {
+        throw new Error('not blogId')
     }
-    return true
 };
+
 
 export const inputValidationMiddleware = (req: Request, res: Response, next: NextFunction) => {
     const error = validationResult(req)

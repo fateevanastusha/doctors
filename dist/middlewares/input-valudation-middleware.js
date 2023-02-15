@@ -1,15 +1,23 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.postValidationMiddleware = exports.blogIdCheck = exports.contentCheck = exports.shortDescriptionCheck = exports.titleCheck = exports.websiteUrlCheck = exports.descriptionCheck = exports.nameCheck = exports.blogValidationMiddleware = exports.inputValidationMiddleware = exports.findByIdBlogs = void 0;
 const blogs_db_repositiory_1 = require("../repositories/blogs-db-repositiory");
 const express_validator_1 = require("express-validator");
-const findByIdBlogs = value => {
-    let blog = blogs_db_repositiory_1.blogsRepository.returnBlogById(value);
-    if (!blog) {
-        throw new Error('Invalid blogId');
+const findByIdBlogs = (value) => __awaiter(void 0, void 0, void 0, function* () {
+    const foundBlog = yield blogs_db_repositiory_1.blogsRepository.returnBlogById(value);
+    if (foundBlog === null) {
+        throw new Error('not blogId');
     }
-    return true;
-};
+});
 exports.findByIdBlogs = findByIdBlogs;
 const inputValidationMiddleware = (req, res, next) => {
     const error = (0, express_validator_1.validationResult)(req);
