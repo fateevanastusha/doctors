@@ -29,7 +29,7 @@ export const postsRepository = {
   },
   //delete all data
   async deleteAllData() {
-    await postsCollection.deleteMany({});
+    const result = await postsCollection.deleteMany({});
     return [];
     //return posts
   },
@@ -44,7 +44,7 @@ export const postsRepository = {
       blogName: blogName,
       createdAt : "" + new Date()
     }
-    await postsCollection.insertOne(newPost)
+    const result = await postsCollection.insertOne(newPost)
     return newPost
   },
   //update post by id

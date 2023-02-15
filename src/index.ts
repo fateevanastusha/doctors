@@ -6,10 +6,9 @@ import { postsRepository } from './repositories/posts-db-repositiory';
 import { blogsRepository } from './repositories/blogs-db-repositiory';
 
 const app = express();
-const port = 652;
-const parserMiddleware = bodyParser({})
+const port = 6463;
 
-app.use(parserMiddleware)
+app.use(express.json())
 
 app.use('/blogs', blogsRouter)
 app.use('/posts', postsRouter)

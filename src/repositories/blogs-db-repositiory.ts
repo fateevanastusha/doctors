@@ -9,17 +9,16 @@ export const blogsRepository = {
     },
     //GET - return by ID
     async returnBlogById(id: string) : Promise<Blog | null>{
-        let blog : Blog | null = await blogsCollection.findOne({id : id})
-        return blog
+        return blogsCollection.findOne({id})
     },
     //DELETE - delete by ID
     async deleteBlogById(id: string) : Promise<boolean>{
-        const result = await blogsCollection.deleteOne({id: id})
+        const result = await blogsCollection.deleteOne({id})
         return result.deletedCount === 1
     },
     //delete all data
     async deleteAllData(){
-        await blogsCollection.deleteMany({})
+        const result = await blogsCollection.deleteMany({})
         return []
     },
     //POST - create new 
@@ -32,7 +31,7 @@ export const blogsRepository = {
             createdAt: "" + new Date(),
             isMembership: false
         }
-        await blogsCollection.insertOne(newBlog)
+        const result = await blogsCollection.insertOne(newBlog)
         return newBlog
     },
     //PUT - update

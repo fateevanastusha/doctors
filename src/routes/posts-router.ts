@@ -3,7 +3,7 @@ export const postsRouter = Router()
 import {Request, Response} from 'express'
 import {postsRepository} from "../repositories/posts-db-repositiory"
 import { blogsRepository } from "../repositories/blogs-db-repositiory"
-import {Post} from "../types/types";
+import {Post, Blog} from "../types/types";
 import { inputValidationMiddleware, postValidationMiddleware } from "../middlewares/input-valudation-middleware"
 
 
@@ -12,20 +12,18 @@ export const adminAuth = basicAuth({users: { 'admin': 'qwerty' }});
 
 //GET - return all
 postsRouter.get('/', async (req: Request, res: Response) => {
-    let newPost = await postsRepository.returnAllPost()
-    res.status(200).send(newPost)
-    return
+    let posts = await postsRepository.returnAllPost()
+    res.status(200).send(posts)
 })
 //GET - return by ID
 postsRouter.get('/:id', async (req: Request, res: Response) => {
-    const foundPost : Promise<Post | null> = postsRepository.returnPostById(req.params.id)
-    const post : Post | null = await  foundPost
-    if (post){
-        res.status(200).send(post)
-        return
+    const foundPost : Post | null = await postsRepository.returnPostById(req.params.id)
+    if (foundPost){
+        res.send(200).send(foundPost)
+
     } else {
-        res.send(404)
-        return
+        res.sendStatus(404)
+
     }
 })
 //DELETE - delete by ID
@@ -41,11 +39,14 @@ postsRouter.delete('/:id', adminAuth, async (req: Request, res: Response) => {
 })
 //POST - create new 
 postsRouter.post('/', adminAuth, postValidationMiddleware, inputValidationMiddleware, async (req: Request, res: Response) => {
-    const blog = await blogsRepository.returnBlogById(req.body.blogId)
-    const newPostPromise : Promise<Post> = postsRepository.createNewPost(req.body, blog!.name);
-    const newPost : Post = await newPostPromise
-    res.status(201).send(newPost)
-    return
+    const foundBlog : Blog | null = await blogsRepository.returnBlogById(req.body.blogId);
+    if (foundBlog === null) {
+        res.sendStatus(404)
+    } else {
+        const blogName = foundBlog.name
+        const newPostPromise: Post = await postsRepository.createNewPost(req.body, blogName);
+        res.status(201).send(newPostPromise)
+    }
 })
 //PUT - update
 postsRouter.put('/:id', adminAuth, postValidationMiddleware, inputValidationMiddleware, async (req: Request, res: Response) => {
