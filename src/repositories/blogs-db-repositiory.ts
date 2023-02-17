@@ -5,11 +5,11 @@ import {blogsCollection} from "../db/db";
 export const blogsRepository = {
     //GET - return all
     async returnAllBlogs() : Promise<Blog []>{
-        return blogsCollection.find({}, {projection: {_id: 0}}).toArray()
+        return blogsCollection.find({}).toArray()
     },
     //GET - return by ID
     async returnBlogById(id: string) : Promise<Blog | null>{
-        const blog : Blog | null = await blogsCollection.findOne({id: id}, {projection: {_id: 0}})
+        const blog : Blog | null = await blogsCollection.findOne({id: id})
         return blog
     },
     //DELETE - delete by ID
