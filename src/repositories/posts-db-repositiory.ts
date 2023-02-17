@@ -34,7 +34,7 @@ export const postsRepository = {
     //return posts
   },
   //create new post
-  async createNewPost(post: Post, blogName: string) : Promise <Post>{
+  async createNewPost(post: Post, blogName: string) : Promise <Post | null>{
     const newPost = {
       id: '' + (+(new Date())),
       title : post.title,
@@ -44,8 +44,8 @@ export const postsRepository = {
       blogName: blogName,
       createdAt : new Date().toISOString()
     }
-    const result = await postsCollection.insertOne(newPost)
-    return newPost
+    await postsCollection.insertOne(newPost)
+    return this.returnPostById(newPost.id)
   },
   //update post by id
   async updatePostById(post : Post, id : string) : Promise <boolean>{

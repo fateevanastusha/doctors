@@ -23,7 +23,7 @@ export const blogsRepository = {
         return []
     },
     //POST - create new 
-    async createNewBlog(blog: Blog) : Promise<Blog>{
+    async createNewBlog(blog: Blog) : Promise<Blog | null>{
         const newBlog = {
             id: '' + (+(new Date())),
             name: blog.name,
@@ -32,8 +32,12 @@ export const blogsRepository = {
             createdAt: new Date().toISOString(),
             isMembership: false
         }
-        const result = await blogsCollection.insertOne(newBlog)
-        return newBlog
+        await blogsCollection.insertOne(newBlog)
+        const updatedBlog = this.returnBlogById(newBlog.id)
+            if(updatedBlog) {
+                return updatedBlog
+            }
+        return null
     },
     //PUT - update
     async updateBlogById(blog : Blog, id: string) : Promise <boolean>{

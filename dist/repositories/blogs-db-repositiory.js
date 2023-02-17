@@ -50,8 +50,12 @@ exports.blogsRepository = {
                 createdAt: new Date().toISOString(),
                 isMembership: false
             };
-            const result = yield db_1.blogsCollection.insertOne(newBlog);
-            return newBlog;
+            yield db_1.blogsCollection.insertOne(newBlog);
+            const updatedBlog = this.returnBlogById(newBlog.id);
+            if (updatedBlog) {
+                return updatedBlog;
+            }
+            return null;
         });
     },
     //PUT - update
