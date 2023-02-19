@@ -34,9 +34,9 @@ export const blogsRepository = {
         }
         await blogsCollection.insertOne(newBlog)
         const updatedBlog = this.returnBlogById(newBlog.id)
-            if(updatedBlog) {
-                return updatedBlog
-            }
+        if(updatedBlog) {
+            return updatedBlog
+        }
         return null
     },
     //PUT - update

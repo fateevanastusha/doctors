@@ -51,8 +51,9 @@ exports.postsRouter.post('/', exports.adminAuth, input_valudation_middleware_1.p
         res.sendStatus(404);
     }
     else {
+        const blogId = foundBlog.id;
         const blogName = foundBlog.name;
-        const newPost = yield posts_db_repositiory_1.postsRepository.createNewPost(req.body, blogName);
+        const newPost = yield posts_db_repositiory_1.postsRepository.createNewPost(req.body, blogName, blogId);
         res.status(201).send(newPost);
     }
 }));

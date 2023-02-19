@@ -34,13 +34,13 @@ export const postsRepository = {
     //return posts
   },
   //create new post
-  async createNewPost(post: Post, blogName: string) : Promise <Post | null>{
+  async createNewPost(post: Post, blogName: string, blogId : string) : Promise <Post | null>{
     const newPost = {
       id: '' + (+(new Date())),
       title : post.title,
       shortDescription: post.shortDescription,
       content: post.content,
-      blogId: post.blogId,
+      blogId: blogId,
       blogName: blogName,
       createdAt : new Date().toISOString()
     }
@@ -59,5 +59,9 @@ export const postsRepository = {
     })
     return result.matchedCount === 1
 
+  },
+  //return all posts by blogId
+  async getAllPostsByBlogId(blogId : string) : Promise<Post[]>{
+    return postsCollection.find({blogId}, {projection: {_id: 0}}).toArray()
   }
 };

@@ -43,8 +43,9 @@ postsRouter.post('/', adminAuth, postValidationMiddleware, inputValidationMiddle
     if (foundBlog === null) {
         res.sendStatus(404)
     } else {
+        const blogId = foundBlog.id
         const blogName = foundBlog.name
-        const newPost: Post = await postsRepository.createNewPost(req.body, blogName);
+        const newPost : Post | null = await postsRepository.createNewPost(req.body, blogName, blogId);
         res.status(201).send(newPost)
     }
 })

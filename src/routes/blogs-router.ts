@@ -2,8 +2,13 @@ import { Router } from "express"
 export const blogsRouter = Router()
 import {Request, Response} from 'express'
 import { blogsRepository } from "../repositories/blogs-db-repositiory"
-import {Blog} from "../types/types";
-import { inputValidationMiddleware, blogValidationMiddleware } from "../middlewares/input-valudation-middleware"
+import {Blog, Post} from "../types/types";
+import {
+    inputValidationMiddleware,
+    blogValidationMiddleware,
+    postValidationMiddleware
+} from "../middlewares/input-valudation-middleware"
+import {postsRepository} from "../repositories/posts-db-repositiory";
 
 
 export const basicAuth = require('express-basic-auth')
@@ -14,7 +19,7 @@ blogsRouter.get('/', async (req: Request, res: Response) =>{
     let allBlogs = await blogsRepository.returnAllBlogs();
     res.status(200).send(allBlogs);
     return
-})
+});
 //GET - return by ID
 blogsRouter.get('/:id', async(req: Request, res: Response)=>{
     const foundBlog : Promise <Blog | null>= blogsRepository.returnBlogById(req.params.id);
@@ -26,7 +31,7 @@ blogsRouter.get('/:id', async(req: Request, res: Response)=>{
         res.sendStatus(404)
         return
     }
-})
+});
 //DELETE - delete by ID
 blogsRouter.delete('/:id', adminAuth, async(req: Request, res: Response) => {
     let status = await blogsRepository.deleteBlogById(req.params.id);
@@ -37,14 +42,13 @@ blogsRouter.delete('/:id', adminAuth, async(req: Request, res: Response) => {
         res.sendStatus(404)
         return
     }
-})
+});
 //POST - create new
 blogsRouter.post('/', adminAuth, blogValidationMiddleware, inputValidationMiddleware, async(req: Request, res: Response)=> {
-    const newBlogPromise : Promise<Blog> = blogsRepository.createNewBlog(req.body);
-    const newBlog : Blog = await newBlogPromise
+    const newBlog : Blog| null = await blogsRepository.createNewBlog(req.body);
     res.status(201).send(newBlog);
     return
-})
+});
 //PUT - update
 blogsRouter.put('/:id', adminAuth, blogValidationMiddleware, inputValidationMiddleware, async(req: Request, res: Response) => {
     const status : boolean = await blogsRepository.updateBlogById(req.body, req.params.id)
@@ -53,6 +57,32 @@ blogsRouter.put('/:id', adminAuth, blogValidationMiddleware, inputValidationMidd
     } else {
         res.send(404)
     } 
-})
+});
+//NEW - POST - create post for blog
+blogsRouter.post('/:id/posts', adminAuth, postValidationMiddleware, inputValidationMiddleware,async (req: Request, res: Response) => {
+    //find blog by id
+    console.log(req.params)
+    const foundBlog : Blog | null = await blogsRepository.returnBlogById(req.params.id);
+    if (foundBlog === null) {
+        res.sendStatus(404)
+    } else {
+        const blogId = foundBlog.id;
+        const blogName = foundBlog.name;
+        const newPost : Post | null = await postsRepository.createNewPost(req.body, blogName, blogId);
+        res.status(201).send(newPost)
+    }
+});
+//NEW - GET - get all posts in blog
+blogsRouter.get('/:id/posts', async (req: Request, res: Response) => {
+    //find blog by id
+    const blogId = req.params.id;
+    const foundPosts : Promise<Post[]> = postsRepository.getAllPostsByBlogId(req.params.id)
+    const posts = await foundPosts;
+    if (posts) {
+        res.status(200).send(posts)
+    } else {
+        res.send(404)
+    }
+});
 
 

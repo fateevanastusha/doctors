@@ -14,6 +14,7 @@ const express_1 = require("express");
 exports.blogsRouter = (0, express_1.Router)();
 const blogs_db_repositiory_1 = require("../repositories/blogs-db-repositiory");
 const input_valudation_middleware_1 = require("../middlewares/input-valudation-middleware");
+const posts_db_repositiory_1 = require("../repositories/posts-db-repositiory");
 exports.basicAuth = require('express-basic-auth');
 exports.adminAuth = (0, exports.basicAuth)({ users: { 'admin': 'qwerty' } });
 //GET - return all
@@ -49,8 +50,7 @@ exports.blogsRouter.delete('/:id', exports.adminAuth, (req, res) => __awaiter(vo
 }));
 //POST - create new
 exports.blogsRouter.post('/', exports.adminAuth, input_valudation_middleware_1.blogValidationMiddleware, input_valudation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const newBlogPromise = blogs_db_repositiory_1.blogsRepository.createNewBlog(req.body);
-    const newBlog = yield newBlogPromise;
+    const newBlog = yield blogs_db_repositiory_1.blogsRepository.createNewBlog(req.body);
     res.status(201).send(newBlog);
     return;
 }));
@@ -59,6 +59,34 @@ exports.blogsRouter.put('/:id', exports.adminAuth, input_valudation_middleware_1
     const status = yield blogs_db_repositiory_1.blogsRepository.updateBlogById(req.body, req.params.id);
     if (status) {
         res.sendStatus(204);
+    }
+    else {
+        res.send(404);
+    }
+}));
+//NEW - POST - create post for blog
+exports.blogsRouter.post('/:id/posts', exports.adminAuth, input_valudation_middleware_1.postValidationMiddleware, input_valudation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    //find blog by id
+    console.log(req.params);
+    const foundBlog = yield blogs_db_repositiory_1.blogsRepository.returnBlogById(req.params.id);
+    if (foundBlog === null) {
+        res.sendStatus(404);
+    }
+    else {
+        const blogId = foundBlog.id;
+        const blogName = foundBlog.name;
+        const newPost = yield posts_db_repositiory_1.postsRepository.createNewPost(req.body, blogName, blogId);
+        res.status(201).send(newPost);
+    }
+}));
+//NEW - GET - get all posts in blog
+exports.blogsRouter.get('/:id/posts', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    //find blog by id
+    const blogId = req.params.id;
+    const foundPosts = posts_db_repositiory_1.postsRepository.getAllPostsByBlogId(req.params.id);
+    const posts = yield foundPosts;
+    if (posts) {
+        res.status(200).send(posts);
     }
     else {
         res.send(404);
