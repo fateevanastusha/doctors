@@ -9,72 +9,59 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postsRepository = exports.posts = void 0;
-const db_1 = require("../db/db");
-exports.posts = [
-    {
-        id: "string",
-        title: "string",
-        shortDescription: "string",
-        content: "string",
-        blogId: "string",
-        blogName: "string",
-        createdAt: "string"
-    }
-];
-exports.postsRepository = {
+exports.postsService = void 0;
+const posts_db_repositiory_1 = require("../repositories/posts-db-repositiory");
+exports.postsService = {
     //return all posts
     returnAllPost() {
         return __awaiter(this, void 0, void 0, function* () {
-            return db_1.postsCollection.find({}, { projection: { _id: 0 } }).toArray();
+            return posts_db_repositiory_1.postsRepository.returnAllPost();
         });
     },
-    //return post by Id
+    //return post by id
     returnPostById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const post = yield db_1.postsCollection.findOne({ id: id }, { projection: { _id: 0 } });
-            return post;
+            return posts_db_repositiory_1.postsRepository.returnPostById(id);
         });
     },
-    //delete post by Id
+    //delete post by id
     deletePostById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.postsCollection.deleteOne({ id: id });
-            return result.deletedCount === 1;
+            return posts_db_repositiory_1.postsRepository.deletePostById(id);
         });
     },
     //delete all data
     deleteAllData() {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.postsCollection.deleteMany({});
-            return [];
-            //return posts
+            posts_db_repositiory_1.postsRepository.deleteAllData();
         });
     },
     //create new post
-    createNewPost(newPost) {
+    createNewPost(post, blogName, blogId) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield db_1.postsCollection.insertOne(newPost);
-            return this.returnPostById(newPost.id);
+            const newPost = {
+                id: '' + (+(new Date())),
+                title: post.title,
+                shortDescription: post.shortDescription,
+                content: post.content,
+                blogId: blogId,
+                blogName: blogName,
+                createdAt: new Date().toISOString()
+            };
+            const createdPost = yield posts_db_repositiory_1.postsRepository.createNewPost(newPost);
+            return createdPost;
         });
     },
     //update post by id
     updatePostById(post, id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.postsCollection.updateOne({ id: id }, { $set: {
-                    title: post.title,
-                    shortDescription: post.shortDescription,
-                    content: post.content,
-                    blogId: post.blogId
-                }
-            });
-            return result.matchedCount === 1;
+            return yield posts_db_repositiory_1.postsRepository.updatePostById(post, id);
         });
     },
     //return all posts by blogId
     getAllPostsByBlogId(blogId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return db_1.postsCollection.find({ blogId }, { projection: { _id: 0 } }).toArray();
+            return posts_db_repositiory_1.postsRepository.getAllPostsByBlogId(blogId);
         });
     }
 };

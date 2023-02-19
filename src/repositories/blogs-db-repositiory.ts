@@ -23,15 +23,7 @@ export const blogsRepository = {
         return []
     },
     //POST - create new 
-    async createNewBlog(blog: Blog) : Promise<Blog | null>{
-        const newBlog = {
-            id: '' + (+(new Date())),
-            name: blog.name,
-            description: blog.description,
-            websiteUrl: blog.websiteUrl,
-            createdAt: new Date().toISOString(),
-            isMembership: false
-        }
+    async createNewBlog(newBlog: Blog) : Promise<Blog | null>{
         await blogsCollection.insertOne(newBlog)
         const updatedBlog = this.returnBlogById(newBlog.id)
         if(updatedBlog) {
