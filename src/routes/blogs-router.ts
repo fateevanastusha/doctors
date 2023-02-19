@@ -60,7 +60,6 @@ blogsRouter.put('/:id', adminAuth, blogValidationMiddleware, inputValidationMidd
 });
 //NEW - POST - create post for blog
 blogsRouter.post('/:id/posts', adminAuth, postValidationMiddleware, inputValidationMiddleware,async (req: Request, res: Response) => {
-    //find blog by id
     console.log(req.params)
     const foundBlog : Blog | null = await blogsRepository.returnBlogById(req.params.id);
     if (foundBlog === null) {
@@ -74,8 +73,12 @@ blogsRouter.post('/:id/posts', adminAuth, postValidationMiddleware, inputValidat
 });
 //NEW - GET - get all posts in blog
 blogsRouter.get('/:id/posts', async (req: Request, res: Response) => {
-    //find blog by id
     const blogId = req.params.id;
+    const foundBlog : Promise <Blog | null>= blogsRepository.returnBlogById(req.params.id);
+    let blog : Blog | null = await foundBlog
+    if (!blog) {
+        res.sendStatus(404)
+    }
     const foundPosts : Promise<Post[]> = postsRepository.getAllPostsByBlogId(req.params.id)
     const posts = await foundPosts;
     if (posts) {
