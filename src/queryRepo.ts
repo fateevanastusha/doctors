@@ -1,1 +1,2 @@
-//data mapping
+import {Paginator} from "./types/types";
+

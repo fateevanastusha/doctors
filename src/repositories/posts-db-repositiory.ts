@@ -31,7 +31,6 @@ export const postsRepository = {
   async deleteAllData() {
     const result = await postsCollection.deleteMany({});
     return [];
-    //return posts
   },
   //create new post
   async createNewPost(newPost: Post) : Promise <Post | null>{
