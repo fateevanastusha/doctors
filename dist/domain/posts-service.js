@@ -16,9 +16,10 @@ exports.postsService = {
     //return all posts
     returnAllPost(PageSize, Page, sortBy, sortDirection) {
         return __awaiter(this, void 0, void 0, function* () {
-            const PageCount = Math.ceil((yield posts_db_repositiory_1.postsRepository.returnAllPost()).length / PageSize);
+            const total = (yield posts_db_repositiory_1.postsRepository.returnAllPost()).length;
+            const PageCount = Math.ceil(total / PageSize);
             const Items = yield queryRepo_1.QueryRepository.PaginatorForPosts(PageCount, PageSize, Page, sortBy, sortDirection);
-            return queryRepo_1.QueryRepository.PaginationForm(PageCount, PageSize, Page, Items);
+            return queryRepo_1.QueryRepository.PaginationForm(PageCount, PageSize, Page, total, Items);
         });
     },
     //return post by id

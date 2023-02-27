@@ -20,12 +20,12 @@ export const QueryRepository = {
             .limit(PageSize)
             .toArray()
     },
-    async PaginationForm (PageCount: number, PageSize: number, Page: number, Items: Post[] | Blog []) : Promise <Paginator> {
+    async PaginationForm (PageCount: number, PageSize: number, Page: number, total: number, Items: Post[] | Blog []) : Promise <Paginator> {
         const paginator : Paginator = {
             pagesCount: PageCount,
             page: Page,
             pageSize: PageSize,
-            totalCount: Items.length,
+            totalCount: total,
             items : Items
         }
         return paginator;

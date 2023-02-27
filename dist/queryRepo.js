@@ -34,13 +34,13 @@ exports.QueryRepository = {
                 .toArray();
         });
     },
-    PaginationForm(PageCount, PageSize, Page, Items) {
+    PaginationForm(PageCount, PageSize, Page, total, Items) {
         return __awaiter(this, void 0, void 0, function* () {
             const paginator = {
                 pagesCount: PageCount,
                 page: Page,
                 pageSize: PageSize,
-                totalCount: Items.length,
+                totalCount: total,
                 items: Items
             };
             return paginator;
