@@ -53,7 +53,15 @@ postsRouter.delete('/:id', adminAuth, async (req: Request, res: Response) => {
     } 
 })
 //POST - create new 
-postsRouter.post('/', adminAuth, titleCheck, shortDescriptionCheck, contentCheck, blogIdCheck, inputValidationMiddleware, async (req: Request, res: Response) => {
+postsRouter.post('/',
+    adminAuth,
+    titleCheck,
+    shortDescriptionCheck,
+    contentCheck,
+    blogIdCheck,
+    inputValidationMiddleware,
+    async (req: Request, res: Response) => {
+
     const foundBlog : Blog | null = await blogsService.returnBlogById(req.body.blogId);
     if (foundBlog === null) {
         res.sendStatus(404)
@@ -63,6 +71,7 @@ postsRouter.post('/', adminAuth, titleCheck, shortDescriptionCheck, contentCheck
         const newPost : Post | null = await postsService.createNewPost(req.body, blogName, blogId);
         res.status(201).send(newPost)
     }
+
 })
 //PUT - update
 postsRouter.put('/:id', adminAuth, titleCheck, shortDescriptionCheck, contentCheck, blogIdCheck, inputValidationMiddleware, async (req: Request, res: Response) => {
