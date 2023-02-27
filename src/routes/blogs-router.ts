@@ -26,6 +26,12 @@ blogsRouter.get('/', async (req: Request, res: Response) =>{
     let pageSize = +req.query.pageSize;
     let pageNumber = +req.query.pageNumber;
     let sortBy = "" + req.query.sortBy;
+    let sortDirection
+    if (req.query.sortDirection === "asc"){
+        sortDirection = 1
+    } else {
+        sortDirection = -1
+    }
     if (!req.query.pageSize){
         pageSize = 10
     }
@@ -35,7 +41,7 @@ blogsRouter.get('/', async (req: Request, res: Response) =>{
     if (!req.query.sortBy){
         sortBy = "createdAt"
     }
-    let allBlogs = await blogsService.returnAllBlogs(pageSize, pageNumber, sortBy, -1);
+    let allBlogs = await blogsService.returnAllBlogs(pageSize, pageNumber, sortBy, sortDirection);
     res.status(200).send(allBlogs);
     return
 });

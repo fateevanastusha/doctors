@@ -22,6 +22,13 @@ exports.postsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, fun
     let pageSize = +req.query.pageSize;
     let pageNumber = +req.query.pageNumber;
     let sortBy = "" + req.query.sortBy;
+    let sortDirection;
+    if (req.query.sortDirection === "asc") {
+        sortDirection = 1;
+    }
+    else {
+        sortDirection = -1;
+    }
     if (!req.query.pageSize) {
         pageSize = 10;
     }
@@ -31,7 +38,7 @@ exports.postsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, fun
     if (!req.query.sortBy) {
         sortBy = "createdAt";
     }
-    let allPosts = yield posts_service_1.postsService.returnAllPost(pageSize, pageNumber, sortBy, -1);
+    let allPosts = yield posts_service_1.postsService.returnAllPost(pageSize, pageNumber, sortBy, sortDirection);
     res.status(200).send(allPosts);
 }));
 //GET - return by ID

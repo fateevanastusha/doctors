@@ -2,7 +2,7 @@ import {Blog, Paginator, Post} from "./types/types";
 import {blogsCollection, postsCollection} from "./db/db";
 
 export const QueryRepository = {
-    async PaginatorForBlogs (PageCount: number, PageSize: number, Page: number, sortBy : string, sortDirection: 1 | -1) : Promise <Blog[]> {
+    async PaginatorForBlogs (PageCount: number, PageSize: number, Page: number, sortBy : string, sortDirection: number) : Promise <Blog[]> {
         const skipSize: number = PageSize * (Page - 1)
         return blogsCollection
             .find({}, {projection: {_id: 0}})
