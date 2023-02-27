@@ -19,7 +19,10 @@ exports.basicAuth = require('express-basic-auth');
 exports.adminAuth = (0, exports.basicAuth)({ users: { 'admin': 'qwerty' } });
 //GET - return all
 exports.blogsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let allBlogs = yield blogs_service_1.blogsService.returnAllBlogs();
+    const pageSize = +req.query.pageSize;
+    const pageNumber = +req.query.pageNumber;
+    const sortBy = "" + req.query.sortBy;
+    let allBlogs = yield blogs_service_1.blogsService.returnAllBlogs(pageSize, pageNumber, sortBy, -1);
     res.status(200).send(allBlogs);
     return;
 }));

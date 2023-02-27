@@ -5,7 +5,10 @@ import {blogsCollection} from "../db/db";
 export const blogsRepository = {
     //GET - return all
     async returnAllBlogs() : Promise<Blog []>{
-        return blogsCollection.find({}, {projection: {_id: 0}}).toArray()
+        return blogsCollection
+            .find({}, {projection: {_id: 0}})
+            .toArray()
+
     },
     //GET - return by ID
     async returnBlogById(id: string) : Promise<Blog | null>{

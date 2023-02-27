@@ -12,8 +12,11 @@ export const adminAuth = basicAuth({users: { 'admin': 'qwerty' }});
 
 //GET - return all
 postsRouter.get('/', async (req: Request, res: Response) => {
-    let posts = await postsService.returnAllPost()
-    res.status(200).send(posts)
+    const pageSize = +req.query.pageSize;
+    const pageNumber = +req.query.pageNumber;
+    const sortBy = "" + req.query.sortBy;
+    let allPosts = await postsService.returnAllPost(pageSize, pageNumber, sortBy, -1);
+    res.status(200).send(allPosts)
 })
 //GET - return by ID
 postsRouter.get('/:id', async (req: Request, res: Response) => {

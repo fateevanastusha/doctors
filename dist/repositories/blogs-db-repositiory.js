@@ -15,7 +15,9 @@ exports.blogsRepository = {
     //GET - return all
     returnAllBlogs() {
         return __awaiter(this, void 0, void 0, function* () {
-            return db_1.blogsCollection.find({}, { projection: { _id: 0 } }).toArray();
+            return db_1.blogsCollection
+                .find({}, { projection: { _id: 0 } })
+                .toArray();
         });
     },
     //GET - return by ID

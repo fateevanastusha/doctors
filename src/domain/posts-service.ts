@@ -1,10 +1,14 @@
 import {postsRepository} from "../repositories/posts-db-repositiory";
 import {Blog, Post} from "../types/types";
+import {blogsRepository} from "../repositories/blogs-db-repositiory";
+import {QueryRepository} from "../queryRepo";
 
 export const postsService = {
     //return all posts
-    async returnAllPost() : Promise<Post[]>{
-        return postsRepository.returnAllPost();
+    async returnAllPost(PageSize: number, Page: number, sortBy : string, sortDirection: 1 | -1) : Promise<Post[]>{
+        const PageCount = (await postsRepository.returnAllPost()).length
+        const Items = await QueryRepository.PaginatorForPosts(PageCount, PageSize, Page, sortBy, sortDirection);
+        return QueryRepository.PaginationForm(PageCount, PageSize, Page, Items)
     },
     //return post by id
     async returnPostById(id: string) : Promise<Post | null>{

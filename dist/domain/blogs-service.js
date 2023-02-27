@@ -11,11 +11,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.blogsService = void 0;
 const blogs_db_repositiory_1 = require("../repositories/blogs-db-repositiory");
+const queryRepo_1 = require("../queryRepo");
 exports.blogsService = {
     //GET - return all
-    returnAllBlogs() {
+    returnAllBlogs(PageSize, Page, sortBy, sortDirection) {
         return __awaiter(this, void 0, void 0, function* () {
-            return blogs_db_repositiory_1.blogsRepository.returnAllBlogs();
+            const PageCount = (yield blogs_db_repositiory_1.blogsRepository.returnAllBlogs()).length;
+            const Items = yield queryRepo_1.QueryRepository.PaginatorForBlogs(PageCount, PageSize, Page, sortBy, sortDirection);
+            return queryRepo_1.QueryRepository.PaginationForm(PageCount, PageSize, Page, Items);
         });
     },
     //GET - return by ID

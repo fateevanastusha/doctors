@@ -26,7 +26,9 @@ exports.postsRepository = {
     //return all posts
     returnAllPost() {
         return __awaiter(this, void 0, void 0, function* () {
-            return db_1.postsCollection.find({}, { projection: { _id: 0 } }).toArray();
+            return db_1.postsCollection
+                .find({}, { projection: { _id: 0 } })
+                .toArray();
         });
     },
     //return post by Id

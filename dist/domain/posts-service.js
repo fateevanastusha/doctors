@@ -11,11 +11,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.postsService = void 0;
 const posts_db_repositiory_1 = require("../repositories/posts-db-repositiory");
+const queryRepo_1 = require("../queryRepo");
 exports.postsService = {
     //return all posts
-    returnAllPost() {
+    returnAllPost(PageSize, Page, sortBy, sortDirection) {
         return __awaiter(this, void 0, void 0, function* () {
-            return posts_db_repositiory_1.postsRepository.returnAllPost();
+            const PageCount = (yield posts_db_repositiory_1.postsRepository.returnAllPost()).length;
+            const Items = yield queryRepo_1.QueryRepository.PaginatorForPosts(PageCount, PageSize, Page, sortBy, sortDirection);
+            return queryRepo_1.QueryRepository.PaginationForm(PageCount, PageSize, Page, Items);
         });
     },
     //return post by id

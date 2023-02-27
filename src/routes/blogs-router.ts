@@ -9,6 +9,7 @@ import {
 } from "../middlewares/input-valudation-middleware"
 import {blogsService} from "../domain/blogs-service";
 import {postsService} from "../domain/posts-service";
+import {param} from "express-validator";
 
 
 export const basicAuth = require('express-basic-auth')
@@ -16,7 +17,10 @@ export const adminAuth = basicAuth({users: { 'admin': 'qwerty' }});
 
 //GET - return all
 blogsRouter.get('/', async (req: Request, res: Response) =>{
-    let allBlogs = await blogsService.returnAllBlogs();
+    const pageSize = +req.query.pageSize;
+    const pageNumber = +req.query.pageNumber;
+    const sortBy = "" + req.query.sortBy;
+    let allBlogs = await blogsService.returnAllBlogs(pageSize, pageNumber, sortBy, -1);
     res.status(200).send(allBlogs);
     return
 });
