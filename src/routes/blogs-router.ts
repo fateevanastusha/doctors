@@ -17,9 +17,15 @@ export const adminAuth = basicAuth({users: { 'admin': 'qwerty' }});
 
 //GET - return all
 blogsRouter.get('/', async (req: Request, res: Response) =>{
-    const pageSize = +req.query.pageSize;
-    const pageNumber = +req.query.pageNumber;
-    const sortBy = "" + req.query.sortBy;
+    let pageSize = +req.query.pageSize;
+    let pageNumber = +req.query.pageNumber;
+    let sortBy = "" + req.query.sortBy;
+    if (!req.query.pageSize){
+        pageSize = 10
+    }
+    if (!req.query.pageNumber){
+        pageNumber = 1
+    }
     let allBlogs = await blogsService.returnAllBlogs(pageSize, pageNumber, sortBy, -1);
     res.status(200).send(allBlogs);
     return
