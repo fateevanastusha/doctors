@@ -19,9 +19,15 @@ exports.basicAuth = require('express-basic-auth');
 exports.adminAuth = (0, exports.basicAuth)({ users: { 'admin': 'qwerty' } });
 //GET - return all
 exports.postsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const pageSize = +req.query.pageSize;
-    const pageNumber = +req.query.pageNumber;
+    let pageSize = +req.query.pageSize;
+    let pageNumber = +req.query.pageNumber;
     const sortBy = "" + req.query.sortBy;
+    if (!req.query.pageSize) {
+        pageSize = 10;
+    }
+    if (!req.query.pageNumber) {
+        pageNumber = 1;
+    }
     let allPosts = yield posts_service_1.postsService.returnAllPost(pageSize, pageNumber, sortBy, -1);
     res.status(200).send(allPosts);
 }));
