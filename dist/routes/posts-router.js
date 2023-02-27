@@ -21,12 +21,15 @@ exports.adminAuth = (0, exports.basicAuth)({ users: { 'admin': 'qwerty' } });
 exports.postsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let pageSize = +req.query.pageSize;
     let pageNumber = +req.query.pageNumber;
-    const sortBy = "" + req.query.sortBy;
+    let sortBy = "" + req.query.sortBy;
     if (!req.query.pageSize) {
         pageSize = 10;
     }
     if (!req.query.pageNumber) {
         pageNumber = 1;
+    }
+    if (!req.query.sortBy) {
+        sortBy = "createdAt";
     }
     let allPosts = yield posts_service_1.postsService.returnAllPost(pageSize, pageNumber, sortBy, -1);
     res.status(200).send(allPosts);

@@ -20,12 +20,15 @@ export const adminAuth = basicAuth({users: { 'admin': 'qwerty' }});
 postsRouter.get('/', async (req: Request, res: Response) => {
     let pageSize = +req.query.pageSize;
     let pageNumber = +req.query.pageNumber;
-    const sortBy = "" + req.query.sortBy;
+    let sortBy = "" + req.query.sortBy;
     if (!req.query.pageSize){
         pageSize = 10
     }
     if (!req.query.pageNumber){
         pageNumber = 1
+    }
+    if (!req.query.sortBy){
+        sortBy = "createdAt"
     }
     let allPosts = await postsService.returnAllPost(pageSize, pageNumber, sortBy, -1);
     res.status(200).send(allPosts)

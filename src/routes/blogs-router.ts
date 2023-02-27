@@ -32,6 +32,9 @@ blogsRouter.get('/', async (req: Request, res: Response) =>{
     if (!req.query.pageNumber){
         pageNumber = 1
     }
+    if (!req.query.sortBy){
+        sortBy = "createdAt"
+    }
     let allBlogs = await blogsService.returnAllBlogs(pageSize, pageNumber, sortBy, -1);
     res.status(200).send(allBlogs);
     return
