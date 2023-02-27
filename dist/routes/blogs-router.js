@@ -64,7 +64,7 @@ exports.blogsRouter.post('/', exports.adminAuth, input_valudation_middleware_1.n
     return;
 }));
 //PUT - update
-exports.blogsRouter.put('/:id', exports.adminAuth, exports.adminAuth, input_valudation_middleware_1.nameCheck, input_valudation_middleware_1.descriptionCheck, input_valudation_middleware_1.websiteUrlCheck, input_valudation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.blogsRouter.put('/:id', exports.adminAuth, input_valudation_middleware_1.nameCheck, input_valudation_middleware_1.descriptionCheck, input_valudation_middleware_1.websiteUrlCheck, input_valudation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const status = yield blogs_service_1.blogsService.updateBlogById(req.body, req.params.id);
     if (status) {
         res.sendStatus(204);
@@ -92,7 +92,7 @@ exports.blogsRouter.get('/:id/posts', (req, res) => __awaiter(void 0, void 0, vo
     const foundBlog = blogs_service_1.blogsService.returnBlogById(blogId);
     let blog = yield foundBlog;
     if (!blog) {
-        res.sendStatus(404);
+        return false;
     }
     const foundPosts = posts_service_1.postsService.getAllPostsByBlogId(blogId);
     const posts = yield foundPosts;
@@ -100,6 +100,6 @@ exports.blogsRouter.get('/:id/posts', (req, res) => __awaiter(void 0, void 0, vo
         res.status(200).send(posts);
     }
     else {
-        res.send(404);
+        res.sendStatus(404);
     }
 }));

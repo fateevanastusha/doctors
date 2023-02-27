@@ -60,13 +60,19 @@ blogsRouter.delete('/:id', adminAuth, async(req: Request, res: Response) => {
     }
 });
 //POST - create new
-blogsRouter.post('/', adminAuth, nameCheck, descriptionCheck, websiteUrlCheck, inputValidationMiddleware, async(req: Request, res: Response)=> {
+blogsRouter.post('/',
+    adminAuth,
+    nameCheck,
+    descriptionCheck,
+    websiteUrlCheck,
+    inputValidationMiddleware,
+    async(req: Request, res: Response)=> {
     const newBlog : Blog| null = await blogsService.createNewBlog(req.body);
     res.status(201).send(newBlog);
     return
 });
 //PUT - update
-blogsRouter.put('/:id', adminAuth, adminAuth, nameCheck, descriptionCheck, websiteUrlCheck, inputValidationMiddleware, async(req: Request, res: Response) => {
+blogsRouter.put('/:id', adminAuth, nameCheck, descriptionCheck, websiteUrlCheck, inputValidationMiddleware, async(req: Request, res: Response) => {
     const status : boolean = await blogsService.updateBlogById(req.body, req.params.id)
     if (status){
         res.sendStatus(204)
@@ -92,14 +98,14 @@ blogsRouter.get('/:id/posts', async (req: Request, res: Response) => {
     const foundBlog : Promise <Blog | null>= blogsService.returnBlogById(blogId);
     let blog : Blog | null = await foundBlog
     if (!blog) {
-        res.sendStatus(404)
+        return false
     }
     const foundPosts : Promise<Post[]> = postsService.getAllPostsByBlogId(blogId)
     const posts = await foundPosts;
     if (posts) {
         res.status(200).send(posts)
     } else {
-        res.send(404)
+        res.sendStatus(404)
     }
 });
 
