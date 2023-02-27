@@ -91,17 +91,18 @@ exports.blogsRouter.post('/:id/posts', exports.adminAuth, input_valudation_middl
 //NEW - GET - get all posts in blog
 exports.blogsRouter.get('/:id/posts', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const blogId = req.params.id;
-    const foundBlog = blogs_service_1.blogsService.returnBlogById(blogId);
-    let blog = yield foundBlog;
-    if (!blog) {
-        return false;
+    const foundBlog = yield blogs_service_1.blogsService.returnBlogById(blogId);
+    if (!foundBlog) {
+        res.sendStatus(404);
+        return;
     }
-    const foundPosts = posts_service_1.postsService.getAllPostsByBlogId(blogId);
-    const posts = yield foundPosts;
-    if (posts) {
-        res.status(200).send(posts);
+    const foundPosts = yield posts_service_1.postsService.getAllPostsByBlogId(blogId);
+    if (foundPosts) {
+        res.status(200).send(foundPosts);
+        return;
     }
     else {
         res.sendStatus(404);
+        return;
     }
 }));

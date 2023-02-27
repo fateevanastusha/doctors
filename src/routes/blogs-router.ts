@@ -97,17 +97,18 @@ blogsRouter.post('/:id/posts', adminAuth, titleCheck, shortDescriptionCheck, con
 //NEW - GET - get all posts in blog
 blogsRouter.get('/:id/posts', async (req: Request, res: Response) => {
     const blogId = req.params.id;
-    const foundBlog : Promise <Blog | null>= blogsService.returnBlogById(blogId);
-    let blog : Blog | null = await foundBlog
-    if (!blog) {
-        return false
+    const foundBlog : Blog | null = await blogsService.returnBlogById(blogId);
+    if (!foundBlog) {
+        res.sendStatus(404)
+        return
     }
-    const foundPosts : Promise<Post[]> = postsService.getAllPostsByBlogId(blogId)
-    const posts = await foundPosts;
-    if (posts) {
-        res.status(200).send(posts)
+    const foundPosts : Post[] = await postsService.getAllPostsByBlogId(blogId)
+    if (foundPosts) {
+        res.status(200).send(foundPosts)
+        return
     } else {
         res.sendStatus(404)
+        return
     }
 });
 
