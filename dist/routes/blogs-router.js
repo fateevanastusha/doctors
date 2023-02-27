@@ -68,8 +68,7 @@ exports.blogsRouter.put('/:id', exports.adminAuth, input_valudation_middleware_1
     }
 }));
 //NEW - POST - create post for blog
-exports.blogsRouter.post('/:id/posts', exports.adminAuth, input_valudation_middleware_1.postValidationMiddleware, input_valudation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(req.params);
+exports.blogsRouter.post('/:id/posts', exports.adminAuth, input_valudation_middleware_1.titleCheck, input_valudation_middleware_1.shortDescriptionCheck, input_valudation_middleware_1.contentCheck, input_valudation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const foundBlog = yield blogs_service_1.blogsService.returnBlogById(req.params.id);
     if (foundBlog === null) {
         res.sendStatus(404);

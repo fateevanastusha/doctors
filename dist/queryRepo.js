@@ -16,7 +16,7 @@ exports.QueryRepository = {
         return __awaiter(this, void 0, void 0, function* () {
             const skipSize = PageSize * (Page - 1);
             return db_1.blogsCollection
-                .find()
+                .find({}, { projection: { _id: 0 } })
                 .sort({ [sortBy]: sortDirection })
                 .skip(skipSize)
                 .limit(PageSize)
@@ -27,7 +27,7 @@ exports.QueryRepository = {
         return __awaiter(this, void 0, void 0, function* () {
             const skipSize = PageSize * (Page - 1);
             return db_1.postsCollection
-                .find()
+                .find({}, { projection: { _id: 0 } })
                 .sort({ [sortBy]: sortDirection })
                 .skip(skipSize)
                 .limit(PageSize)

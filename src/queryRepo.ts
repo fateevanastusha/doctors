@@ -5,7 +5,7 @@ export const QueryRepository = {
     async PaginatorForBlogs (PageCount: number, PageSize: number, Page: number, sortBy : string, sortDirection: 1 | -1) : Promise <Blog[]> {
         const skipSize: number = PageSize * (Page - 1)
         return blogsCollection
-            .find()
+            .find({}, {projection: {_id: 0}})
             .sort({[sortBy] : sortDirection})
             .skip(skipSize)
             .limit(PageSize)
@@ -14,7 +14,7 @@ export const QueryRepository = {
     async PaginatorForPosts (PageCount: number, PageSize: number, Page: number, sortBy : string, sortDirection: 1 | -1) : Promise <Post[]> {
         const skipSize: number = PageSize * (Page - 1)
         return postsCollection
-            .find()
+            .find({}, {projection: {_id: 0}})
             .sort({[sortBy] : sortDirection})
             .skip(skipSize)
             .limit(PageSize)

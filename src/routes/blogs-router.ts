@@ -5,7 +5,7 @@ import {Blog, Post} from "../types/types";
 import {
     inputValidationMiddleware,
     blogValidationMiddleware,
-    postValidationMiddleware
+    postValidationMiddleware, titleCheck, shortDescriptionCheck, contentCheck
 } from "../middlewares/input-valudation-middleware"
 import {blogsService} from "../domain/blogs-service";
 import {postsService} from "../domain/posts-service";
@@ -63,8 +63,7 @@ blogsRouter.put('/:id', adminAuth, blogValidationMiddleware, inputValidationMidd
     } 
 });
 //NEW - POST - create post for blog
-blogsRouter.post('/:id/posts', adminAuth, postValidationMiddleware, inputValidationMiddleware,async (req: Request, res: Response) => {
-    console.log(req.params)
+blogsRouter.post('/:id/posts', adminAuth, titleCheck, shortDescriptionCheck, contentCheck, inputValidationMiddleware, async (req: Request, res: Response) => {
     const foundBlog : Blog | null = await blogsService.returnBlogById(req.params.id);
     if (foundBlog === null) {
         res.sendStatus(404)
