@@ -5,7 +5,13 @@ import {Blog, Post} from "../types/types";
 import {
     inputValidationMiddleware,
     blogValidationMiddleware,
-    postValidationMiddleware, titleCheck, shortDescriptionCheck, contentCheck
+    postValidationMiddleware,
+    titleCheck,
+    shortDescriptionCheck,
+    contentCheck,
+    nameCheck,
+    descriptionCheck,
+    websiteUrlCheck
 } from "../middlewares/input-valudation-middleware"
 import {blogsService} from "../domain/blogs-service";
 import {postsService} from "../domain/posts-service";
@@ -54,13 +60,13 @@ blogsRouter.delete('/:id', adminAuth, async(req: Request, res: Response) => {
     }
 });
 //POST - create new
-blogsRouter.post('/', adminAuth, blogValidationMiddleware, inputValidationMiddleware, async(req: Request, res: Response)=> {
+blogsRouter.post('/', adminAuth, nameCheck, descriptionCheck, websiteUrlCheck, inputValidationMiddleware, async(req: Request, res: Response)=> {
     const newBlog : Blog| null = await blogsService.createNewBlog(req.body);
     res.status(201).send(newBlog);
     return
 });
 //PUT - update
-blogsRouter.put('/:id', adminAuth, blogValidationMiddleware, inputValidationMiddleware, async(req: Request, res: Response) => {
+blogsRouter.put('/:id', adminAuth, adminAuth, nameCheck, descriptionCheck, websiteUrlCheck, inputValidationMiddleware, async(req: Request, res: Response) => {
     const status : boolean = await blogsService.updateBlogById(req.body, req.params.id)
     if (status){
         res.sendStatus(204)

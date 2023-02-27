@@ -2,7 +2,13 @@ import { Router } from "express"
 export const postsRouter = Router()
 import {Request, Response} from 'express'
 import {Post, Blog} from "../types/types";
-import { inputValidationMiddleware, postValidationMiddleware } from "../middlewares/input-valudation-middleware"
+import {
+    blogIdCheck,
+    contentCheck,
+    inputValidationMiddleware,
+    postValidationMiddleware, shortDescriptionCheck,
+    titleCheck
+} from "../middlewares/input-valudation-middleware"
 import {postsService} from "../domain/posts-service";
 import {blogsService} from "../domain/blogs-service";
 
@@ -47,7 +53,7 @@ postsRouter.delete('/:id', adminAuth, async (req: Request, res: Response) => {
     } 
 })
 //POST - create new 
-postsRouter.post('/', adminAuth, postValidationMiddleware, inputValidationMiddleware, async (req: Request, res: Response) => {
+postsRouter.post('/', adminAuth, titleCheck, shortDescriptionCheck, contentCheck, blogIdCheck, inputValidationMiddleware, async (req: Request, res: Response) => {
     const foundBlog : Blog | null = await blogsService.returnBlogById(req.body.blogId);
     if (foundBlog === null) {
         res.sendStatus(404)
@@ -59,7 +65,7 @@ postsRouter.post('/', adminAuth, postValidationMiddleware, inputValidationMiddle
     }
 })
 //PUT - update
-postsRouter.put('/:id', adminAuth, postValidationMiddleware, inputValidationMiddleware, async (req: Request, res: Response) => {
+postsRouter.put('/:id', adminAuth, titleCheck, shortDescriptionCheck, contentCheck, blogIdCheck, inputValidationMiddleware, async (req: Request, res: Response) => {
     const status : boolean = await postsService.updatePostById(req.body, req.params.id);
     if (status){
         res.sendStatus(204)

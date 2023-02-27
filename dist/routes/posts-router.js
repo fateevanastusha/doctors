@@ -54,7 +54,7 @@ exports.postsRouter.delete('/:id', exports.adminAuth, (req, res) => __awaiter(vo
     }
 }));
 //POST - create new 
-exports.postsRouter.post('/', exports.adminAuth, input_valudation_middleware_1.postValidationMiddleware, input_valudation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.postsRouter.post('/', exports.adminAuth, input_valudation_middleware_1.titleCheck, input_valudation_middleware_1.shortDescriptionCheck, input_valudation_middleware_1.contentCheck, input_valudation_middleware_1.blogIdCheck, input_valudation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const foundBlog = yield blogs_service_1.blogsService.returnBlogById(req.body.blogId);
     if (foundBlog === null) {
         res.sendStatus(404);
@@ -67,7 +67,7 @@ exports.postsRouter.post('/', exports.adminAuth, input_valudation_middleware_1.p
     }
 }));
 //PUT - update
-exports.postsRouter.put('/:id', exports.adminAuth, input_valudation_middleware_1.postValidationMiddleware, input_valudation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.postsRouter.put('/:id', exports.adminAuth, input_valudation_middleware_1.titleCheck, input_valudation_middleware_1.shortDescriptionCheck, input_valudation_middleware_1.contentCheck, input_valudation_middleware_1.blogIdCheck, input_valudation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const status = yield posts_service_1.postsService.updatePostById(req.body, req.params.id);
     if (status) {
         res.sendStatus(204);
