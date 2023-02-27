@@ -4,15 +4,14 @@ import {Request, Response} from 'express'
 import {Blog, Post} from "../types/types";
 import {
     inputValidationMiddleware,
-    blogValidationMiddleware,
-    postValidationMiddleware,
     titleCheck,
     shortDescriptionCheck,
     contentCheck,
     nameCheck,
     descriptionCheck,
     websiteUrlCheck
-} from "../middlewares/input-valudation-middleware"
+}
+from "../middlewares/input-valudation-middleware"
 import {blogsService} from "../domain/blogs-service";
 import {postsService} from "../domain/posts-service";
 import {param} from "express-validator";
@@ -23,6 +22,7 @@ export const adminAuth = basicAuth({users: { 'admin': 'qwerty' }});
 
 //GET - return all
 blogsRouter.get('/', async (req: Request, res: Response) =>{
+    console.log(req.query, 'query params')
     let pageSize = +req.query.pageSize;
     let pageNumber = +req.query.pageNumber;
     let sortBy = "" + req.query.sortBy;
@@ -47,10 +47,9 @@ blogsRouter.get('/', async (req: Request, res: Response) =>{
 });
 //GET - return by ID
 blogsRouter.get('/:id', async(req: Request, res: Response)=>{
-    const foundBlog : Promise <Blog | null>= blogsService.returnBlogById(req.params.id);
-    let blog : Blog | null = await foundBlog
-    if (blog) {
-        res.status(200).send(blog);
+    const foundBlog : Blog | null= await blogsService.returnBlogById(req.params.id);
+    if (foundBlog) {
+        res.status(200).send(foundBlog);
         return
     } else {
         res.sendStatus(404)
@@ -76,20 +75,29 @@ blogsRouter.post('/',
     websiteUrlCheck,
     inputValidationMiddleware,
     async(req: Request, res: Response)=> {
+
         console.log(req.body, 'request body params')
     const newBlog : Blog| null = await blogsService.createNewBlog(req.body);
         console.log(newBlog, 'created  a new staff')
     res.status(201).send(newBlog);
-    return
+
 });
 //PUT - update
-blogsRouter.put('/:id', adminAuth, nameCheck, descriptionCheck, websiteUrlCheck, inputValidationMiddleware, async(req: Request, res: Response) => {
+blogsRouter.put('/:id',
+    adminAuth,
+    nameCheck,
+    descriptionCheck,
+    websiteUrlCheck,
+    inputValidationMiddleware,
+    async(req: Request, res: Response) => {
+
     const status : boolean = await blogsService.updateBlogById(req.body, req.params.id)
     if (status){
         res.sendStatus(204)
     } else {
         res.send(404)
-    } 
+    }
+
 });
 //NEW - POST - create post for blog
 blogsRouter.post('/:id/posts', adminAuth, titleCheck, shortDescriptionCheck, contentCheck, inputValidationMiddleware, async (req: Request, res: Response) => {

@@ -19,6 +19,7 @@ exports.basicAuth = require('express-basic-auth');
 exports.adminAuth = (0, exports.basicAuth)({ users: { 'admin': 'qwerty' } });
 //GET - return all
 exports.blogsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(req.query, 'query params');
     let pageSize = +req.query.pageSize;
     let pageNumber = +req.query.pageNumber;
     let sortBy = "" + req.query.sortBy;
@@ -44,10 +45,9 @@ exports.blogsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, fun
 }));
 //GET - return by ID
 exports.blogsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const foundBlog = blogs_service_1.blogsService.returnBlogById(req.params.id);
-    let blog = yield foundBlog;
-    if (blog) {
-        res.status(200).send(blog);
+    const foundBlog = yield blogs_service_1.blogsService.returnBlogById(req.params.id);
+    if (foundBlog) {
+        res.status(200).send(foundBlog);
         return;
     }
     else {
@@ -73,7 +73,6 @@ exports.blogsRouter.post('/', exports.adminAuth, input_valudation_middleware_1.n
     const newBlog = yield blogs_service_1.blogsService.createNewBlog(req.body);
     console.log(newBlog, 'created  a new staff');
     res.status(201).send(newBlog);
-    return;
 }));
 //PUT - update
 exports.blogsRouter.put('/:id', exports.adminAuth, input_valudation_middleware_1.nameCheck, input_valudation_middleware_1.descriptionCheck, input_valudation_middleware_1.websiteUrlCheck, input_valudation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
