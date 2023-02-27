@@ -6,7 +6,7 @@ import it from "node:test";
 export const blogsService = {
     //GET - return all
     async returnAllBlogs(PageSize: number, Page: number, sortBy : string, sortDirection: 1 | -1) : Promise<Blog []>{
-        const PageCount = (await blogsRepository.returnAllBlogs()).length
+        const PageCount = Math.ceil((await blogsRepository.returnAllBlogs()).length / PageSize)
         const Items = await QueryRepository.PaginatorForBlogs(PageCount, PageSize, Page, sortBy, sortDirection);
         return QueryRepository.PaginationForm(PageCount, PageSize, Page, Items)
     },
