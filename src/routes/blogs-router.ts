@@ -67,7 +67,9 @@ blogsRouter.post('/',
     websiteUrlCheck,
     inputValidationMiddleware,
     async(req: Request, res: Response)=> {
+        console.log(req.body, 'request body params')
     const newBlog : Blog| null = await blogsService.createNewBlog(req.body);
+        console.log(newBlog, 'created  a new staff')
     res.status(201).send(newBlog);
     return
 });

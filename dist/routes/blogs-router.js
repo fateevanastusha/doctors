@@ -59,7 +59,9 @@ exports.blogsRouter.delete('/:id', exports.adminAuth, (req, res) => __awaiter(vo
 }));
 //POST - create new
 exports.blogsRouter.post('/', exports.adminAuth, input_valudation_middleware_1.nameCheck, input_valudation_middleware_1.descriptionCheck, input_valudation_middleware_1.websiteUrlCheck, input_valudation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(req.body, 'request body params');
     const newBlog = yield blogs_service_1.blogsService.createNewBlog(req.body);
+    console.log(newBlog, 'created  a new staff');
     res.status(201).send(newBlog);
     return;
 }));
