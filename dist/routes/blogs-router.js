@@ -117,8 +117,40 @@ exports.blogsRouter.get('/:id/posts', (req, res) => __awaiter(void 0, void 0, vo
         res.sendStatus(404);
     }
     const foundPosts = yield posts_service_1.postsService.getAllPostsByBlogId(blogId);
-    if (foundPosts) {
-        res.status(200).send(foundPosts);
+    if (!foundPosts) {
+        res.sendStatus(404);
+    }
+    let pageSize;
+    let pageNumber;
+    let sortBy;
+    let sortDirection;
+    if (req.query.sortDirection === "asc") {
+        sortDirection = 1;
+    }
+    else {
+        sortDirection = -1;
+    }
+    if (!req.query.pageSize) {
+        pageSize = 10;
+    }
+    else {
+        pageSize = +req.query.pageSize;
+    }
+    if (!req.query.pageNumber) {
+        pageNumber = 1;
+    }
+    else {
+        pageNumber = +req.query.pageNumber;
+    }
+    if (!req.query.sortBy) {
+        sortBy = "createdAt";
+    }
+    else {
+        sortBy = req.query.sortBy.toString();
+    }
+    let allPosts = yield posts_service_1.postsService.returnAllPostByBlogId(pageSize, pageNumber, sortBy, sortDirection, blogId);
+    if (allPosts.items) {
+        res.status(200).send(allPosts);
     }
     else {
         res.sendStatus(404);

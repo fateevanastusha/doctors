@@ -22,6 +22,21 @@ exports.postsService = {
             return queryRepo_1.QueryRepository.PaginationForm(PageCount, PageSize, Page, total, Items);
         });
     },
+    returnAllPostByBlogId(PageSize, Page, sortBy, sortDirection, blogId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let total = (yield posts_db_repositiory_1.postsRepository.getAllPostsByBlogId(blogId));
+            let totalNumber;
+            if (total === null) {
+                totalNumber = 0;
+            }
+            else {
+                totalNumber = total.length;
+            }
+            const PageCount = Math.ceil(totalNumber / PageSize);
+            const Items = yield queryRepo_1.QueryRepository.PaginatorForPostsByBlogId(PageCount, PageSize, Page, sortBy, sortDirection, blogId);
+            return queryRepo_1.QueryRepository.PaginationForm(PageCount, PageSize, Page, totalNumber, Items);
+        });
+    },
     //return post by id
     returnPostById(id) {
         return __awaiter(this, void 0, void 0, function* () {

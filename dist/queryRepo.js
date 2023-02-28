@@ -34,6 +34,17 @@ exports.QueryRepository = {
                 .toArray();
         });
     },
+    PaginatorForPostsByBlogId(PageCount, PageSize, Page, sortBy, sortDirection, blogId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const skipSize = PageSize * (Page - 1);
+            return db_1.postsCollection
+                .find({ blogId: blogId }, { projection: { _id: 0 } })
+                .sort({ [sortBy]: sortDirection })
+                .skip(skipSize)
+                .limit(PageSize)
+                .toArray();
+        });
+    },
     PaginationForm(PageCount, PageSize, Page, total, Items) {
         return __awaiter(this, void 0, void 0, function* () {
             const paginator = {

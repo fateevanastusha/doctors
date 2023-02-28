@@ -125,9 +125,37 @@ blogsRouter.get('/:id/posts', async (req: Request, res: Response) => {
     if (!foundBlog) {
         res.sendStatus(404)
     }
-    const foundPosts : Post[] = await postsService.getAllPostsByBlogId(blogId)
-    if (foundPosts) {
-        res.status(200).send(foundPosts)
+    const foundPosts : Post[] | null = await postsService.getAllPostsByBlogId(blogId)
+    if (!foundPosts) {
+        res.sendStatus(404)
+    }
+    let pageSize : number
+    let pageNumber : number
+    let sortBy : string
+    let sortDirection : number
+    if (req.query.sortDirection === "asc"){
+        sortDirection = 1
+    } else {
+        sortDirection = -1
+    }
+    if (!req.query.pageSize){
+        pageSize = 10
+    } else {
+        pageSize = +req.query.pageSize;
+    }
+    if (!req.query.pageNumber){
+        pageNumber = 1
+    } else {
+        pageNumber = +req.query.pageNumber;
+    }
+    if (!req.query.sortBy){
+        sortBy = "createdAt"
+    } else {
+        sortBy = req.query.sortBy.toString();
+    }
+    let allPosts = await postsService.returnAllPostByBlogId(pageSize, pageNumber, sortBy, sortDirection, blogId);
+    if (allPosts.items) {
+        res.status(200).send(allPosts)
     } else {
         res.sendStatus(404)
     }

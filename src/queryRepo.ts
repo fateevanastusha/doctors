@@ -20,6 +20,15 @@ export const QueryRepository = {
             .limit(PageSize)
             .toArray()
     },
+    async PaginatorForPostsByBlogId (PageCount: number, PageSize: number, Page: number, sortBy : string, sortDirection: number, blogId: string) : Promise <Post[]> {
+        const skipSize: number = PageSize * (Page - 1)
+        return postsCollection
+            .find({blogId: blogId}, {projection: {_id: 0}})
+            .sort({[sortBy] : sortDirection})
+            .skip(skipSize)
+            .limit(PageSize)
+            .toArray()
+    },
     async PaginationForm (PageCount: number, PageSize: number, Page: number, total: number, Items: Post[] | Blog []) : Promise <Paginator> {
         const paginator : Paginator = {
             pagesCount: PageCount,
