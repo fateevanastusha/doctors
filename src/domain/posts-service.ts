@@ -5,7 +5,7 @@ import {QueryRepository} from "../queryRepo";
 
 export const postsService = {
     //return all posts
-    async returnAllPost(PageSize: number, Page: number, sortBy : string, sortDirection: 1 | -1) : Promise<Paginator>{
+    async returnAllPost(PageSize: number, Page: number, sortBy : string, sortDirection: number) : Promise<Paginator>{
         const total = (await postsRepository.returnAllPost()).length
         const PageCount = Math.ceil( total / PageSize)
         const Items = await QueryRepository.PaginatorForPosts(PageCount, PageSize, Page, sortBy, sortDirection );

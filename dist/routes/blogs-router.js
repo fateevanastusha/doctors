@@ -19,16 +19,16 @@ exports.basicAuth = require('express-basic-auth');
 exports.adminAuth = (0, exports.basicAuth)({ users: { 'admin': 'qwerty' } });
 //GET - return all
 exports.blogsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let pageSize = +req.query.pageSize;
-    let pageNumber = +req.query.pageNumber;
-    let sortBy = "" + req.query.sortBy;
+    let pageSize;
+    let pageNumber;
+    let sortBy;
     let sortDirection;
     let searchNameTerm;
     if (!req.query.searchNameTerm) {
         searchNameTerm = "";
     }
     else {
-        searchNameTerm = req.query.searchNameTerm;
+        searchNameTerm = req.query.searchNameTerm.toString();
     }
     if (req.query.sortDirection === "asc") {
         sortDirection = 1;
@@ -39,11 +39,20 @@ exports.blogsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, fun
     if (!req.query.pageSize) {
         pageSize = 10;
     }
+    else {
+        pageSize = +req.query.pageSize;
+    }
     if (!req.query.pageNumber) {
         pageNumber = 1;
     }
+    else {
+        pageNumber = +req.query.pageNumber;
+    }
     if (!req.query.sortBy) {
         sortBy = "createdAt";
+    }
+    else {
+        sortBy = req.query.sortBy.toString();
     }
     let allBlogs = yield blogs_service_1.blogsService.returnAllBlogs(pageSize, pageNumber, sortBy, sortDirection, searchNameTerm);
     res.status(200).send(allBlogs);
@@ -54,11 +63,9 @@ exports.blogsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, 
     const foundBlog = yield blogs_service_1.blogsService.returnBlogById(req.params.id);
     if (foundBlog) {
         res.status(200).send(foundBlog);
-        return;
     }
     else {
         res.sendStatus(404);
-        return;
     }
 }));
 //DELETE - delete by ID

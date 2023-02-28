@@ -5,7 +5,7 @@ import it from "node:test";
 
 export const blogsService = {
     //GET - return all
-    async returnAllBlogs(PageSize: number, Page: number, sortBy : string, sortDirection: 1 | -1, searchNameTerm : string ) : Promise<Paginator>{
+    async returnAllBlogs(PageSize: number, Page: number, sortBy : string, sortDirection: number, searchNameTerm : string ) : Promise<Paginator>{
         const total = (await blogsRepository.returnAllBlogs()).length
         const PageCount = Math.ceil( total / PageSize)
         const Items = await QueryRepository.PaginatorForBlogs(PageCount, PageSize, Page, sortBy, sortDirection, searchNameTerm);

@@ -19,9 +19,9 @@ exports.basicAuth = require('express-basic-auth');
 exports.adminAuth = (0, exports.basicAuth)({ users: { 'admin': 'qwerty' } });
 //GET - return all
 exports.postsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let pageSize = +req.query.pageSize;
-    let pageNumber = +req.query.pageNumber;
-    let sortBy = "" + req.query.sortBy;
+    let pageSize;
+    let pageNumber;
+    let sortBy;
     let sortDirection;
     if (req.query.sortDirection === "asc") {
         sortDirection = 1;
@@ -32,11 +32,20 @@ exports.postsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, fun
     if (!req.query.pageSize) {
         pageSize = 10;
     }
+    else {
+        pageSize = +req.query.pageSize;
+    }
     if (!req.query.pageNumber) {
         pageNumber = 1;
     }
+    else {
+        pageNumber = +req.query.pageNumber;
+    }
     if (!req.query.sortBy) {
         sortBy = "createdAt";
+    }
+    else {
+        sortBy = req.query.sortBy.toString();
     }
     let allPosts = yield posts_service_1.postsService.returnAllPost(pageSize, pageNumber, sortBy, sortDirection);
     res.status(200).send(allPosts);

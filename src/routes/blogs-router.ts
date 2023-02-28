@@ -22,15 +22,15 @@ export const adminAuth = basicAuth({users: { 'admin': 'qwerty' }});
 
 //GET - return all
 blogsRouter.get('/', async (req: Request, res: Response) =>{
-    let pageSize = +req.query.pageSize;
-    let pageNumber = +req.query.pageNumber;
-    let sortBy = "" + req.query.sortBy;
-    let sortDirection : 1 | -1
+    let pageSize : number
+    let pageNumber : number
+    let sortBy : string
+    let sortDirection : number
     let searchNameTerm : string
     if (!req.query.searchNameTerm){
         searchNameTerm = ""
     } else {
-        searchNameTerm = req.query.searchNameTerm
+        searchNameTerm = req.query.searchNameTerm.toString()
     }
     if (req.query.sortDirection === "asc"){
         sortDirection = 1
@@ -39,12 +39,18 @@ blogsRouter.get('/', async (req: Request, res: Response) =>{
     }
     if (!req.query.pageSize){
         pageSize = 10
+    } else {
+        pageSize = +req.query.pageSize;
     }
     if (!req.query.pageNumber){
         pageNumber = 1
+    } else {
+        pageNumber = +req.query.pageNumber;
     }
     if (!req.query.sortBy){
         sortBy = "createdAt"
+    } else {
+        sortBy = req.query.sortBy.toString()
     }
     let allBlogs = await blogsService.returnAllBlogs(pageSize, pageNumber, sortBy, sortDirection, searchNameTerm);
     res.status(200).send(allBlogs);
@@ -55,10 +61,8 @@ blogsRouter.get('/:id', async(req: Request, res: Response)=>{
     const foundBlog : Blog | null= await blogsService.returnBlogById(req.params.id);
     if (foundBlog) {
         res.status(200).send(foundBlog);
-        return
     } else {
         res.sendStatus(404)
-        return
     }
 });
 //DELETE - delete by ID

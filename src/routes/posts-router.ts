@@ -6,7 +6,7 @@ import {
     blogIdCheck,
     contentCheck,
     inputValidationMiddleware,
-    postValidationMiddleware, shortDescriptionCheck,
+    shortDescriptionCheck,
     titleCheck
 } from "../middlewares/input-valudation-middleware"
 import {postsService} from "../domain/posts-service";
@@ -18,10 +18,10 @@ export const adminAuth = basicAuth({users: { 'admin': 'qwerty' }});
 
 //GET - return all
 postsRouter.get('/', async (req: Request, res: Response) => {
-    let pageSize = +req.query.pageSize;
-    let pageNumber = +req.query.pageNumber;
-    let sortBy = "" + req.query.sortBy;
-    let sortDirection
+    let pageSize : number
+    let pageNumber : number
+    let sortBy : string
+    let sortDirection : number
     if (req.query.sortDirection === "asc"){
         sortDirection = 1
     } else {
@@ -29,12 +29,18 @@ postsRouter.get('/', async (req: Request, res: Response) => {
     }
     if (!req.query.pageSize){
         pageSize = 10
+    } else {
+        pageSize = +req.query.pageSize;
     }
     if (!req.query.pageNumber){
         pageNumber = 1
+    } else {
+        pageNumber = +req.query.pageNumber;
     }
     if (!req.query.sortBy){
         sortBy = "createdAt"
+    } else {
+        sortBy = req.query.sortBy.toString();
     }
     let allPosts = await postsService.returnAllPost(pageSize, pageNumber, sortBy, sortDirection);
     res.status(200).send(allPosts)
