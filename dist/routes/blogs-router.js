@@ -19,11 +19,17 @@ exports.basicAuth = require('express-basic-auth');
 exports.adminAuth = (0, exports.basicAuth)({ users: { 'admin': 'qwerty' } });
 //GET - return all
 exports.blogsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(req.query, 'query params');
     let pageSize = +req.query.pageSize;
     let pageNumber = +req.query.pageNumber;
     let sortBy = "" + req.query.sortBy;
     let sortDirection;
+    let searchNameTerm;
+    if (!req.query.searchNameTerm) {
+        searchNameTerm = "";
+    }
+    else {
+        searchNameTerm = req.query.searchNameTerm;
+    }
     if (req.query.sortDirection === "asc") {
         sortDirection = 1;
     }
@@ -39,7 +45,7 @@ exports.blogsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, fun
     if (!req.query.sortBy) {
         sortBy = "createdAt";
     }
-    let allBlogs = yield blogs_service_1.blogsService.returnAllBlogs(pageSize, pageNumber, sortBy, sortDirection);
+    let allBlogs = yield blogs_service_1.blogsService.returnAllBlogs(pageSize, pageNumber, sortBy, sortDirection, searchNameTerm);
     res.status(200).send(allBlogs);
     return;
 }));
@@ -69,7 +75,6 @@ exports.blogsRouter.delete('/:id', exports.adminAuth, (req, res) => __awaiter(vo
 }));
 //POST - create new
 exports.blogsRouter.post('/', exports.adminAuth, input_valudation_middleware_1.nameCheck, input_valudation_middleware_1.descriptionCheck, input_valudation_middleware_1.websiteUrlCheck, input_valudation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(req.body, 'request body params');
     const newBlog = yield blogs_service_1.blogsService.createNewBlog(req.body);
     console.log(newBlog, 'created  a new staff');
     res.status(201).send(newBlog);
@@ -87,7 +92,7 @@ exports.blogsRouter.put('/:id', exports.adminAuth, input_valudation_middleware_1
 //NEW - POST - create post for blog
 exports.blogsRouter.post('/:id/posts', exports.adminAuth, input_valudation_middleware_1.titleCheck, input_valudation_middleware_1.shortDescriptionCheck, input_valudation_middleware_1.contentCheck, input_valudation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const foundBlog = yield blogs_service_1.blogsService.returnBlogById(req.params.id);
-    if (foundBlog === null) {
+    if (!foundBlog) {
         res.sendStatus(404);
     }
     else {
@@ -103,15 +108,12 @@ exports.blogsRouter.get('/:id/posts', (req, res) => __awaiter(void 0, void 0, vo
     const foundBlog = yield blogs_service_1.blogsService.returnBlogById(blogId);
     if (!foundBlog) {
         res.sendStatus(404);
-        return;
     }
     const foundPosts = yield posts_service_1.postsService.getAllPostsByBlogId(blogId);
     if (foundPosts) {
         res.status(200).send(foundPosts);
-        return;
     }
     else {
         res.sendStatus(404);
-        return;
     }
 }));

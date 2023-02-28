@@ -9,19 +9,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postsRepository = exports.posts = void 0;
+exports.postsRepository = void 0;
 const db_1 = require("../db/db");
-exports.posts = [
-    {
-        id: "string",
-        title: "string",
-        shortDescription: "string",
-        content: "string",
-        blogId: "string",
-        blogName: "string",
-        createdAt: "string"
-    }
-];
 exports.postsRepository = {
     //return all posts
     returnAllPost() {
@@ -34,8 +23,7 @@ exports.postsRepository = {
     //return post by Id
     returnPostById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const post = yield db_1.postsCollection.findOne({ id: id }, { projection: { _id: 0 } });
-            return post;
+            return db_1.postsCollection.findOne({ id: id }, { projection: { _id: 0 } });
         });
     },
     //delete post by Id
@@ -48,7 +36,7 @@ exports.postsRepository = {
     //delete all data
     deleteAllData() {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.postsCollection.deleteMany({});
+            yield db_1.postsCollection.deleteMany({});
             return [];
         });
     },

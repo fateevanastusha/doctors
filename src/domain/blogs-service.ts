@@ -5,10 +5,10 @@ import it from "node:test";
 
 export const blogsService = {
     //GET - return all
-    async returnAllBlogs(PageSize: number, Page: number, sortBy : string, sortDirection: 1 | -1) : Promise<Paginator>{
+    async returnAllBlogs(PageSize: number, Page: number, sortBy : string, sortDirection: 1 | -1, searchNameTerm : string ) : Promise<Paginator>{
         const total = (await blogsRepository.returnAllBlogs()).length
         const PageCount = Math.ceil( total / PageSize)
-        const Items = await QueryRepository.PaginatorForBlogs(PageCount, PageSize, Page, sortBy, sortDirection);
+        const Items = await QueryRepository.PaginatorForBlogs(PageCount, PageSize, Page, sortBy, sortDirection, searchNameTerm);
         return QueryRepository.PaginationForm(PageCount, PageSize, Page, total, Items)
     },
     //GET - return by ID

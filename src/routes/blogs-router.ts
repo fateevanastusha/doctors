@@ -22,11 +22,16 @@ export const adminAuth = basicAuth({users: { 'admin': 'qwerty' }});
 
 //GET - return all
 blogsRouter.get('/', async (req: Request, res: Response) =>{
-    console.log(req.query, 'query params')
     let pageSize = +req.query.pageSize;
     let pageNumber = +req.query.pageNumber;
     let sortBy = "" + req.query.sortBy;
-    let sortDirection
+    let sortDirection : 1 | -1
+    let searchNameTerm : string
+    if (!req.query.searchNameTerm){
+        searchNameTerm = ""
+    } else {
+        searchNameTerm = req.query.searchNameTerm
+    }
     if (req.query.sortDirection === "asc"){
         sortDirection = 1
     } else {
@@ -41,7 +46,7 @@ blogsRouter.get('/', async (req: Request, res: Response) =>{
     if (!req.query.sortBy){
         sortBy = "createdAt"
     }
-    let allBlogs = await blogsService.returnAllBlogs(pageSize, pageNumber, sortBy, sortDirection);
+    let allBlogs = await blogsService.returnAllBlogs(pageSize, pageNumber, sortBy, sortDirection, searchNameTerm);
     res.status(200).send(allBlogs);
     return
 });
@@ -75,8 +80,6 @@ blogsRouter.post('/',
     websiteUrlCheck,
     inputValidationMiddleware,
     async(req: Request, res: Response)=> {
-
-        console.log(req.body, 'request body params')
     const newBlog : Blog| null = await blogsService.createNewBlog(req.body);
         console.log(newBlog, 'created  a new staff')
     res.status(201).send(newBlog);
@@ -102,7 +105,7 @@ blogsRouter.put('/:id',
 //NEW - POST - create post for blog
 blogsRouter.post('/:id/posts', adminAuth, titleCheck, shortDescriptionCheck, contentCheck, inputValidationMiddleware, async (req: Request, res: Response) => {
     const foundBlog : Blog | null = await blogsService.returnBlogById(req.params.id);
-    if (foundBlog === null) {
+    if (!foundBlog) {
         res.sendStatus(404)
     } else {
         const blogId = foundBlog.id;
@@ -117,15 +120,12 @@ blogsRouter.get('/:id/posts', async (req: Request, res: Response) => {
     const foundBlog : Blog | null = await blogsService.returnBlogById(blogId);
     if (!foundBlog) {
         res.sendStatus(404)
-        return
     }
     const foundPosts : Post[] = await postsService.getAllPostsByBlogId(blogId)
     if (foundPosts) {
         res.status(200).send(foundPosts)
-        return
     } else {
         res.sendStatus(404)
-        return
     }
 });
 

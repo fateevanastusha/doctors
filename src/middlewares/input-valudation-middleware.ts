@@ -1,17 +1,10 @@
-import exp from "constants";
 import { NextFunction } from "express";
 import { Response, Request } from "express";
 import { CustomValidator } from "express-validator/src/base";
 import { blogsRepository } from "../repositories/blogs-db-repositiory";
 import { body, validationResult } from 'express-validator';
 
-//check for blogId
-export const findByIdBlogs : CustomValidator = async value => {
-    const foundBlog = await blogsRepository.returnBlogById(value);
-    if (foundBlog === null) {
-        throw new Error('not blogId')
-    }
-};
+
 //errors storage
 export const inputValidationMiddleware = (req: Request, res: Response, next: NextFunction) => {
     const error = validationResult(req)
@@ -31,11 +24,21 @@ export const inputValidationMiddleware = (req: Request, res: Response, next: Nex
 export const nameCheck = body('name').trim().isLength({min: 1, max: 15}).isString();
 export const descriptionCheck = body('description').trim().isLength({min: 1, max: 500}).isString();
 export const websiteUrlCheck = body('websiteUrl').trim().isLength({min: 1, max: 100}).matches(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/).isString()
+
+//check for blogId
+export const findByIdBlogs : CustomValidator = async value => {
+    const foundBlog = await blogsRepository.returnBlogById(value);
+    if (foundBlog === null) {
+        throw new Error('not blogId')
+    }
+};
+
 //check for post
 export const titleCheck = body('title').trim().isLength({min:1, max: 30}).isString()
 export const shortDescriptionCheck = body('shortDescription').trim().isLength({min:1,max:100}).isString()
 export const contentCheck = body('content').trim().isLength({min:1, max: 1000}).isString()
 export const blogIdCheck = body('blogId').trim().custom(findByIdBlogs).isString()
+
 
 
 

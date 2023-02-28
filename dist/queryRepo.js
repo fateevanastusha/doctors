@@ -12,11 +12,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.QueryRepository = void 0;
 const db_1 = require("./db/db");
 exports.QueryRepository = {
-    PaginatorForBlogs(PageCount, PageSize, Page, sortBy, sortDirection) {
+    PaginatorForBlogs(PageCount, PageSize, Page, sortBy, sortDirection, searchNameTerm) {
         return __awaiter(this, void 0, void 0, function* () {
             const skipSize = PageSize * (Page - 1);
             return db_1.blogsCollection
-                .find({}, { projection: { _id: 0 } })
+                .find({ name: { $regex: searchNameTerm, $options: 'i' } }, { projection: { _id: 0 } })
                 .sort({ [sortBy]: sortDirection })
                 .skip(skipSize)
                 .limit(PageSize)
