@@ -28,6 +28,7 @@ exports.blogsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, fun
         searchNameTerm = "";
     }
     else {
+        //count matches
         searchNameTerm = req.query.searchNameTerm.toString();
     }
     if (req.query.sortDirection === "asc") {

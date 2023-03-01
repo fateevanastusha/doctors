@@ -31,6 +31,8 @@ blogsRouter.get('/', async (req: Request, res: Response) =>{
     if (!req.query.searchNameTerm){
         searchNameTerm = ""
     } else {
+        //count matches
+
         searchNameTerm = req.query.searchNameTerm.toString()
     }
     if (req.query.sortDirection === "asc"){

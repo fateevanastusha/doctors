@@ -16,7 +16,7 @@ exports.blogsService = {
     //GET - return all
     returnAllBlogs(PageSize, Page, sortBy, sortDirection, searchNameTerm) {
         return __awaiter(this, void 0, void 0, function* () {
-            const total = (yield blogs_db_repositiory_1.blogsRepository.returnAllBlogs()).length;
+            const total = yield blogs_db_repositiory_1.blogsRepository.returnBlogsCount(searchNameTerm);
             const PageCount = Math.ceil(total / PageSize);
             const Items = yield queryRepo_1.QueryRepository.PaginatorForBlogs(PageCount, PageSize, Page, sortBy, sortDirection, searchNameTerm);
             return queryRepo_1.QueryRepository.PaginationForm(PageCount, PageSize, Page, total, Items);

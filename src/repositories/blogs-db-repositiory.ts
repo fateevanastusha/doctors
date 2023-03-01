@@ -4,10 +4,17 @@ import {blogsCollection} from "../db/db";
 
 export const blogsRepository = {
     //GET - return all
-    async returnAllBlogs() : Promise<Blog []>{
+    async returnAllBlogs() : Promise<Blog[]>{
         return blogsCollection
-            .find({}, {projection: {_id: 0}})
+            .find({projection: {_id: 0}})
             .toArray()
+
+
+    },
+    async returnBlogsCount(searchNameTerm : string) : Promise<number>{
+        return blogsCollection
+            .find({name: {$regex: searchNameTerm, $options : 'i'}})
+            .count()
 
     },
     //GET - return by ID

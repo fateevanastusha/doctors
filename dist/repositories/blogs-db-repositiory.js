@@ -16,8 +16,15 @@ exports.blogsRepository = {
     returnAllBlogs() {
         return __awaiter(this, void 0, void 0, function* () {
             return db_1.blogsCollection
-                .find({}, { projection: { _id: 0 } })
+                .find({ projection: { _id: 0 } })
                 .toArray();
+        });
+    },
+    returnBlogsCount(searchNameTerm) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return db_1.blogsCollection
+                .find({ name: { $regex: searchNameTerm, $options: 'i' } })
+                .count();
         });
     },
     //GET - return by ID
