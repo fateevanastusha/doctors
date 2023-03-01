@@ -25,7 +25,8 @@ exports.blogsService = {
     //GET - return by ID
     returnBlogById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return blogs_db_repositiory_1.blogsRepository.returnBlogById(id);
+            const blogById = yield blogs_db_repositiory_1.blogsRepository.returnBlogById(id);
+            return blogById;
         });
     },
     //DELETE - delete by ID

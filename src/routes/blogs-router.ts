@@ -15,6 +15,7 @@ from "../middlewares/input-valudation-middleware"
 import {blogsService} from "../domain/blogs-service";
 import {postsService} from "../domain/posts-service";
 import {SortDirection} from "mongodb";
+import {log} from "util";
 
 
 export const basicAuth = require('express-basic-auth')

@@ -13,7 +13,8 @@ export const blogsService = {
     },
     //GET - return by ID
     async returnBlogById(id: string) : Promise<Blog | null>{
-        return blogsRepository.returnBlogById(id)
+        const blogById = await blogsRepository.returnBlogById(id)
+        return blogById
     },
     //DELETE - delete by ID
     async deleteBlogById(id: string) : Promise<boolean>{

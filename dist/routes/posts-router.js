@@ -22,6 +22,7 @@ exports.postsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, fun
     let pageSize;
     let pageNumber;
     let sortBy;
+    //TODO solve problem with sort direction type
     let sortDirection;
     if (req.query.sortDirection === "asc") {
         sortDirection = 1;

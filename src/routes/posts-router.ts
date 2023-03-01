@@ -22,6 +22,7 @@ postsRouter.get('/', async (req: Request, res: Response) => {
     let pageSize : number
     let pageNumber : number
     let sortBy : string
+    //TODO solve problem with sort direction type
     let sortDirection : SortDirection
     if (req.query.sortDirection === "asc"){
         sortDirection = 1
