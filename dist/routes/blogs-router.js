@@ -15,46 +15,16 @@ exports.blogsRouter = (0, express_1.Router)();
 const input_valudation_middleware_1 = require("../middlewares/input-valudation-middleware");
 const blogs_service_1 = require("../domain/blogs-service");
 const posts_service_1 = require("../domain/posts-service");
+const pagination_helpers_1 = require("../helpers/pagination-helpers");
 exports.basicAuth = require('express-basic-auth');
 exports.adminAuth = (0, exports.basicAuth)({ users: { 'admin': 'qwerty' } });
 //GET - return all
 exports.blogsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let pageSize;
-    let pageNumber;
-    let sortBy;
-    let sortDirection;
-    let searchNameTerm;
-    if (!req.query.searchNameTerm) {
-        searchNameTerm = "";
-    }
-    else {
-        //count matches
-        searchNameTerm = req.query.searchNameTerm.toString();
-    }
-    if (req.query.sortDirection === "asc") {
-        sortDirection = 1;
-    }
-    else {
-        sortDirection = -1;
-    }
-    if (!req.query.pageSize) {
-        pageSize = 10;
-    }
-    else {
-        pageSize = +req.query.pageSize;
-    }
-    if (!req.query.pageNumber) {
-        pageNumber = 1;
-    }
-    else {
-        pageNumber = +req.query.pageNumber;
-    }
-    if (!req.query.sortBy) {
-        sortBy = "createdAt";
-    }
-    else {
-        sortBy = req.query.sortBy.toString();
-    }
+    let pageSize = pagination_helpers_1.paginationHelpers.pageSize(req.query.pageSize);
+    let pageNumber = pagination_helpers_1.paginationHelpers.pageNumber(req.query.pageNumber);
+    let sortBy = pagination_helpers_1.paginationHelpers.sortBy(req.query.sortBy);
+    let sortDirection = pagination_helpers_1.paginationHelpers.sortDirection(req.query.sortDirection);
+    let searchNameTerm = pagination_helpers_1.paginationHelpers.searchNameTerm(req.query.searchNameTerm);
     let allBlogs = yield blogs_service_1.blogsService.returnAllBlogs(pageSize, pageNumber, sortBy, sortDirection, searchNameTerm);
     res.status(200).send(allBlogs);
 }));

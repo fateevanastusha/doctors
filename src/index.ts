@@ -1,12 +1,13 @@
 import express, {Request, Response, NextFunction} from 'express'
-import bodyParser from 'body-parser';
 import { blogsRouter } from './routes/blogs-router';
 import { postsRouter } from './routes/posts-router';
 import { postsRepository } from './repositories/posts-db-repositiory';
 import { blogsRepository } from './repositories/blogs-db-repositiory';
 
-const app = express();
-const port = 6463;
+export const app = express();
+const port = 222;
+
+
 
 app.use(express.json())
 
@@ -20,8 +21,8 @@ app.delete('/testing/all-data', (req: Request,res: Response) => {
     res.sendStatus(204)
 });
 
+
 app.listen(port, () => {
     console.log(`App listening on port ${port}`)
 })
-
  
