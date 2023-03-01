@@ -68,6 +68,7 @@ exports.postsService = {
                 createdAt: new Date().toISOString()
             };
             const createdPost = yield posts_db_repositiory_1.postsRepository.createNewPost(newPost);
+            console.log(createdPost);
             return createdPost;
         });
     },

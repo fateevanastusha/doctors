@@ -44,6 +44,7 @@ exports.postsRepository = {
     createNewPost(newPost) {
         return __awaiter(this, void 0, void 0, function* () {
             yield db_1.postsCollection.insertOne(newPost);
+            console.log(newPost);
             return this.returnPostById(newPost.id);
         });
     },

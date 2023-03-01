@@ -84,6 +84,7 @@ postsRouter.post('/',
         const blogId = foundBlog.id
         const blogName = foundBlog.name
         const newPost : Post | null = await postsService.createNewPost(req.body, blogName, blogId);
+        console.log(newPost)
         res.status(201).send(newPost)
     }
 

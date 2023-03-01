@@ -25,6 +25,7 @@ export const postsRepository = {
   //create new post
   async createNewPost(newPost: Post) : Promise <Post | null>{
     await postsCollection.insertOne(newPost)
+    console.log(newPost)
     return this.returnPostById(newPost.id)
   },
   //update post by id

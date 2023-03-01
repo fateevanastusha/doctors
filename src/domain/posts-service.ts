@@ -46,6 +46,7 @@ export const postsService = {
             createdAt : new Date().toISOString()
         };
         const createdPost = await postsRepository.createNewPost(newPost);
+        console.log(createdPost)
         return createdPost;
     },
     //update post by id
