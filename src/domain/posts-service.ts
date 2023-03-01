@@ -1,16 +1,17 @@
 import {postsRepository} from "../repositories/posts-db-repositiory";
 import {Paginator, Post} from "../types/types";
 import {QueryRepository} from "../queryRepo";
+import {SortDirection} from "mongodb";
 
 export const postsService = {
     //return all posts
-    async returnAllPost(PageSize: number, Page: number, sortBy : string, sortDirection: number) : Promise<Paginator>{
+    async returnAllPost(PageSize: number, Page: number, sortBy : string, sortDirection: SortDirection) : Promise<Paginator>{
         const total = (await postsRepository.returnAllPost()).length
         const PageCount = Math.ceil( total / PageSize)
         const Items = await QueryRepository.PaginatorForPosts(PageCount, PageSize, Page, sortBy, sortDirection );
         return QueryRepository.PaginationForm(PageCount, PageSize, Page, total, Items)
     },
-    async returnAllPostByBlogId (PageSize: number, Page: number, sortBy : string, sortDirection: number, blogId: string) : Promise<Paginator>{
+    async returnAllPostByBlogId (PageSize: number, Page: number, sortBy : string, sortDirection: SortDirection, blogId: string) : Promise<Paginator>{
         let total = (await postsRepository.getAllPostsByBlogId(blogId))
         let totalNumber
         if (total === null) {

@@ -56,7 +56,6 @@ exports.blogsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, fun
     }
     let allBlogs = yield blogs_service_1.blogsService.returnAllBlogs(pageSize, pageNumber, sortBy, sortDirection, searchNameTerm);
     res.status(200).send(allBlogs);
-    return;
 }));
 //GET - return by ID
 exports.blogsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -115,10 +114,7 @@ exports.blogsRouter.get('/:id/posts', (req, res) => __awaiter(void 0, void 0, vo
     const foundBlog = yield blogs_service_1.blogsService.returnBlogById(blogId);
     if (!foundBlog) {
         res.sendStatus(404);
-    }
-    const foundPosts = yield posts_service_1.postsService.getAllPostsByBlogId(blogId);
-    if (!foundPosts) {
-        res.sendStatus(404);
+        return;
     }
     let pageSize;
     let pageNumber;
@@ -151,8 +147,5 @@ exports.blogsRouter.get('/:id/posts', (req, res) => __awaiter(void 0, void 0, vo
     let allPosts = yield posts_service_1.postsService.returnAllPostByBlogId(pageSize, pageNumber, sortBy, sortDirection, blogId);
     if (allPosts.items) {
         res.status(200).send(allPosts);
-    }
-    else {
-        res.sendStatus(404);
     }
 }));

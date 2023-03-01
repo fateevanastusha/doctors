@@ -45,7 +45,7 @@ exports.blogsRepository = {
     createNewBlog(newBlog) {
         return __awaiter(this, void 0, void 0, function* () {
             yield db_1.blogsCollection.insertOne(newBlog);
-            const updatedBlog = this.returnBlogById(newBlog.id);
+            const updatedBlog = yield this.returnBlogById(newBlog.id);
             if (updatedBlog) {
                 return updatedBlog;
             }

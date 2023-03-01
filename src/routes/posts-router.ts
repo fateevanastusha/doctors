@@ -11,6 +11,7 @@ import {
 } from "../middlewares/input-valudation-middleware"
 import {postsService} from "../domain/posts-service";
 import {blogsService} from "../domain/blogs-service";
+import {SortDirection} from "mongodb";
 
 
 export const basicAuth = require('express-basic-auth')
@@ -21,7 +22,7 @@ postsRouter.get('/', async (req: Request, res: Response) => {
     let pageSize : number
     let pageNumber : number
     let sortBy : string
-    let sortDirection : number
+    let sortDirection : SortDirection
     if (req.query.sortDirection === "asc"){
         sortDirection = 1
     } else {

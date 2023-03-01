@@ -1,8 +1,9 @@
 import {Blog, Paginator, Post} from "./types/types";
 import {blogsCollection, postsCollection} from "./db/db";
+import {SortDirection} from "mongodb";
 
 export const QueryRepository = {
-    async PaginatorForBlogs (PageCount: number, PageSize: number, Page: number, sortBy : string, sortDirection: number, searchNameTerm : string) : Promise <Blog[]> {
+    async PaginatorForBlogs (PageCount: number, PageSize: number, Page: number, sortBy : string, sortDirection: SortDirection, searchNameTerm : string) : Promise <Blog[]> {
         const skipSize: number = PageSize * (Page - 1)
         return blogsCollection
             .find({name: {$regex: searchNameTerm, $options : 'i'}}, {projection: {_id: 0}})
@@ -11,7 +12,7 @@ export const QueryRepository = {
             .limit(PageSize)
             .toArray()
     },
-    async PaginatorForPosts (PageCount: number, PageSize: number, Page: number, sortBy : string, sortDirection: number) : Promise <Post[]> {
+    async PaginatorForPosts (PageCount: number, PageSize: number, Page: number, sortBy : string, sortDirection: SortDirection) : Promise <Post[]> {
         const skipSize: number = PageSize * (Page - 1)
         return postsCollection
             .find({}, {projection: {_id: 0}})
@@ -20,7 +21,7 @@ export const QueryRepository = {
             .limit(PageSize)
             .toArray()
     },
-    async PaginatorForPostsByBlogId (PageCount: number, PageSize: number, Page: number, sortBy : string, sortDirection: number, blogId: string) : Promise <Post[]> {
+    async PaginatorForPostsByBlogId (PageCount: number, PageSize: number, Page: number, sortBy : string, sortDirection: SortDirection, blogId: string) : Promise <Post[]> {
         const skipSize: number = PageSize * (Page - 1)
         return postsCollection
             .find({blogId: blogId}, {projection: {_id: 0}})

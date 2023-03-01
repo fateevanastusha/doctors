@@ -14,7 +14,7 @@ import {
 from "../middlewares/input-valudation-middleware"
 import {blogsService} from "../domain/blogs-service";
 import {postsService} from "../domain/posts-service";
-import {param} from "express-validator";
+import {SortDirection} from "mongodb";
 
 
 export const basicAuth = require('express-basic-auth')
@@ -25,7 +25,7 @@ blogsRouter.get('/', async (req: Request, res: Response) =>{
     let pageSize : number
     let pageNumber : number
     let sortBy : string
-    let sortDirection : number
+    let sortDirection : SortDirection
     let searchNameTerm : string
     if (!req.query.searchNameTerm){
         searchNameTerm = ""
@@ -54,7 +54,6 @@ blogsRouter.get('/', async (req: Request, res: Response) =>{
     }
     let allBlogs = await blogsService.returnAllBlogs(pageSize, pageNumber, sortBy, sortDirection, searchNameTerm);
     res.status(200).send(allBlogs);
-    return
 });
 //GET - return by ID
 blogsRouter.get('/:id', async(req: Request, res: Response)=>{
@@ -124,15 +123,12 @@ blogsRouter.get('/:id/posts', async (req: Request, res: Response) => {
     const foundBlog : Blog | null = await blogsService.returnBlogById(blogId);
     if (!foundBlog) {
         res.sendStatus(404)
-    }
-    const foundPosts : Post[] | null = await postsService.getAllPostsByBlogId(blogId)
-    if (!foundPosts) {
-        res.sendStatus(404)
+        return
     }
     let pageSize : number
     let pageNumber : number
     let sortBy : string
-    let sortDirection : number
+    let sortDirection : SortDirection
     if (req.query.sortDirection === "asc"){
         sortDirection = 1
     } else {
@@ -156,8 +152,6 @@ blogsRouter.get('/:id/posts', async (req: Request, res: Response) => {
     let allPosts = await postsService.returnAllPostByBlogId(pageSize, pageNumber, sortBy, sortDirection, blogId);
     if (allPosts.items) {
         res.status(200).send(allPosts)
-    } else {
-        res.sendStatus(404)
     }
 });
 
