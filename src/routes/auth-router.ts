@@ -11,6 +11,6 @@ authRouter.post('/', async (req: Request, res: Response) => {
     if (status) {
         res.sendStatus(204)
     } else {
-        res.sendStatus(401)
+        res.sendStatus(404)
     }
 })
