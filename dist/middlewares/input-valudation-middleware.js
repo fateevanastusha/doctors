@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.emailCheck = exports.passwordCheck = exports.loginCheck = exports.blogIdCheck = exports.contentCheck = exports.shortDescriptionCheck = exports.titleCheck = exports.findUserByPassword = exports.findUserByLogin = exports.findByIdBlogs = exports.websiteUrlCheck = exports.descriptionCheck = exports.nameCheck = exports.inputValidationMiddleware = void 0;
+exports.emailCheck = exports.passwordCheck = exports.passwordAuthCheck = exports.loginCheck = exports.blogIdCheck = exports.contentCheck = exports.shortDescriptionCheck = exports.titleCheck = exports.checkForPasswordAuth = exports.checkForSameField = exports.checkForExistingEmail = exports.checkForExistingLogin = exports.findByIdBlogs = exports.websiteUrlCheck = exports.descriptionCheck = exports.nameCheck = exports.inputValidationMiddleware = void 0;
 const blogs_db_repositiory_1 = require("../repositories/blogs-db-repositiory");
 const express_validator_1 = require("express-validator");
 const users_db_repository_1 = require("../repositories/users-db-repository");
@@ -41,27 +41,49 @@ const findByIdBlogs = (value) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.findByIdBlogs = findByIdBlogs;
-//check for Unique login
-const findUserByLogin = (value) => __awaiter(void 0, void 0, void 0, function* () {
-    const foundUser = yield users_db_repository_1.usersRepository.returnUserByLogin(value);
-    if (foundUser !== null) {
-        throw new Error('your login is exist');
+//check for unique login
+const checkForExistingLogin = (login) => __awaiter(void 0, void 0, void 0, function* () {
+    const User = yield users_db_repository_1.usersRepository.returnUserByLogin(login);
+    if (User !== null) {
+        throw new Error('login is already exist');
     }
 });
-exports.findUserByLogin = findUserByLogin;
-const findUserByPassword = (value) => __awaiter(void 0, void 0, void 0, function* () {
-    const foundUser = yield users_db_repository_1.usersRepository.returnUserByPassword(value);
-    if (foundUser !== null) {
-        throw new Error('your password is exist');
+exports.checkForExistingLogin = checkForExistingLogin;
+//check for unique email
+const checkForExistingEmail = (email) => __awaiter(void 0, void 0, void 0, function* () {
+    const User = yield users_db_repository_1.usersRepository.returnUserByEmail(email);
+    if (User !== null) {
+        throw new Error('email is already exist');
     }
 });
-exports.findUserByPassword = findUserByPassword;
+exports.checkForExistingEmail = checkForExistingEmail;
+const checkForSameField = (field) => __awaiter(void 0, void 0, void 0, function* () {
+    const User = yield users_db_repository_1.usersRepository.returnUserByField(field);
+    if (User !== null) {
+        throw new Error('this is not exist');
+    }
+});
+exports.checkForSameField = checkForSameField;
+const checkForPasswordAuth = (login, { req }) => __awaiter(void 0, void 0, void 0, function* () {
+    const User = yield users_db_repository_1.usersRepository.returnUserByField(login);
+    if (!User) {
+        throw new Error('login is already exist');
+    }
+    const hash = User.password;
+    const password = req.body.password;
+    const status = bcrypt.compareSync(password, hash);
+    if (!status) {
+        throw new Error('invalid login or password');
+    }
+});
+exports.checkForPasswordAuth = checkForPasswordAuth;
 //check for post
 exports.titleCheck = (0, express_validator_1.body)('title').trim().isLength({ min: 1, max: 30 }).isString();
 exports.shortDescriptionCheck = (0, express_validator_1.body)('shortDescription').trim().isLength({ min: 1, max: 100 }).isString();
 exports.contentCheck = (0, express_validator_1.body)('content').trim().isLength({ min: 1, max: 1000 }).isString();
 exports.blogIdCheck = (0, express_validator_1.body)('blogId').trim().custom(exports.findByIdBlogs).isString();
 //check for user
-exports.loginCheck = (0, express_validator_1.body)('login').trim().custom(exports.findUserByLogin).isLength({ min: 3, max: 10 }).isString();
-exports.passwordCheck = (0, express_validator_1.body)('password').trim().custom(exports.findUserByPassword).isLength({ min: 6, max: 20 }).isString();
-exports.emailCheck = (0, express_validator_1.body)('email').trim().isEmail().isString();
+exports.loginCheck = (0, express_validator_1.body)('login').trim().custom(exports.checkForExistingLogin).isLength({ min: 3, max: 10 }).isString();
+exports.passwordAuthCheck = (0, express_validator_1.body)('password').trim().custom(exports.checkForPasswordAuth).isLength({ min: 6, max: 20 }).isString();
+exports.passwordCheck = (0, express_validator_1.body)('password').trim().isLength({ min: 6, max: 20 }).isString();
+exports.emailCheck = (0, express_validator_1.body)('email').trim().custom(exports.checkForExistingEmail).isEmail().isString();

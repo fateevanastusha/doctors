@@ -33,19 +33,42 @@ export const findByIdBlogs : CustomValidator = async value => {
     }
 };
 
-//check for Unique login
-export const findUserByLogin : CustomValidator = async value => {
-    const foundUser = await usersRepository.returnUserByLogin(value);
-    if (foundUser !== null) {
-        throw new Error('your login is exist')
+//check for unique login
+export const checkForExistingLogin : CustomValidator = async login => {
+    const User = await usersRepository.returnUserByLogin(login)
+    if (User !== null) {
+        throw new Error('login is already exist')
     }
 }
-export const findUserByPassword : CustomValidator = async value => {
-    const foundUser = await usersRepository.returnUserByPassword(value);
-    if (foundUser !== null) {
-        throw new Error('your password is exist')
+//check for unique email
+export const checkForExistingEmail : CustomValidator = async email => {
+    const User = await usersRepository.returnUserByEmail(email)
+    if (User !== null) {
+        throw new Error('email is already exist')
     }
 }
+
+export const checkForSameField : CustomValidator = async field => {
+    const User = await usersRepository.returnUserByField(field)
+    if (User !== null) {
+        throw new Error('this is not exist')
+    }
+}
+
+
+export const checkForPasswordAuth : CustomValidator = async (login, { req }) => {
+    const User = await usersRepository.returnUserByField(login)
+    if (!User){
+        throw new Error('login is already exist')
+    }
+    const hash = User.password
+    const password = req.body.password
+    const status = bcrypt.compareSync(password, hash);
+    if (!status){
+        throw new Error('invalid login or password')
+    }
+}
+
 
 //check for post
 export const titleCheck = body('title').trim().isLength({min:1, max: 30}).isString()
@@ -54,9 +77,10 @@ export const contentCheck = body('content').trim().isLength({min:1, max: 1000}).
 export const blogIdCheck = body('blogId').trim().custom(findByIdBlogs).isString()
 
 //check for user
-export const loginCheck = body('login').trim().custom(findUserByLogin).isLength({min:3, max: 10}).isString()
-export const passwordCheck = body ('password').trim().custom(findUserByPassword).isLength({min:6, max: 20}).isString()
-export const emailCheck =  body ('email').trim().isEmail().isString()
+export const loginCheck = body('login').trim().custom(checkForExistingLogin).isLength({min:3, max: 10}).isString()
+export const passwordAuthCheck = body ('password').trim().custom(checkForPasswordAuth).isLength({min:6, max: 20}).isString()
+export const passwordCheck = body ('password').trim().isLength({min:6, max: 20}).isString()
+export const emailCheck =  body ('email').trim().custom(checkForExistingEmail).isEmail().isString()
 
 
 

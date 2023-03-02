@@ -3,7 +3,7 @@ import {usersRepository} from "../repositories/users-db-repository";
 import {postsRepository} from "../repositories/posts-db-repositiory";
 import {SortDirection} from "mongodb";
 import {QueryRepository} from "../queryRepo";
-
+import bcrypt from "bcrypt"
 
 export const usersService = {
     //GET ALL USERS
@@ -16,11 +16,12 @@ export const usersService = {
     },
     //CREATE NEW USER
     async createNewUser(user : User) : Promise<User | null>{
+        const hash = bcrypt.hashSync(user.password, 10)
         const newUser =  {
             id: '' + (+(new Date())),
             login: user.login,
             email: user.email,
-            password : user.password,
+            password : hash,
             createdAt: new Date().toISOString()
         }
         const createdUser = await usersRepository.createNewUser(newUser)

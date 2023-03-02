@@ -9,8 +9,8 @@ export const authRouter = Router()
 authRouter.post('/', async (req: Request, res: Response) => {
     const status : boolean = await authService.authRequest(req.body)
     if (status) {
-        res.send(200)
+        res.sendStatus(204)
     } else {
-        res.send(400)
+        res.sendStatus(401)
     }
 })

@@ -20,15 +20,26 @@ export const usersRepository = {
         return user
 
     },
+    //return USER BY FIELD
+    async returnUserByField(field : string) : Promise <User | null> {
+        const user = await usersCollection
+            .findOne({$or : [{login: field} , {email: field}]})
+        console.log(user)
+        return user
+
+
+    },
+    //get USER BY LOGIN
     async returnUserByLogin(login : string) : Promise <User | null> {
         const user =  usersCollection
-            .findOne({login: login}, {projection: {_id: 0}})
+            .findOne({login : login}, {projection: {_id: 0}})
         return user
 
     },
-    async returnUserByPassword(password : string) : Promise <User | null> {
+    //get USER BY EMAIL
+    async returnUserByEmail(email : string) : Promise <User | null> {
         const user =  usersCollection
-            .findOne({password: password}, {projection: {_id: 0}})
+            .findOne({email : email}, {projection: {_id: 0}})
         return user
 
     },

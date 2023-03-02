@@ -5,7 +5,7 @@ import { usersRouter } from "./routes/users-router";
 import { authRouter } from "./routes/auth-router";
 import { postsRepository } from './repositories/posts-db-repositiory';
 import { blogsRepository } from './repositories/blogs-db-repositiory';
-import {usersRepository} from "./repositories/users-db-repository";
+import { usersRepository } from "./repositories/users-db-repository";
 
 export const app = express();
 const port = 222;
