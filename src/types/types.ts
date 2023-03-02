@@ -25,14 +25,14 @@ export type User = {
     createdAt: string
 
 }
+export type Auth = {
+    login : string,
+    password : string
+}
 export type Paginator = {
     pagesCount: number,
     page: number,
     pageSize: number,
     totalCount: number,
-    items : Blog[] | Post[]
-}
-export type Auth = {
-    login : string,
-    password : string
+    items : Blog[] | Post[] | Auth[]
 }

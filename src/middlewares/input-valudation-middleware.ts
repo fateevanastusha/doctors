@@ -3,6 +3,7 @@ import { Response, Request } from "express";
 import { CustomValidator } from "express-validator/src/base";
 import { blogsRepository } from "../repositories/blogs-db-repositiory";
 import { body, validationResult } from 'express-validator';
+import {usersRepository} from "../repositories/users-db-repository";
 
 //errors storage
 export const inputValidationMiddleware = (req: Request, res: Response, next: NextFunction) => {
@@ -32,6 +33,20 @@ export const findByIdBlogs : CustomValidator = async value => {
     }
 };
 
+//check for Unique login
+export const findUserByLogin : CustomValidator = async value => {
+    const foundUser = await usersRepository.returnUserByLogin(value);
+    if (foundUser !== null) {
+        throw new Error('your login is exist')
+    }
+}
+export const findUserByPassword : CustomValidator = async value => {
+    const foundUser = await usersRepository.returnUserByPassword(value);
+    if (foundUser !== null) {
+        throw new Error('your password is exist')
+    }
+}
+
 //check for post
 export const titleCheck = body('title').trim().isLength({min:1, max: 30}).isString()
 export const shortDescriptionCheck = body('shortDescription').trim().isLength({min:1,max:100}).isString()
@@ -39,8 +54,8 @@ export const contentCheck = body('content').trim().isLength({min:1, max: 1000}).
 export const blogIdCheck = body('blogId').trim().custom(findByIdBlogs).isString()
 
 //check for user
-export const loginCheck = body('login').trim().isLength({min:3, max: 10}).isString()
-export const passwordCheck = body ('password').trim().isLength({min:6, max: 20}).isString()
+export const loginCheck = body('login').trim().custom(findUserByLogin).isLength({min:3, max: 10}).isString()
+export const passwordCheck = body ('password').trim().custom(findUserByPassword).isLength({min:6, max: 20}).isString()
 export const emailCheck =  body ('email').trim().isEmail().isString()
 
 

@@ -1,5 +1,5 @@
 import {User} from "../types/types";
-import {usersCollection} from "../db/db";
+import {blogsCollection, usersCollection} from "../db/db";
 
 export const usersRepository = {
     //return ALL USERS
@@ -8,10 +8,27 @@ export const usersRepository = {
             .find({projection: {_id: 0}})
             .toArray()
     },
+    async returnUsersCount(searchLoginTerm : string, searchEmailTerm : string) : Promise<number>{
+        return blogsCollection
+            .find({login: {$regex: searchLoginTerm, $options : 'i'}, email: {$regex: searchEmailTerm, $options : 'i'}})
+            .count()
+    },
     //return USER BY ID
     async returnUserById(id : string) : Promise <User | null> {
         const user =  usersCollection
             .findOne({id: id}, {projection: {_id: 0}})
+        return user
+
+    },
+    async returnUserByLogin(login : string) : Promise <User | null> {
+        const user =  usersCollection
+            .findOne({login: login}, {projection: {_id: 0}})
+        return user
+
+    },
+    async returnUserByPassword(password : string) : Promise <User | null> {
+        const user =  usersCollection
+            .findOne({password: password}, {projection: {_id: 0}})
         return user
 
     },

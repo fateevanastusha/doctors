@@ -41,5 +41,21 @@ export const paginationHelpers = {
             //count matches
             return name;
         }
+    },
+    searchLoginTerm (login : string | undefined) : string {
+        if (!login){
+            return "";
+        } else {
+            //count matches
+            return login;
+        }
+    },
+    searchEmailTerm (email : string | undefined) : string {
+        if (!email){
+            return "";
+        } else {
+            //count matches
+            return email;
+        }
     }
 }

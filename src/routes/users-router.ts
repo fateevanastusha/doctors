@@ -33,13 +33,22 @@ import {
     passwordCheck,
     inputValidationMiddleware } from "../middlewares/input-valudation-middleware";
 import {adminAuth} from "./blogs-router";
+import {paginationHelpers} from "../helpers/pagination-helpers";
+import {SortDirection} from "mongodb";
 
 export const usersRouter = Router()
 
 //GET ALL USERS WITH AUTH
 
 usersRouter.get('/', adminAuth, async (req: Request, res: Response) =>{
-    const allUsers = await usersService.getAllUsers();
+    //add pagination
+    let pageSize : number = paginationHelpers.pageSize(req.query.pageSize)
+    let pageNumber : number = paginationHelpers.pageNumber(req.query.pageNumber)
+    let sortBy : string = paginationHelpers.sortBy(req.query.sortBy)
+    let sortDirection : SortDirection = paginationHelpers.sortDirection(req.query.sortDirection)
+    let searchLoginTerm : string = paginationHelpers.searchNameTerm(req.query.searchLoginTerm)
+    let searchEmailTerm : string = paginationHelpers.searchNameTerm(req.query.searchEmailTerm)
+    const allUsers = await usersService.getAllUsers(pageSize, pageNumber, sortBy, sortDirection,searchLoginTerm, searchEmailTerm);
     res.status(200).send(allUsers)
 });
 

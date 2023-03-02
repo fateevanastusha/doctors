@@ -1,5 +1,5 @@
-import {Blog, Paginator, Post} from "./types/types";
-import {blogsCollection, postsCollection} from "./db/db";
+import {Blog, Paginator, Post, User} from "./types/types";
+import {blogsCollection, postsCollection, usersCollection} from "./db/db";
 import {SortDirection} from "mongodb";
 
 export const QueryRepository = {
@@ -30,7 +30,16 @@ export const QueryRepository = {
             .limit(PageSize)
             .toArray()
     },
-    async PaginationForm (PageCount: number, PageSize: number, Page: number, total: number, Items: Post[] | Blog []) : Promise <Paginator> {
+    async PaginatorForUsers (PageCount: number, PageSize: number, Page: number, sortBy : string, sortDirection: SortDirection, searchLoginTerm : string, searchEmailTerm : string) : Promise <User[]> {
+        const skipSize: number = PageSize * (Page - 1)
+        return usersCollection
+            .find({login: {$regex: searchLoginTerm, $options : 'i'}, email: {$regex: searchEmailTerm, $options : 'i'}}, {projection: {_id: 0}})
+            .sort({[sortBy] : sortDirection})
+            .skip(skipSize)
+            .limit(PageSize)
+            .toArray()
+    },
+    async PaginationForm (PageCount: number, PageSize: number, Page: number, total: number, Items: Post[] | Blog [] | User[]) : Promise <Paginator> {
         const paginator : Paginator = {
             pagesCount: PageCount,
             page: Page,

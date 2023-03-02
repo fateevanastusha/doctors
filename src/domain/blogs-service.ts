@@ -5,7 +5,7 @@ import {SortDirection} from "mongodb";
 
 export const blogsService = {
     //GET - return all
-    async returnAllBlogs(PageSize: number, Page: number, sortBy : string, sortDirection: SortDirection, searchNameTerm : string ) : Promise<Paginator>{
+    async returnAllBlogs(PageSize: number, Page: number, sortBy : string, sortDirection: SortDirection, searchNameTerm : string) : Promise<Paginator>{
         const total = await blogsRepository.returnBlogsCount(searchNameTerm)
         const PageCount = Math.ceil( total / PageSize)
         const Items = await QueryRepository.PaginatorForBlogs(PageCount, PageSize, Page, sortBy, sortDirection, searchNameTerm);

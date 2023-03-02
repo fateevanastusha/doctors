@@ -9,9 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.emailCheck = exports.passwordCheck = exports.loginCheck = exports.blogIdCheck = exports.contentCheck = exports.shortDescriptionCheck = exports.titleCheck = exports.findByIdBlogs = exports.websiteUrlCheck = exports.descriptionCheck = exports.nameCheck = exports.inputValidationMiddleware = void 0;
+exports.emailCheck = exports.passwordCheck = exports.loginCheck = exports.blogIdCheck = exports.contentCheck = exports.shortDescriptionCheck = exports.titleCheck = exports.findUserByPassword = exports.findUserByLogin = exports.findByIdBlogs = exports.websiteUrlCheck = exports.descriptionCheck = exports.nameCheck = exports.inputValidationMiddleware = void 0;
 const blogs_db_repositiory_1 = require("../repositories/blogs-db-repositiory");
 const express_validator_1 = require("express-validator");
+const users_db_repository_1 = require("../repositories/users-db-repository");
 //errors storage
 const inputValidationMiddleware = (req, res, next) => {
     const error = (0, express_validator_1.validationResult)(req);
@@ -40,12 +41,27 @@ const findByIdBlogs = (value) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.findByIdBlogs = findByIdBlogs;
+//check for Unique login
+const findUserByLogin = (value) => __awaiter(void 0, void 0, void 0, function* () {
+    const foundUser = yield users_db_repository_1.usersRepository.returnUserByLogin(value);
+    if (foundUser !== null) {
+        throw new Error('your login is exist');
+    }
+});
+exports.findUserByLogin = findUserByLogin;
+const findUserByPassword = (value) => __awaiter(void 0, void 0, void 0, function* () {
+    const foundUser = yield users_db_repository_1.usersRepository.returnUserByPassword(value);
+    if (foundUser !== null) {
+        throw new Error('your password is exist');
+    }
+});
+exports.findUserByPassword = findUserByPassword;
 //check for post
 exports.titleCheck = (0, express_validator_1.body)('title').trim().isLength({ min: 1, max: 30 }).isString();
 exports.shortDescriptionCheck = (0, express_validator_1.body)('shortDescription').trim().isLength({ min: 1, max: 100 }).isString();
 exports.contentCheck = (0, express_validator_1.body)('content').trim().isLength({ min: 1, max: 1000 }).isString();
 exports.blogIdCheck = (0, express_validator_1.body)('blogId').trim().custom(exports.findByIdBlogs).isString();
 //check for user
-exports.loginCheck = (0, express_validator_1.body)('login').trim().isLength({ min: 3, max: 10 }).isString();
-exports.passwordCheck = (0, express_validator_1.body)('password').trim().isLength({ min: 6, max: 20 }).isString();
+exports.loginCheck = (0, express_validator_1.body)('login').trim().custom(exports.findUserByLogin).isLength({ min: 3, max: 10 }).isString();
+exports.passwordCheck = (0, express_validator_1.body)('password').trim().custom(exports.findUserByPassword).isLength({ min: 6, max: 20 }).isString();
 exports.emailCheck = (0, express_validator_1.body)('email').trim().isEmail().isString();
