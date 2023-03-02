@@ -67,7 +67,7 @@ usersRouter.post('/',
     if (!newUser) {
         res.sendStatus(404)
     } else {
-        res.status(200).send(newUser)
+        res.status(201).send(newUser)
     }
 
 });
