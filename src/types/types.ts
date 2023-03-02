@@ -1,3 +1,5 @@
+import supertest from "supertest";
+
 export type Blog = {
     id: string,
     name: string,
@@ -15,10 +17,22 @@ export type Post = {
     blogName: string,
     createdAt: string
 }
+export type User = {
+    id: string,
+    login : string,
+    email : string,
+    password: string,
+    createdAt: string
+
+}
 export type Paginator = {
     pagesCount: number,
     page: number,
     pageSize: number,
     totalCount: number,
     items : Blog[] | Post[]
+}
+export type Auth = {
+    login : string,
+    password : string
 }

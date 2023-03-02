@@ -38,6 +38,10 @@ export const shortDescriptionCheck = body('shortDescription').trim().isLength({m
 export const contentCheck = body('content').trim().isLength({min:1, max: 1000}).isString()
 export const blogIdCheck = body('blogId').trim().custom(findByIdBlogs).isString()
 
+//check for user
+export const loginCheck = body('login').trim().isLength({min:3, max: 10}).isString()
+export const passwordCheck = body ('password').trim().isLength({min:6, max: 20}).isString()
+export const emailCheck =  body ('email').trim().isEmail().isString()
 
 
 

@@ -53,7 +53,6 @@ exports.blogsRouter.delete('/:id', exports.adminAuth, (req, res) => __awaiter(vo
 //POST - create new
 exports.blogsRouter.post('/', exports.adminAuth, input_valudation_middleware_1.nameCheck, input_valudation_middleware_1.descriptionCheck, input_valudation_middleware_1.websiteUrlCheck, input_valudation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const newBlog = yield blogs_service_1.blogsService.createNewBlog(req.body);
-    console.log(newBlog, 'created  a new staff');
     res.status(201).send(newBlog);
 }));
 //PUT - update
@@ -87,34 +86,10 @@ exports.blogsRouter.get('/:id/posts', (req, res) => __awaiter(void 0, void 0, vo
         res.sendStatus(404);
         return;
     }
-    let pageSize;
-    let pageNumber;
-    let sortBy;
-    let sortDirection;
-    if (req.query.sortDirection === "asc") {
-        sortDirection = 1;
-    }
-    else {
-        sortDirection = -1;
-    }
-    if (!req.query.pageSize) {
-        pageSize = 10;
-    }
-    else {
-        pageSize = +req.query.pageSize;
-    }
-    if (!req.query.pageNumber) {
-        pageNumber = 1;
-    }
-    else {
-        pageNumber = +req.query.pageNumber;
-    }
-    if (!req.query.sortBy) {
-        sortBy = "createdAt";
-    }
-    else {
-        sortBy = req.query.sortBy.toString();
-    }
+    let pageSize = pagination_helpers_1.paginationHelpers.pageSize(req.query.pageSize);
+    let pageNumber = pagination_helpers_1.paginationHelpers.pageNumber(req.query.pageNumber);
+    let sortBy = pagination_helpers_1.paginationHelpers.sortBy(req.query.sortBy);
+    let sortDirection = pagination_helpers_1.paginationHelpers.sortDirection(req.query.sortDirection);
     let allPosts = yield posts_service_1.postsService.returnAllPostByBlogId(pageSize, pageNumber, sortBy, sortDirection, blogId);
     if (allPosts.items) {
         res.status(200).send(allPosts);
