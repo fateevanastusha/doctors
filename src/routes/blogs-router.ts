@@ -33,6 +33,8 @@ blogsRouter.get('/', async (req: Request, res: Response) =>{
 });
 //GET - return by ID
 blogsRouter.get('/:id', async(req: Request, res: Response)=>{
+    console.log(req.params)
+    console.log("allalala")
     const foundBlog : Blog | null= await blogsService.returnBlogById(req.params.id);
     if (foundBlog) {
         res.status(200).send(foundBlog);
