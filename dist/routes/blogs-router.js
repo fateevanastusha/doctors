@@ -30,6 +30,8 @@ exports.blogsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, fun
 }));
 //GET - return by ID
 exports.blogsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(req.params);
+    console.log("allalala");
     const foundBlog = yield blogs_service_1.blogsService.returnBlogById(req.params.id);
     if (foundBlog) {
         res.status(200).send(foundBlog);
