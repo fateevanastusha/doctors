@@ -6,7 +6,7 @@ import {authService} from "../domain/auth-service";
 
 export const authRouter = Router()
 
-authRouter.post('/', async (req: Request, res: Response) => {
+authRouter.post('/login', async (req: Request, res: Response) => {
     const status : boolean = await authService.authRequest(req.body)
     if (status) {
         res.sendStatus(204)
