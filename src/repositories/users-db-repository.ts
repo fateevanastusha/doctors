@@ -1,5 +1,5 @@
 import {User} from "../types/types";
-import {blogsCollection, usersCollection} from "../db/db";
+import {usersCollection} from "../db/db";
 
 export const usersRepository = {
     //return ALL USERS
@@ -9,8 +9,13 @@ export const usersRepository = {
             .toArray()
     },
     async returnUsersCount(searchLoginTerm : string, searchEmailTerm : string) : Promise<number>{
-        return blogsCollection
-            .find({login: {$regex: searchLoginTerm, $options : 'i'}, email: {$regex: searchEmailTerm, $options : 'i'}})
+        return usersCollection
+            .find({
+                $or: [{
+                    login: {$regex: searchLoginTerm, $options: 'i'},
+                    email: {$regex: searchEmailTerm, $options: 'i'}
+                }]
+            })
             .count()
     },
     //return USER BY ID

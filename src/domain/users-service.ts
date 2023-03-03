@@ -10,6 +10,8 @@ export const usersService = {
     async getAllUsers(PageSize: number, Page: number, sortBy : string, sortDirection: SortDirection, searchLoginTerm : string, searchEmailTerm: string) : Promise<Paginator>{
         //add pagination
         const total = await usersRepository.returnUsersCount(searchLoginTerm, searchEmailTerm);
+        console.log(total)
+        console.log("this is terms " + searchLoginTerm,searchEmailTerm)
         const PageCount = Math.ceil( total / PageSize);
         const Items : User[] = await QueryRepository.PaginatorForUsers(PageCount, PageSize, Page, sortBy, sortDirection, searchLoginTerm, searchEmailTerm);
         return QueryRepository.PaginationForm(PageCount, PageSize, Page, total, Items)
