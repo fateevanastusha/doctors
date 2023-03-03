@@ -23,11 +23,11 @@ export const adminAuth = basicAuth({users: { 'admin': 'qwerty' }});
 
 //GET - return all
 blogsRouter.get('/', async (req: Request, res: Response) =>{
-    let pageSize : number = paginationHelpers.pageSize(req.query.pageSize)
-    let pageNumber : number = paginationHelpers.pageNumber(req.query.pageNumber)
-    let sortBy : string = paginationHelpers.sortBy(req.query.sortBy)
-    let sortDirection : SortDirection = paginationHelpers.sortDirection(req.query.sortDirection)
-    let searchNameTerm : string = paginationHelpers.searchNameTerm(req.query.searchNameTerm)
+    let pageSize : number = paginationHelpers.pageSize(<string>req.query.pageSize)
+    let pageNumber : number = paginationHelpers.pageNumber(<string>req.query.pageNumber)
+    let sortBy : string = paginationHelpers.sortBy(<string>req.query.sortBy)
+    let sortDirection : SortDirection = paginationHelpers.sortDirection(<string>req.query.sortDirection)
+    let searchNameTerm : string = paginationHelpers.searchNameTerm(<string>req.query.searchNameTerm)
     let allBlogs = await blogsService.returnAllBlogs(pageSize, pageNumber, sortBy, sortDirection, searchNameTerm);
     res.status(200).send(allBlogs);
 });
@@ -102,10 +102,10 @@ blogsRouter.get('/:id/posts', async (req: Request, res: Response) => {
         res.sendStatus(404)
         return
     }
-    let pageSize : number = paginationHelpers.pageSize(req.query.pageSize);
-    let pageNumber : number = paginationHelpers.pageNumber(req.query.pageNumber);
-    let sortBy : string = paginationHelpers.sortBy(req.query.sortBy);
-    let sortDirection : SortDirection = paginationHelpers.sortDirection(req.query.sortDirection);
+    let pageSize : number = paginationHelpers.pageSize(<string>req.query.pageSize);
+    let pageNumber : number = paginationHelpers.pageNumber(<string>req.query.pageNumber);
+    let sortBy : string = paginationHelpers.sortBy(<string>req.query.sortBy);
+    let sortDirection : SortDirection = paginationHelpers.sortDirection(<string>req.query.sortDirection);
     let allPosts = await postsService.returnAllPostByBlogId(pageSize, pageNumber, sortBy, sortDirection, blogId);
     if (allPosts.items) {
         res.status(200).send(allPosts)

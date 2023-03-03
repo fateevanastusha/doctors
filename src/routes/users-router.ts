@@ -38,16 +38,17 @@ import {SortDirection} from "mongodb";
 
 export const usersRouter = Router()
 
+
+
 //GET ALL USERS WITH AUTH
 
 usersRouter.get('/', adminAuth, async (req: Request, res: Response) =>{
-    //add pagination
-    let pageSize : number = paginationHelpers.pageSize(req.query.pageSize)
-    let pageNumber : number = paginationHelpers.pageNumber(req.query.pageNumber)
-    let sortBy : string = paginationHelpers.sortBy(req.query.sortBy)
-    let sortDirection : SortDirection = paginationHelpers.sortDirection(req.query.sortDirection)
-    let searchLoginTerm : string = paginationHelpers.searchNameTerm(req.query.searchLoginTerm)
-    let searchEmailTerm : string = paginationHelpers.searchNameTerm(req.query.searchEmailTerm)
+    let pageSize : number = paginationHelpers.pageSize(<string>req.query.pageSize)
+    let pageNumber : number = paginationHelpers.pageNumber(<string>req.query.pageNumber)
+    let sortBy : string = paginationHelpers.sortBy(<string>req.query.sortBy)
+    let sortDirection : SortDirection = paginationHelpers.sortDirection(<string>req.query.sortDirection)
+    let searchLoginTerm : string = paginationHelpers.searchNameTerm(<string>req.query.searchLoginTerm)
+    let searchEmailTerm : string = paginationHelpers.searchNameTerm(<string>req.query.searchEmailTerm)
     const allUsers = await usersService.getAllUsers(pageSize, pageNumber, sortBy, sortDirection,searchLoginTerm, searchEmailTerm);
     res.status(200).send(allUsers)
 });

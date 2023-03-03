@@ -26,7 +26,7 @@ export const paginationHelpers = {
         }
     },
     //sortDirection, default - descending
-    sortDirection (sortDirection: string | undefined) : number {
+    sortDirection (sortDirection: string | undefined) : 1 | -1 {
         if (sortDirection === "asc"){
             return 1;
         } else {
