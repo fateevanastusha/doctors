@@ -45,7 +45,7 @@ exports.blogsService = {
     createNewBlog(blog) {
         return __awaiter(this, void 0, void 0, function* () {
             const newBlog = {
-                id: '' + (+(new Date())),
+                id: (+new Date()).toString(),
                 name: blog.name,
                 description: blog.description,
                 websiteUrl: blog.websiteUrl,

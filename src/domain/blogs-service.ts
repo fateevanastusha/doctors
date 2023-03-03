@@ -47,7 +47,7 @@ export const blogsService = {
     //POST - create new
     async createNewBlog(blog: Blog) : Promise<Blog | null>{
         const newBlog = {
-            id: '' + (+(new Date())),
+            id: (+new Date()).toString(),
             name: blog.name,
             description: blog.description,
             websiteUrl: blog.websiteUrl,

@@ -35,9 +35,9 @@ export const blogsRepository = {
     //POST - create new 
     async createNewBlog(newBlog: Blog) : Promise<Blog | null>{
         await blogsCollection.insertOne(newBlog)
-        const updatedBlog = await this.returnBlogById(newBlog.id)
-        if(updatedBlog) {
-            return updatedBlog
+        const createdBlog = await this.returnBlogById(newBlog.id)
+        if(createdBlog) {
+            return createdBlog
         }
         return null
     },

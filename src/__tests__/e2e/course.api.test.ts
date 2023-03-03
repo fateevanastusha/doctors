@@ -1,7 +1,5 @@
 import request from "supertest";
-import {app} from "../../src";
-import exp from "constants";
-import {Pagination} from "../../src/helpers/pagination";
+import {app} from "../../index";
 
 
 
