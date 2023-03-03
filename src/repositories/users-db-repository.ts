@@ -10,10 +10,10 @@ export const usersRepository = {
     },
     async returnUsersCount(searchLoginTerm : string, searchEmailTerm : string) : Promise<number>{
         return usersCollection.countDocuments({
-            $or: [{
-                login: {$regex: searchLoginTerm, $options: 'i'},
-                email: {$regex: searchEmailTerm, $options: 'i'}
-            }]
+                $or: [
+                    {login: {$regex: searchLoginTerm, $options: 'i'}},
+                    {email: {$regex: searchEmailTerm, $options: 'i'}}
+                ]
         })
     },
     //return USER BY ID

@@ -47,8 +47,8 @@ usersRouter.get('/', adminAuth, async (req: Request, res: Response) =>{
     let pageNumber : number = paginationHelpers.pageNumber(<string>req.query.pageNumber)
     let sortBy : string = paginationHelpers.sortBy(<string>req.query.sortBy)
     let sortDirection : SortDirection = paginationHelpers.sortDirection(<string>req.query.sortDirection)
-    let searchLoginTerm : string = paginationHelpers.searchNameTerm(<string>req.query.searchLoginTerm)
-    let searchEmailTerm : string = paginationHelpers.searchNameTerm(<string>req.query.searchEmailTerm)
+    let searchLoginTerm : string = paginationHelpers.searchLoginTerm(<string>req.query.searchLoginTerm)
+    let searchEmailTerm : string = paginationHelpers.searchEmailTerm(<string>req.query.searchEmailTerm)
     const allUsers = await usersService.getAllUsers(pageSize, pageNumber, sortBy, sortDirection,searchLoginTerm, searchEmailTerm);
     res.status(200).send(allUsers)
 });

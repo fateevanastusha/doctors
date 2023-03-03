@@ -50,10 +50,10 @@ exports.QueryRepository = {
             const skipSize = PageSize * (Page - 1);
             return db_1.usersCollection
                 .find({
-                $or: [{
-                        login: { $regex: searchLoginTerm, $options: 'i' },
-                        email: { $regex: searchEmailTerm, $options: 'i' }
-                    }]
+                $or: [
+                    { login: { $regex: searchLoginTerm, $options: 'i' } },
+                    { email: { $regex: searchEmailTerm, $options: 'i' } }
+                ]
             }, { projection: { _id: 0, password: 0 } })
                 .sort({ [sortBy]: sortDirection })
                 .skip(skipSize)
