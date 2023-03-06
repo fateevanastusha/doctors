@@ -16,8 +16,15 @@ describe('/blogs', () => {
 
     it ('GET EMPTY BLOG DATA BASE', async  () => {
         const res = await request(app).get('/blogs')
-        expect(res.body.items).toEqual([])
+        expect(res.body).toEqual({
+            pagesCount: 0,
+            page: 1,
+            pageSize: 10,
+            totalCount: 0,
+            items: []
+        })
     })
+
 
     let createResponse : any = null
 
