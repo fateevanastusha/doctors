@@ -16,6 +16,7 @@ const input_valudation_middleware_1 = require("../middlewares/input-valudation-m
 const posts_service_1 = require("../domain/posts-service");
 const blogs_service_1 = require("../domain/blogs-service");
 const pagination_helpers_1 = require("../helpers/pagination-helpers");
+const posts_db_repositiory_1 = require("../repositories/posts-db-repositiory");
 exports.basicAuth = require('express-basic-auth');
 exports.adminAuth = (0, exports.basicAuth)({ users: { 'admin': 'qwerty' } });
 //GET - return all
@@ -71,5 +72,15 @@ exports.postsRouter.put('/:id', exports.adminAuth, input_valudation_middleware_1
     }
     else {
         res.sendStatus(404);
+    }
+}));
+//CREATE COMMENT BY POST ID
+exports.postsRouter.post('/:id/comments', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const foundPost = yield posts_db_repositiory_1.postsRepository.returnPostById(req.params.id);
+    if (foundPost === null) {
+        res.sendStatus(404);
+    }
+    else {
+        const postId = req.params.id;
     }
 }));

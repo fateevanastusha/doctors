@@ -1,5 +1,5 @@
 import {authRepository} from "../repositories/auth-db-repository";
-import {Auth} from "../types/types";
+import {Auth, User} from "../types/types";
 
 export const authService = {
     async authRequest (auth : Auth) : Promise<boolean> {
@@ -9,5 +9,10 @@ export const authService = {
             loginOrEmail,
             password
         )
-    }
+    },
+    async authFindUser (loginOrEmail : string) : Promise<User | null> {
+        return await authRepository.authFindUser(
+            loginOrEmail
+        )
+    },
 }

@@ -77,7 +77,7 @@ usersRouter.post('/',
 
 usersRouter.delete('/:id', adminAuth, async (req: Request, res: Response) =>{
 
-    const status : boolean = await usersRepository.deleteUserById(req.params.id)
+    const status : boolean = await usersService.deleteUserById(req.params.id)
     if (status) {
         res.sendStatus(204)
     } else {

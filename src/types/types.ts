@@ -23,11 +23,19 @@ export type User = {
     email : string,
     password: string,
     createdAt: string
-
 }
 export type Auth = {
     loginOrEmail : string,
     password : string
+}
+export type Comment = {
+    id : string,
+    content : string,
+    commentatorInfo : [
+        userId : string,
+        userLogin : string
+    ],
+    createdAt: string
 }
 export type Paginator = {
     pagesCount: number,
@@ -35,4 +43,8 @@ export type Paginator = {
     pageSize: number,
     totalCount: number,
     items : Blog[] | Post[] | User[]
+}
+
+export type Token = {
+    accessToken : string
 }

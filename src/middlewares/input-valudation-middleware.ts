@@ -82,6 +82,8 @@ export const passwordAuthCheck = body ('password').trim().custom(checkForPasswor
 export const passwordCheck = body ('password').trim().isLength({min:6, max: 20}).isString()
 export const emailCheck =  body ('email').trim().custom(checkForExistingEmail).isEmail().isString()
 
+//check for comments
+export const commentContentCheck = body('content').trim().isLength({min:20, max: 300}).isString()
 
 
 

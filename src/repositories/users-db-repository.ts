@@ -26,7 +26,6 @@ export const usersRepository = {
     async returnUserByField(field : string) : Promise <User | null> {
         const user = await usersCollection
             .findOne({$or : [{login: field} , {email: field}]})
-        console.log(user)
         return user
 
 
@@ -38,7 +37,7 @@ export const usersRepository = {
         return user
 
     },
-    //get USER BY EMAIL
+    //get USER BY EMAIL OR LOGIN
     async returnUserByEmail(email : string) : Promise <User | null> {
         const user =  usersCollection
             .findOne({email : email}, {projection: {_id: 0}})

@@ -13,6 +13,7 @@ import {postsService} from "../domain/posts-service";
 import {blogsService} from "../domain/blogs-service";
 import {SortDirection} from "mongodb";
 import {paginationHelpers} from "../helpers/pagination-helpers";
+import {postsRepository} from "../repositories/posts-db-repositiory";
 
 
 export const basicAuth = require('express-basic-auth')
@@ -80,5 +81,16 @@ postsRouter.put('/:id', adminAuth, titleCheck, shortDescriptionCheck, contentChe
     else {
         res.sendStatus(404)
     }
-    
+})
+//CREATE COMMENT BY POST ID
+postsRouter.post('/:id/comments', async (req: Request, res: Response) => {
+    const foundPost : Post | null = await postsRepository.returnPostById(req.params.id)
+    if (foundPost === null) {
+        res.sendStatus(404)
+    } else {
+        const postId = req.params.id
+
+
+    }
+
 })

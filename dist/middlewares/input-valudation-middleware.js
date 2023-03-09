@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.emailCheck = exports.passwordCheck = exports.passwordAuthCheck = exports.loginCheck = exports.blogIdCheck = exports.contentCheck = exports.shortDescriptionCheck = exports.titleCheck = exports.checkForPasswordAuth = exports.checkForSameField = exports.checkForExistingEmail = exports.checkForExistingLogin = exports.findByIdBlogs = exports.websiteUrlCheck = exports.descriptionCheck = exports.nameCheck = exports.inputValidationMiddleware = void 0;
+exports.commentContentCheck = exports.emailCheck = exports.passwordCheck = exports.passwordAuthCheck = exports.loginCheck = exports.blogIdCheck = exports.contentCheck = exports.shortDescriptionCheck = exports.titleCheck = exports.checkForPasswordAuth = exports.checkForSameField = exports.checkForExistingEmail = exports.checkForExistingLogin = exports.findByIdBlogs = exports.websiteUrlCheck = exports.descriptionCheck = exports.nameCheck = exports.inputValidationMiddleware = void 0;
 const blogs_db_repositiory_1 = require("../repositories/blogs-db-repositiory");
 const express_validator_1 = require("express-validator");
 const users_db_repository_1 = require("../repositories/users-db-repository");
@@ -87,3 +87,5 @@ exports.loginCheck = (0, express_validator_1.body)('login').trim().custom(export
 exports.passwordAuthCheck = (0, express_validator_1.body)('password').trim().custom(exports.checkForPasswordAuth).isLength({ min: 6, max: 20 }).isString();
 exports.passwordCheck = (0, express_validator_1.body)('password').trim().isLength({ min: 6, max: 20 }).isString();
 exports.emailCheck = (0, express_validator_1.body)('email').trim().custom(exports.checkForExistingEmail).isEmail().isString();
+//check for comments
+exports.commentContentCheck = (0, express_validator_1.body)('content').trim().isLength({ min: 20, max: 300 }).isString();

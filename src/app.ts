@@ -6,6 +6,7 @@ import { authRouter } from "./routes/auth-router";
 import { postsRepository } from './repositories/posts-db-repositiory';
 import { blogsRepository } from './repositories/blogs-db-repositiory';
 import { usersRepository } from "./repositories/users-db-repository";
+import {commentsRouter} from "./routes/comments-router";
 
 export const app = express();
 
@@ -15,6 +16,7 @@ app.use('/blogs', blogsRouter)
 app.use('/posts', postsRouter)
 app.use('/users', usersRouter)
 app.use('/auth', authRouter)
+app.use('/comments', commentsRouter)
 
 //TESTING - DELETE ALL DATA
 app.delete('/testing/all-data', (req: Request,res: Response) => {
