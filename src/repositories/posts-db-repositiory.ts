@@ -8,13 +8,6 @@ export const postsRepository = {
         .find({}, {projection: {_id: 0}})
         .toArray()
   },
-
-  async returnBlogsCount(searchNameTerm : string) : Promise<number>{
-    return blogsCollection
-        .find({name: {$regex: searchNameTerm, $options : 'i'}})
-        .count()
-
-  },
   //return post by Id
   async returnPostById(id: string) : Promise<Post | null>{
     return postsCollection.findOne({id : id}, {projection: {_id: 0}});
