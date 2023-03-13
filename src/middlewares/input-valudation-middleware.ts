@@ -20,6 +20,20 @@ export const inputValidationMiddleware = (req: Request, res: Response, next: Nex
     }
     next()
 }
+export const createAccountValidationMiddleware = (req: Request, res: Response, next: NextFunction) => {
+    const error = validationResult(req)
+    if (!error.isEmpty()) {
+        return res.status(401).send({
+            errorsMessages: error.array({onlyFirstError: true}).map(e => {
+                return {
+                    message: e.msg,
+                    field: e.param
+                }
+            })
+        })
+    }
+    next()
+}
 //check for blog
 export const nameCheck = body('name').trim().isLength({min: 1, max: 15}).isString();
 export const descriptionCheck = body('description').trim().isLength({min: 1, max: 500}).isString();

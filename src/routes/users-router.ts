@@ -31,7 +31,8 @@ import {
     emailCheck,
     loginCheck,
     passwordCheck,
-    inputValidationMiddleware } from "../middlewares/input-valudation-middleware";
+    inputValidationMiddleware, createAccountValidationMiddleware
+} from "../middlewares/input-valudation-middleware";
 import {adminAuth} from "./blogs-router";
 import {paginationHelpers} from "../helpers/pagination-helpers";
 import {SortDirection} from "mongodb";
@@ -59,11 +60,10 @@ usersRouter.post('/',
     loginCheck,
     passwordCheck,
     emailCheck,
-    inputValidationMiddleware,
+    createAccountValidationMiddleware,
     async (req: Request, res: Response) =>{
 
     const newUser : User | null = await usersService.createNewUser(req.body);
-    console.log(newUser)
     if (!newUser) {
         res.sendStatus(404)
     } else {

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.commentContentCheck = exports.emailCheck = exports.passwordCheck = exports.passwordAuthCheck = exports.loginCheck = exports.blogIdCheck = exports.contentCheck = exports.shortDescriptionCheck = exports.titleCheck = exports.checkForPasswordAuth = exports.checkForSameField = exports.checkForExistingEmail = exports.checkForExistingLogin = exports.findByIdBlogs = exports.websiteUrlCheck = exports.descriptionCheck = exports.nameCheck = exports.inputValidationMiddleware = void 0;
+exports.commentContentCheck = exports.emailCheck = exports.passwordCheck = exports.passwordAuthCheck = exports.loginCheck = exports.blogIdCheck = exports.contentCheck = exports.shortDescriptionCheck = exports.titleCheck = exports.checkForPasswordAuth = exports.checkForSameField = exports.checkForExistingEmail = exports.checkForExistingLogin = exports.findByIdBlogs = exports.websiteUrlCheck = exports.descriptionCheck = exports.nameCheck = exports.createAccountValidationMiddleware = exports.inputValidationMiddleware = void 0;
 const blogs_db_repositiory_1 = require("../repositories/blogs-db-repositiory");
 const express_validator_1 = require("express-validator");
 const users_db_repository_1 = require("../repositories/users-db-repository");
@@ -29,6 +29,21 @@ const inputValidationMiddleware = (req, res, next) => {
     next();
 };
 exports.inputValidationMiddleware = inputValidationMiddleware;
+const createAccountValidationMiddleware = (req, res, next) => {
+    const error = (0, express_validator_1.validationResult)(req);
+    if (!error.isEmpty()) {
+        return res.status(401).send({
+            errorsMessages: error.array({ onlyFirstError: true }).map(e => {
+                return {
+                    message: e.msg,
+                    field: e.param
+                };
+            })
+        });
+    }
+    next();
+};
+exports.createAccountValidationMiddleware = createAccountValidationMiddleware;
 //check for blog
 exports.nameCheck = (0, express_validator_1.body)('name').trim().isLength({ min: 1, max: 15 }).isString();
 exports.descriptionCheck = (0, express_validator_1.body)('description').trim().isLength({ min: 1, max: 500 }).isString();

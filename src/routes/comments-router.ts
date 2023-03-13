@@ -30,7 +30,6 @@ commentsRouter.delete('/:id', authMiddlewares, async (req : Request, res: Respon
 //UPDATE COMMENT BY ID
 commentsRouter.put('/:id', authMiddlewares, commentContentCheck, inputValidationMiddleware, async (req : Request, res: Response) => {
     const status : boolean = await commentsService.updateCommentById(req.body.content, req.params.id)
-    console.log("this status is " + status)
     if (status) {
         res.sendStatus(204)
     } else {
