@@ -3,7 +3,7 @@ import {
     Response,
     Router} from "express";
 import {commentsService} from "../domain/comments-service";
-import {commentContentCheck} from "../middlewares/input-valudation-middleware";
+import {commentContentCheck, inputValidationMiddleware} from "../middlewares/input-valudation-middleware";
 import {authMiddlewares} from "../middlewares/auth-middlewares";
 
 export const commentsRouter = Router()
@@ -28,7 +28,7 @@ commentsRouter.delete('/:id', authMiddlewares, async (req : Request, res: Respon
 
 });
 //UPDATE COMMENT BY ID
-commentsRouter.put('/:id', authMiddlewares, commentContentCheck, async (req : Request, res: Response) => {
+commentsRouter.put('/:id', authMiddlewares, commentContentCheck, inputValidationMiddleware, async (req : Request, res: Response) => {
     const status : boolean = await commentsService.updateCommentById(req.body.content, req.params.id)
     console.log("this status is " + status)
     if (status) {
