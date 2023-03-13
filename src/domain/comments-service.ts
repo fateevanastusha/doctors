@@ -13,8 +13,9 @@ export const commentsService = {
     async deleteCommentById (id: string) : Promise<boolean> {
         return commentsRepository.deleteCommentById(id)
     },
-    async updateCommentById (comment: Comment, id: string) : Promise <boolean> {
-        return await commentsRepository.updateCommentById(comment, id)
+    async updateCommentById (content: string, id: string) : Promise <boolean> {
+        console.log("service " + content)
+        return await commentsRepository.updateCommentById(content, id)
     },
     async createComment(postId : string, userId: string, content : string) : Promise <Comment | null> {
         const user : User | null = await usersService.getUserById(userId)

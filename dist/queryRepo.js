@@ -38,7 +38,7 @@ exports.QueryRepository = {
         return __awaiter(this, void 0, void 0, function* () {
             const skipSize = PageSize * (Page - 1);
             return db_1.commentsCollection
-                .find({ postId: postId }, { projection: { _id: 0 } })
+                .find({ postId: postId }, { projection: { _id: 0, postId: 0 } })
                 .sort({ [sortBy]: sortDirection })
                 .skip(skipSize)
                 .limit(PageSize)

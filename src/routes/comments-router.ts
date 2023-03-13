@@ -10,7 +10,7 @@ export const commentsRouter = Router()
 
 //GET COMMENT BY ID
 commentsRouter.get('/:id', async (req : Request, res: Response) => {
-    const comment = commentsService.getCommentById(req.params.id);
+    const comment = await commentsService.getCommentById(req.params.id);
     if (!comment) {
         res.sendStatus(404)
     } else {
@@ -29,7 +29,8 @@ commentsRouter.delete('/:id', authMiddlewares, async (req : Request, res: Respon
 });
 //UPDATE COMMENT BY ID
 commentsRouter.put('/:id', authMiddlewares, commentContentCheck, async (req : Request, res: Response) => {
-    const status : boolean = await commentsService.updateCommentById(req.body, req.params.id)
+    const status : boolean = await commentsService.updateCommentById(req.body.content, req.params.id)
+    console.log("this status is " + status)
     if (status) {
         res.sendStatus(204)
     } else {
