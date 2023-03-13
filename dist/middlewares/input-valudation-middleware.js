@@ -59,17 +59,19 @@ exports.findByIdBlogs = findByIdBlogs;
 //check for unique login
 const checkForExistingLogin = (login) => __awaiter(void 0, void 0, void 0, function* () {
     const User = yield users_db_repository_1.usersRepository.returnUserByLogin(login);
-    if (User !== null) {
+    if (User) {
         throw new Error('login is already exist');
     }
+    return true;
 });
 exports.checkForExistingLogin = checkForExistingLogin;
 //check for unique email
 const checkForExistingEmail = (email) => __awaiter(void 0, void 0, void 0, function* () {
     const User = yield users_db_repository_1.usersRepository.returnUserByEmail(email);
-    if (User !== null) {
+    if (User) {
         throw new Error('email is already exist');
     }
+    return true;
 });
 exports.checkForExistingEmail = checkForExistingEmail;
 const checkForSameField = (field) => __awaiter(void 0, void 0, void 0, function* () {
@@ -98,9 +100,9 @@ exports.shortDescriptionCheck = (0, express_validator_1.body)('shortDescription'
 exports.contentCheck = (0, express_validator_1.body)('content').trim().isLength({ min: 1, max: 1000 }).isString();
 exports.blogIdCheck = (0, express_validator_1.body)('blogId').trim().custom(exports.findByIdBlogs).isString();
 //check for user
-exports.loginCheck = (0, express_validator_1.body)('login').trim().custom(exports.checkForExistingLogin).isLength({ min: 3, max: 10 }).isString();
+exports.loginCheck = (0, express_validator_1.body)('login').isString().trim().notEmpty().isLength({ min: 3, max: 10 }).custom(exports.checkForExistingLogin);
 exports.passwordAuthCheck = (0, express_validator_1.body)('password').trim().custom(exports.checkForPasswordAuth).isLength({ min: 6, max: 20 }).isString();
 exports.passwordCheck = (0, express_validator_1.body)('password').trim().isLength({ min: 6, max: 20 }).isString();
-exports.emailCheck = (0, express_validator_1.body)('email').trim().custom(exports.checkForExistingEmail).isEmail().isString();
+exports.emailCheck = (0, express_validator_1.body)('email').isString().isEmail().trim().custom(exports.checkForExistingEmail);
 //check for comments
 exports.commentContentCheck = (0, express_validator_1.body)('content').trim().isLength({ min: 20, max: 300 }).isString();

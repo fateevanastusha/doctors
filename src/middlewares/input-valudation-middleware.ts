@@ -50,16 +50,18 @@ export const findByIdBlogs : CustomValidator = async value => {
 //check for unique login
 export const checkForExistingLogin : CustomValidator = async login => {
     const User = await usersRepository.returnUserByLogin(login)
-    if (User !== null) {
+    if (User) {
         throw new Error('login is already exist')
     }
+    return true
 }
 //check for unique email
 export const checkForExistingEmail : CustomValidator = async email => {
     const User = await usersRepository.returnUserByEmail(email)
-    if (User !== null) {
+    if (User) {
         throw new Error('email is already exist')
     }
+    return true
 }
 
 export const checkForSameField : CustomValidator = async field => {
@@ -91,10 +93,10 @@ export const contentCheck = body('content').trim().isLength({min:1, max: 1000}).
 export const blogIdCheck = body('blogId').trim().custom(findByIdBlogs).isString()
 
 //check for user
-export const loginCheck = body('login').trim().custom(checkForExistingLogin).isLength({min:3, max: 10}).isString()
+export const loginCheck = body('login').isString().trim().notEmpty().isLength({min:3, max: 10}).custom(checkForExistingLogin)
 export const passwordAuthCheck = body ('password').trim().custom(checkForPasswordAuth).isLength({min:6, max: 20}).isString()
 export const passwordCheck = body ('password').trim().isLength({min:6, max: 20}).isString()
-export const emailCheck =  body ('email').trim().custom(checkForExistingEmail).isEmail().isString()
+export const emailCheck =  body ('email').isString().isEmail().trim().custom(checkForExistingEmail)
 
 //check for comments
 export const commentContentCheck = body('content').trim().isLength({min:20, max: 300}).isString()
