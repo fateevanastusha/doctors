@@ -56,7 +56,6 @@ usersRouter.get('/', adminAuth, async (req: Request, res: Response) =>{
 //POST USER WITH AUTH
 
 usersRouter.post('/',
-    adminAuth,
     loginCheck,
     passwordCheck,
     emailCheck,

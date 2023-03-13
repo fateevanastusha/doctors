@@ -31,18 +31,19 @@ export type Auth = {
 export type Comment = {
     id : string,
     content : string,
-    commentatorInfo : [
-        userId : string,
-        userLogin : string
-    ],
-    createdAt: string
+    commentatorInfo : {
+        userId: string,
+        userLogin: string
+    },
+    createdAt: string,
+    postId : string
 }
 export type Paginator = {
     pagesCount: number,
     page: number,
     pageSize: number,
     totalCount: number,
-    items : Blog[] | Post[] | User[]
+    items : Blog[] | Post[] | User[] | Comment []
 }
 
 export type Token = {

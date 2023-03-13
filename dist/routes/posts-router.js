@@ -17,6 +17,9 @@ const posts_service_1 = require("../domain/posts-service");
 const blogs_service_1 = require("../domain/blogs-service");
 const pagination_helpers_1 = require("../helpers/pagination-helpers");
 const posts_db_repositiory_1 = require("../repositories/posts-db-repositiory");
+const auth_middlewares_1 = require("../middlewares/auth-middlewares");
+const jwt_service_1 = require("../application/jwt-service");
+const comments_service_1 = require("../domain/comments-service");
 exports.basicAuth = require('express-basic-auth');
 exports.adminAuth = (0, exports.basicAuth)({ users: { 'admin': 'qwerty' } });
 //GET - return all
@@ -75,12 +78,38 @@ exports.postsRouter.put('/:id', exports.adminAuth, input_valudation_middleware_1
     }
 }));
 //CREATE COMMENT BY POST ID
-exports.postsRouter.post('/:id/comments', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.postsRouter.post('/:id/comments', auth_middlewares_1.authMiddlewares, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    debugger;
     const foundPost = yield posts_db_repositiory_1.postsRepository.returnPostById(req.params.id);
     if (foundPost === null) {
         res.sendStatus(404);
     }
     else {
         const postId = req.params.id;
+        let userId = yield jwt_service_1.jwtService.getUserByIdToken(req.headers.authorization.split(" ")[1]);
+        if (userId !== null) {
+            userId = userId.id;
+            const createdComment = comments_service_1.commentsService.createComment(postId, userId, req.body.content);
+            if (createdComment) {
+                res.status(201).send(createdComment);
+            }
+            else {
+                res.sendStatus(401);
+            }
+        }
+    }
+}));
+exports.postsRouter.get('/:id/comments', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const foundPost = yield posts_service_1.postsService.returnPostById(req.params.id);
+    if (foundPost === null) {
+        res.sendStatus(404);
+    }
+    else {
+        let pageSize = pagination_helpers_1.paginationHelpers.pageSize(req.query.pageSize);
+        let pageNumber = pagination_helpers_1.paginationHelpers.pageNumber(req.query.pageNumber);
+        let sortBy = pagination_helpers_1.paginationHelpers.sortBy(req.query.sortBy);
+        let sortDirection = pagination_helpers_1.paginationHelpers.sortDirection(req.query.sortDirection);
+        const foundComments = yield comments_service_1.commentsService.getAllCommentsByPostId(pageSize, pageNumber, sortBy, sortDirection, req.params.id);
+        res.status(200).send(foundComments);
     }
 }));
