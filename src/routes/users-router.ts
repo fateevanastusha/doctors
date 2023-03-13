@@ -8,7 +8,7 @@ import {
     emailCheck,
     loginCheck,
     passwordCheck,
-    inputValidationMiddleware
+    inputValidationMiddleware, createAccountValidationMiddleware
 } from "../middlewares/input-valudation-middleware";
 import {adminAuth} from "./blogs-router";
 import {paginationHelpers} from "../helpers/pagination-helpers";
@@ -37,7 +37,7 @@ usersRouter.post('/',
     loginCheck,
     passwordCheck,
     emailCheck,
-    inputValidationMiddleware,
+    createAccountValidationMiddleware,
     async (req: Request, res: Response) =>{
 
     const newUser : User | null = await usersService.createNewUser(req.body);
