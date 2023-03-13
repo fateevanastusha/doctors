@@ -60,7 +60,7 @@ usersRouter.post('/',
     loginCheck,
     passwordCheck,
     emailCheck,
-    createAccountValidationMiddleware,
+    inputValidationMiddleware,
     async (req: Request, res: Response) =>{
 
     const newUser : User | null = await usersService.createNewUser(req.body);

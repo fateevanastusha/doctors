@@ -1,10 +1,8 @@
 import { NextFunction } from "express";
 import { Response, Request } from "express";
-import { CustomValidator } from "express-validator/src/base";
-import { body, validationResult } from 'express-validator';
 import {jwtService} from "../application/jwt-service";
 import {commentsService} from "../domain/comments-service";
-import {commentsRouter} from "../routes/comments-router";
+
 
 export const authMiddlewares = async (req: Request, res: Response, next: NextFunction) => {
     if (!req.headers.authorization) {
