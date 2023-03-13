@@ -78,7 +78,7 @@ exports.postsRouter.put('/:id', exports.adminAuth, input_valudation_middleware_1
     }
 }));
 //CREATE COMMENT BY POST ID
-exports.postsRouter.post('/:id/comments', auth_middlewares_1.authMiddlewares, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.postsRouter.post('/:id/comments', auth_middlewares_1.authMiddlewares, input_valudation_middleware_1.commentContentCheck, input_valudation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const foundPost = yield posts_db_repositiory_1.postsRepository.returnPostById(req.params.id);
     if (foundPost === null) {
         res.sendStatus(404);

@@ -3,7 +3,7 @@ export const postsRouter = Router()
 import {Request, Response} from 'express'
 import {Post, Blog} from "../types/types";
 import {
-    blogIdCheck,
+    blogIdCheck, commentContentCheck,
     contentCheck,
     inputValidationMiddleware,
     shortDescriptionCheck,
@@ -88,7 +88,7 @@ postsRouter.put('/:id', adminAuth, titleCheck, shortDescriptionCheck, contentChe
     }
 })
 //CREATE COMMENT BY POST ID
-postsRouter.post('/:id/comments', authMiddlewares, async (req: Request, res: Response) => {
+postsRouter.post('/:id/comments', authMiddlewares, commentContentCheck, inputValidationMiddleware, async (req: Request, res: Response) => {
     const foundPost : Post | null = await postsRepository.returnPostById(req.params.id)
     if (foundPost === null) {
         res.sendStatus(404)
