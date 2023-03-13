@@ -29,5 +29,10 @@ export const commentsRepository = {
         return commentsCollection
             .find({postId : postId}, {projection: {_id: 0, postId: 0}})
             .toArray()
+    },
+    async commentsCount() : Promise<number> {
+        return commentsCollection
+            .find()
+            .count()
     }
 }
