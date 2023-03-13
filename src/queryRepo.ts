@@ -24,7 +24,7 @@ export const QueryRepository = {
     async PaginatorForCommentsByBlogId(PageCount: number, PageSize: number, Page: number, sortBy: string, sortDirection: SortDirection, postId : string): Promise<Comment[]> {
         const skipSize: number = PageSize * (Page - 1)
         return commentsCollection
-            .find({postId : postId}, {projection: {_id: 0}})
+            .find({postId : postId}, {projection: {_id: 0, postId : 0}})
             .sort({[sortBy]: sortDirection})
             .skip(skipSize)
             .limit(PageSize)
