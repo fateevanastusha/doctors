@@ -28,14 +28,13 @@ export const commentsService = {
             createdAt: new Date().toISOString(),
             postId : postId
         }
-        const createdComment = await commentsRepository.createNewComment(comment);
-        return createdComment;
+        return commentsRepository.createNewComment(comment);
     },
     async getAllCommentsByPostId(PageSize: number, Page: number, sortBy : string, sortDirection: SortDirection, postId: string) : Promise<Paginator> {
         const total = (await postsRepository.returnAllPost()).length
         const PageCount = Math.ceil( total / PageSize)
         const Items = await QueryRepository.PaginatorForCommentsByBlogId(PageCount, PageSize, Page, sortBy, sortDirection, postId);
-        return await QueryRepository.PaginationForm(PageCount, PageSize, Page, total, Items)
+        return QueryRepository.PaginationForm(PageCount, PageSize, Page, total, Items)
     }
 
 }

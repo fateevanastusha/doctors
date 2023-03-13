@@ -17,8 +17,9 @@ export const commentsRepository = {
     },
     async createNewComment(comment: Comment) : Promise <Comment | null> {
         await commentsCollection.insertOne(comment)
-        const createdComment = this.getCommentById(comment.id)
+        const createdComment = await this.getCommentById(comment.id)
         if (createdComment) {
+            console.log('hello there')
             return createdComment
         } else {
             return null

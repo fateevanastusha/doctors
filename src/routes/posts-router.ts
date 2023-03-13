@@ -89,22 +89,19 @@ postsRouter.put('/:id', adminAuth, titleCheck, shortDescriptionCheck, contentChe
 })
 //CREATE COMMENT BY POST ID
 postsRouter.post('/:id/comments', authMiddlewares, async (req: Request, res: Response) => {
-    debugger;
     const foundPost : Post | null = await postsRepository.returnPostById(req.params.id)
     if (foundPost === null) {
         res.sendStatus(404)
     } else {
         const postId = req.params.id
         let userId = await jwtService.getUserByIdToken(req.headers.authorization!.split(" ")[1])
-        if (userId !== null) {
-            userId = userId.id
-            const createdComment = commentsService.createComment(postId, userId, req.body.content)
+        console.log(userId)
+            const createdComment = await commentsService.createComment(postId, userId, req.body.content)
             if (createdComment) {
                 res.status(201).send(createdComment)
             } else {
                 res.sendStatus(401)
             }
-        }
     }
 })
 postsRouter.get('/:id/comments', async (req: Request, res: Response) => {

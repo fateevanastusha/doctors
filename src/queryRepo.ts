@@ -1,5 +1,5 @@
 import {Blog, Paginator, Post, User, Comment} from "./types/types";
-import {blogsCollection, postsCollection, usersCollection} from "./db/db";
+import {blogsCollection, commentsCollection, postsCollection, usersCollection} from "./db/db";
 import {SortDirection} from "mongodb";
 
 export const QueryRepository = {
@@ -21,9 +21,9 @@ export const QueryRepository = {
             .limit(PageSize)
             .toArray()
     },
-    async PaginatorForCommentsByBlogId(PageCount: number, PageSize: number, Page: number, sortBy: string, sortDirection: SortDirection, postId : string): Promise<Post[]> {
+    async PaginatorForCommentsByBlogId(PageCount: number, PageSize: number, Page: number, sortBy: string, sortDirection: SortDirection, postId : string): Promise<Comment[]> {
         const skipSize: number = PageSize * (Page - 1)
-        return postsCollection
+        return commentsCollection
             .find({postId : postId}, {projection: {_id: 0}})
             .sort({[sortBy]: sortDirection})
             .skip(skipSize)
