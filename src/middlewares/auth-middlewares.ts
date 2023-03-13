@@ -5,6 +5,7 @@ import {commentsService} from "../domain/comments-service";
 
 
 export const authMiddlewares = async (req: Request, res: Response, next: NextFunction) => {
+
     if (!req.headers.authorization) {
         res.sendStatus(401)
     } else {
@@ -21,11 +22,13 @@ export const authMiddlewares = async (req: Request, res: Response, next: NextFun
 export const checkForUser = async (req: Request, res: Response, next: NextFunction) => {
     const token : string = req.headers.authorization!.split(" ")[1]
     const userId = await jwtService.getUserByIdToken(token)
+    console.log(req.method, 'before get comment')
     const comment = await commentsService.getCommentById(req.params.id)
+    console.log(comment, 'after get comment')
     if (!comment) {
         res.sendStatus(404)
     }
-    if (comment!.commentatorInfo.userId === userId) {
+    else if (comment.commentatorInfo.userId === userId) {
         next()
     } else {
         res.sendStatus(403)
