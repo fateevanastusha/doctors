@@ -95,7 +95,6 @@ postsRouter.post('/:id/comments', authMiddlewares, commentContentCheck, inputVal
     } else {
         const postId = req.params.id
         let userId = await jwtService.getUserByIdToken(req.headers.authorization!.split(" ")[1])
-        console.log(userId)
             const createdComment = await commentsService.createComment(postId, userId, req.body.content)
             if (createdComment) {
                 res.status(201).send(createdComment)

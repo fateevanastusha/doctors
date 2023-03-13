@@ -86,7 +86,6 @@ exports.postsRouter.post('/:id/comments', auth_middlewares_1.authMiddlewares, in
     else {
         const postId = req.params.id;
         let userId = yield jwt_service_1.jwtService.getUserByIdToken(req.headers.authorization.split(" ")[1]);
-        console.log(userId);
         const createdComment = yield comments_service_1.commentsService.createComment(postId, userId, req.body.content);
         if (createdComment) {
             res.status(201).send(createdComment);
