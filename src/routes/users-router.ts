@@ -1,37 +1,14 @@
-//POST auth/login - 204 correct login and password 400 incorrect values + add tokens (login/email) + гтдщпшт
-
-//GET /users
-//POST /users
-//DELETE /users/id
-
-/*
-USER:
-
-id ( not in view model)
-username
-login
-email
-password ( not in view model)
-
- */
-
-//Аользователи из сестемы не должны удаляться навсегда, они должны соханяться в базе данных
-//Pagination
-//Уникальность на login и email
-
-
 import {
     Request,
     Response,
     Router} from "express";
 import {usersService} from "../domain/users-service";
-import {usersRepository} from "../repositories/users-db-repository";
 import {User} from "../types/types";
 import {
     emailCheck,
     loginCheck,
     passwordCheck,
-    inputValidationMiddleware, createAccountValidationMiddleware
+    inputValidationMiddleware
 } from "../middlewares/input-valudation-middleware";
 import {adminAuth} from "./blogs-router";
 import {paginationHelpers} from "../helpers/pagination-helpers";

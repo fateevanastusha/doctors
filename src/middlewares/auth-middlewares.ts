@@ -22,6 +22,9 @@ export const checkForUser = async (req: Request, res: Response, next: NextFuncti
     const token : string = req.headers.authorization!.split(" ")[1]
     const userId = await jwtService.getUserByIdToken(token)
     const comment = await commentsService.getCommentById(req.params.id)
+    if (!comment) {
+        res.sendStatus(404)
+    }
     if (comment!.commentatorInfo.userId === userId) {
         next()
     } else {

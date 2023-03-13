@@ -5,8 +5,6 @@ import {
 import {commentsService} from "../domain/comments-service";
 import {commentContentCheck, inputValidationMiddleware} from "../middlewares/input-valudation-middleware";
 import {authMiddlewares, checkForUser} from "../middlewares/auth-middlewares";
-import {jwtService} from "../application/jwt-service";
-import {usersService} from "../domain/users-service";
 
 export const commentsRouter = Router()
 
