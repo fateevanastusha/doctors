@@ -58,9 +58,9 @@ blogsRouter.post('/',
     descriptionCheck,
     websiteUrlCheck,
     inputValidationMiddleware,
-    async(req: Request, res: Response)=> {
-    const newBlog : Blog| null = await blogsService.createNewBlog(req.body);
-    res.status(201).send(newBlog);
+    async(req: Request, res: Response) => {
+        const newBlog : Blog| null = await blogsService.createNewBlog(req.body);
+        res.status(201).send(newBlog);
 
 });
 //PUT - update
