@@ -16,9 +16,8 @@ import {paginationHelpers} from "../helpers/pagination-helpers";
 import {postsRepository} from "../repositories/posts-db-repositiory";
 import {authMiddlewares} from "../middlewares/auth-middlewares";
 import {jwtService} from "../application/jwt-service";
-import {commentsRepository} from "../repositories/comments-db-repository";
 import {commentsService} from "../domain/comments-service";
-import {commentsRouter} from "./comments-router";
+
 
 
 export const basicAuth = require('express-basic-auth')

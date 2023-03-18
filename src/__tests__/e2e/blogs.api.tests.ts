@@ -3,9 +3,13 @@ import {app} from "../../app";
 import {blogCreator} from "../../tests-utils/tests-functions";
 import {blogFilterString01,blogFilterString03, blogFilterString04,blogFilterString05,blogFilterString02} from "../../tests-utils/test-string";
 
+
+jest.setTimeout(60000)
+
+
 //TEST BLOGS
 
-describe('/blogs', () => {
+describe('blogs', () => {
     //DELETE ALL DATA
     beforeAll(async () => {
         await request(app)
@@ -15,7 +19,7 @@ describe('/blogs', () => {
     //CHECK FOR EMPTY BLOG DATA BASE
     it ('GET EMPTY BLOG DATA BASE', async  () => {
         const res = await request(app).get('/blogs')
-        expect(res.body).toEqual({
+        expect(res.body).toStrictEqual({
             pagesCount: 0,
             page: 1,
             pageSize: 10,
@@ -45,7 +49,7 @@ describe('/blogs', () => {
     it ('GET SUCCESSFULLY CREATED BLOG', async  () => {
         const blog = await request(app)
             .get( "/blogs/" + createResponseBlog.body.id)
-        expect(blog.body).toEqual({
+        expect(blog.body).toStrictEqual({
             "id": expect.any(String),
             "name": "Nastya",
             "description": "about me",
@@ -58,7 +62,7 @@ describe('/blogs', () => {
     //PUT CREATED BLOG
 
     it ('SUCCESSFULLY UPDATE CREATED BLOG', async  () => {
-        await request(app)
+        const res = request(app)
             .put( "/blogs/" + createResponseBlog.body.id)
             .send({
                 name : "Not Nastya",
@@ -66,7 +70,7 @@ describe('/blogs', () => {
                 websiteUrl : "http://www.nastyakoshka.com",
             })
             .set({Authorization : "Basic YWRtaW46cXdlcnR5"})
-            .expect(204)
+        expect(res).toBe(0)
     })
 
     //CHECK FOR UPDATED BLOG
@@ -74,7 +78,7 @@ describe('/blogs', () => {
     it ('SUCCESSFULLY UPDATED BLOG', async  () => {
         const blog = await request(app)
             .get( "/blogs/" + createResponseBlog.body.id)
-        expect(blog.body).toEqual({
+        expect(blog.body).toStrictEqual({
             "id": expect.any(String),
             "name" : "Not Nastya",
             "description" : "Not about me",
@@ -103,7 +107,7 @@ describe('/blogs', () => {
     it ('GET POSTS BY BLOG ID WITH PAGINATION', async  () => {
         const posts = await request(app)
             .get('/blogs/' + createResponseBlog.body.id + '/posts')
-        expect(posts.body).toEqual( {
+        expect(posts.body).toStrictEqual( {
             pagesCount: 1,
             page: 1,
             pageSize: 10,

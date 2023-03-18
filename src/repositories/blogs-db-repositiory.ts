@@ -43,13 +43,7 @@ export const blogsRepository = {
     },
     //PUT - update
     async updateBlogById(blog : Blog, id: string) : Promise <boolean>{
-        const result = await blogsCollection.updateOne({id: id}, { $set:
-                {
-                name : blog.name,
-                description : blog.description,
-                websiteUrl : blog.websiteUrl,
-                }
-        })
+        const result = await blogsCollection.updateOne({id: id}, { $set: blog})
         return result.matchedCount === 1
     }, 
 };

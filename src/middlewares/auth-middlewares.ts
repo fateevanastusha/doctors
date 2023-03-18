@@ -22,9 +22,7 @@ export const authMiddlewares = async (req: Request, res: Response, next: NextFun
 export const checkForUser = async (req: Request, res: Response, next: NextFunction) => {
     const token : string = req.headers.authorization!.split(" ")[1]
     const userId = await jwtService.getUserByIdToken(token)
-    console.log(req.method, 'before get comment')
     const comment = await commentsService.getCommentById(req.params.id)
-    console.log(comment, 'after get comment')
     if (!comment) {
         res.sendStatus(404)
     }
