@@ -1,7 +1,8 @@
 import {authRepository} from "../repositories/auth-db-repository";
-import {Auth, Token, User} from "../types/types";
+import {Auth, User} from "../types/types";
 import {jwtService} from "../application/jwt-service";
 import {usersService} from "./users-service";
+import e from "express";
 
 export const authService = {
     async authRequest (auth : Auth) : Promise<boolean> {
@@ -22,4 +23,12 @@ export const authService = {
             loginOrEmail
         )
     },
+    async checkForConfirmationCode (confirmationCode : string) : Promise <boolean>  {
+        const status: boolean = await authRepository.checkForConfirmationCode(confirmationCode)
+        if (!status) return false
+        return authRepository.changeConfirmatedStatus(confirmationCode)
+    },
+    async updateConfirmationCode (confirmationCode : string, email : string) : Promise <boolean> {
+        return authRepository.changeConfirmationCode(confirmationCode,email)
+    }
 }

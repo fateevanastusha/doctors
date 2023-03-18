@@ -7,7 +7,7 @@ export const emailRouter = Router()
 
 
 emailRouter.post('/send', async (req: Request, res: Response) => {
-    // create reusable transporter object using the default SMTP transport
+
     let transport = nodemailer.createTransport({
         service: "gmail",
         auth: {

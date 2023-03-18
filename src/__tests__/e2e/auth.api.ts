@@ -46,7 +46,9 @@ describe('auth', () => {
                         id : createResponseUser.body.id,
                         login : "nastya",
                         email: "anastasiafateeva2406@gmail.com",
-                        createdAt: expect.any(String)
+                        createdAt: expect.any(String),
+                        isConfirmed : true,
+                        confirmedCode : null
                     }
                 ]
             }
@@ -158,7 +160,7 @@ describe('auth', () => {
             login : "nastya",
             email : "anastasiafateeva2406@gmail.com",
             id: createResponseUser.body.id,
-            createdAt : expect.any(String)
+            createdAt : expect.any(String),
         })
     })
 

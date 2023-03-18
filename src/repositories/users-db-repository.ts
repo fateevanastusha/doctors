@@ -5,7 +5,7 @@ export const usersRepository = {
     //return ALL USERS
     async returnAllUsers() : Promise <User[]> {
         return usersCollection
-            .find({projection: {_id: 0, password : 0}})
+            .find({projection: {_id: 0, password : 0, confirmedCode : 0}})
             .toArray()
     },
     async returnUsersCount(searchLoginTerm : string, searchEmailTerm : string) : Promise<number>{
@@ -19,7 +19,7 @@ export const usersRepository = {
     //return USER BY ID
     async returnUserById(id : string) : Promise <User | null> {
        return usersCollection
-            .findOne({id: id}, {projection: {_id: 0, password : 0}})
+            .findOne({id: id}, {projection: {_id: 0, password : 0,  isConfirmed: 0, confirmedCode : 0}})
 
     },
     //return USER BY FIELD

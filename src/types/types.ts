@@ -22,7 +22,9 @@ export type User = {
     login : string,
     email : string,
     password: string,
-    createdAt: string
+    createdAt: string,
+    isConfirmed: boolean,
+    confirmedCode : string | null
 }
 export type Auth = {
     loginOrEmail : string,

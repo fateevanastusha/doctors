@@ -19,14 +19,16 @@ export const usersService = {
         return await usersRepository.returnUserById(id)
     },
     //CREATE NEW USER
-    async createNewUser(user : User) : Promise<User | null>{
+    async createNewUser(user : User, isConfirmed : boolean = true, confirmationCode : null | string = null) : Promise<User | null>{
         const hash = bcrypt.hashSync(user.password, 10)
         const newUser =  {
             id: (+new Date()).toString(),
             login: user.login,
             email: user.email,
             password : hash,
-            createdAt: new Date().toISOString()
+            createdAt: new Date().toISOString(),
+            isConfirmed: isConfirmed,
+            confirmedCode : confirmationCode
         }
         const createdUser = await usersRepository.createNewUser(newUser)
         return createdUser

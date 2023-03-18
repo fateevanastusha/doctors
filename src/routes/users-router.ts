@@ -48,6 +48,7 @@ usersRouter.post('/',
         res.status(201).send(newUser)
     }
 
+
 });
 
 //DELETE USER BY ID WITH AUTH

@@ -5,6 +5,16 @@ import {
 import {authService} from "../domain/auth-service";
 import {jwtService} from "../application/jwt-service";
 import {Token, User} from "../types/types";
+import {
+    confirmationCodeCheck,
+    emailCheck,
+    inputValidationMiddleware,
+    loginCheck,
+    passwordCheck
+} from "../middlewares/input-valudation-middleware";
+import {usersRouter} from "./users-router";
+import {usersService} from "../domain/users-service";
+import {businessService} from "../domain/business-service";
 
 export const authRouter = Router()
 
@@ -25,9 +35,7 @@ authRouter.post('/login', async (req: Request, res: Response) => {
 
 authRouter.get('/me', async (req: Request, res: Response) => {
     const token : string = req.body.accessToken
-    console.log(token)
     const user : User | null = await authService.getUserByToken(token)
-    console.log(user)
     if (user) {
         res.status(200).send(user)
     }
@@ -38,6 +46,52 @@ authRouter.get('/me', async (req: Request, res: Response) => {
 
 //REGISTRATION IN THE SYSTEM
 
-authRouter.post('/registration', async (req: Request, res: Response) => {
+authRouter.post('/registration',
+    loginCheck,
+    passwordCheck,
+    emailCheck,
+    inputValidationMiddleware, async (req: Request, res: Response) => {
+
+    let confirmationCode : string = (+new Date()).toString()
+
+    //CREATE NEW USER
+    const user : User | null = await usersService.createNewUser(req.body, false, confirmationCode)
+    if (!user) {
+        res.sendStatus(404)
+    }
+    //SEND EMAIL
+    await businessService.sendConfirmationCode(req.body.email, confirmationCode)
+    if (confirmationCode) {
+        res.sendStatus(204)
+    }
 
 })
+
+//CODE CONFIRMATION
+
+authRouter.post('/registration-confirmation', confirmationCodeCheck, async (req: Request, res: Response) => {
+    const confirmationCode : string = req.body.code
+    const status = await authService.checkForConfirmationCode(confirmationCode)
+    if (!status) res.sendStatus(400)
+    res.sendStatus(204)
+})
+
+//RESEND CODE CONFIRMATION
+
+authRouter.post('/registration-email-resending', async (req: Request, res: Response) => {
+
+        let confirmationCode : string = (+new Date()).toString()
+        let email : string = req.body.email
+
+        //UPDATE CONFIRMATION CODE
+        const status = await authService.updateConfirmationCode(confirmationCode, email)
+        if (!status) {
+            res.sendStatus(400)
+        }
+        //SEND EMAIL
+        await businessService.sendConfirmationCode(req.body.email, confirmationCode)
+        if (confirmationCode) {
+            res.sendStatus(204)
+        }
+
+    })
