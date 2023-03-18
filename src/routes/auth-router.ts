@@ -7,7 +7,7 @@ import {jwtService} from "../application/jwt-service";
 import {Token, User} from "../types/types";
 import {
     confirmationCodeCheck,
-    emailCheck,
+    emailCheck, emailExistingCheck,
     inputValidationMiddleware,
     loginCheck,
     passwordCheck
@@ -78,7 +78,7 @@ authRouter.post('/registration-confirmation', confirmationCodeCheck, async (req:
 
 //RESEND CODE CONFIRMATION
 
-authRouter.post('/registration-email-resending', async (req: Request, res: Response) => {
+authRouter.post('/registration-email-resending', emailExistingCheck, async (req: Request, res: Response) => {
 
         let confirmationCode : string = (+new Date()).toString()
         let email : string = req.body.email

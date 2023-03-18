@@ -64,6 +64,16 @@ export const checkForExistingEmail : CustomValidator = async email => {
     return true
 }
 
+//check for existing email
+
+export const checkForEmail : CustomValidator = async email => {
+    const User = await usersRepository.returnUserByEmail(email)
+    if (!User) {
+        throw new Error('email not exist')
+    }
+    return true
+}
+
 export const checkForSameField : CustomValidator = async field => {
     const User = await usersRepository.returnUserByField(field)
     if (User !== null) {
@@ -104,4 +114,6 @@ export const commentContentCheck = body('content').trim().isLength({min:20, max:
 //check for confirmation code
 export const confirmationCodeCheck = body('code').trim().isLength({min:12, max: 14}).isString()
 
+//check for email
+export const emailExistingCheck =  body ('email').isString().isEmail().trim().custom(checkForEmail)
 
