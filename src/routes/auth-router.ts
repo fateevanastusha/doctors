@@ -69,7 +69,7 @@ authRouter.post('/registration',
 
 //CODE CONFIRMATION
 
-authRouter.post('/registration-confirmation', confirmationCodeCheck, async (req: Request, res: Response) => {
+authRouter.post('/registration-confirmation', confirmationCodeCheck, inputValidationMiddleware, async (req: Request, res: Response) => {
     const confirmationCode : string = req.body.code
     const status = await authService.checkForConfirmationCode(confirmationCode)
     if (!status) {
@@ -81,7 +81,7 @@ authRouter.post('/registration-confirmation', confirmationCodeCheck, async (req:
 
 //RESEND CODE CONFIRMATION
 
-authRouter.post('/registration-email-resending', emailExistingCheck, async (req: Request, res: Response) => {
+authRouter.post('/registration-email-resending', emailExistingCheck, inputValidationMiddleware, async (req: Request, res: Response) => {
 
         let confirmationCode : string = (+new Date()).toString()
         let email : string = req.body.email
