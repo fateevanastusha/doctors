@@ -46,6 +46,13 @@ export const authRepository = {
         } else {
             return false
         }
-
+    },
+    async checkForConfirmedCode (code : string) : Promise <boolean> {
+        const user = await usersCollection.findOne({confirmedCode : code})
+        if (user?.isConfirmed) {
+            return true
+        } else {
+            return false
+        }
     }
 }

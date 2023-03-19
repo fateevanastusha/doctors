@@ -98,6 +98,14 @@ export const checkForNotConfirmed : CustomValidator = async email => {
     }
 }
 
+export const checkForNotConfirmedCode : CustomValidator = async code => {
+    const status : boolean = await authRepository.checkForConfirmedCode(code)
+    if (status) {
+        throw new Error('account is confirmed')
+    } else {
+        return true
+    }
+}
 
 export const checkForPasswordAuth : CustomValidator = async (login, { req }) => {
     const User = await usersRepository.returnUserByField(login)
@@ -129,7 +137,7 @@ export const emailCheck =  body ('email').isString().isEmail().trim().custom(che
 export const commentContentCheck = body('content').trim().isLength({min:20, max: 300}).isString()
 
 //check for confirmation code
-export const confirmationCodeCheck = body('code').trim().isLength({min:12, max: 14}).isString().matches(/^\d+$/).custom(checkForExistingConfirmationCode)
+export const confirmationCodeCheck = body('code').trim().isLength({min:12, max: 14}).isString().matches(/^\d+$/).custom(checkForExistingConfirmationCode).custom(checkForNotConfirmedCode)
 
 //check for email
 export const emailExistingCheck =  body ('email').isString().isEmail().trim().custom(checkForEmail).custom(checkForNotConfirmed)
