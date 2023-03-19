@@ -34,7 +34,7 @@ export const authRepository = {
         const status = await usersCollection.updateOne(
             {email : email},
             { $set : {
-                    confirmationCode : confirmationCode
+                    confirmedCode : confirmationCode
                 }
             })
         return status.matchedCount === 1
