@@ -25,8 +25,11 @@ export const authService = {
     },
     async checkForConfirmationCode (confirmationCode : string) : Promise <boolean>  {
         const status: boolean = await authRepository.checkForConfirmationCode(confirmationCode)
-        if (!status) return false
-        return authRepository.changeConfirmatedStatus(confirmationCode)
+        if (!status) {
+            return false
+        } else {
+            return authRepository.changeConfirmatedStatus(confirmationCode)
+        }
     },
     async updateConfirmationCode (confirmationCode : string, email : string) : Promise <boolean> {
         return authRepository.changeConfirmationCode(confirmationCode,email)

@@ -4,6 +4,8 @@ import { CustomValidator } from "express-validator/src/base";
 import { blogsRepository } from "../repositories/blogs-db-repositiory";
 import { body, validationResult } from 'express-validator';
 import {usersRepository} from "../repositories/users-db-repository";
+import exp from "constants";
+import {authRepository} from "../repositories/auth-db-repository";
 
 //errors storage
 export const inputValidationMiddleware = (req: Request, res: Response, next: NextFunction) => {
@@ -74,6 +76,14 @@ export const checkForEmail : CustomValidator = async email => {
     return true
 }
 
+//check for existing confirmation code
+export const checkForExistingConfirmationCode : CustomValidator = async code => {
+    const status : boolean = await authRepository.checkForConfirmationCode(code)
+    if (!status) {
+        throw new Error('code is wrond')
+    }
+}
+
 export const checkForSameField : CustomValidator = async field => {
     const User = await usersRepository.returnUserByField(field)
     if (User !== null) {
@@ -112,7 +122,7 @@ export const emailCheck =  body ('email').isString().isEmail().trim().custom(che
 export const commentContentCheck = body('content').trim().isLength({min:20, max: 300}).isString()
 
 //check for confirmation code
-export const confirmationCodeCheck = body('code').trim().isLength({min:12, max: 14}).isString()
+export const confirmationCodeCheck = body('code').trim().isLength({min:12, max: 14}).isString().custom(checkForExistingConfirmationCode)
 
 //check for email
 export const emailExistingCheck =  body ('email').isString().isEmail().trim().custom(checkForEmail)
