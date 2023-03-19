@@ -80,7 +80,7 @@ export const checkForEmail : CustomValidator = async email => {
 export const checkForExistingConfirmationCode : CustomValidator = async code => {
     const status : boolean = await authRepository.checkForConfirmationCode(code)
     if (!status) {
-        throw new Error('code is wrond')
+        throw new Error('code is wrong')
     }
 }
 

@@ -69,7 +69,7 @@ authRouter.post('/registration',
 
 //CODE CONFIRMATION
 
-authRouter.post('/registration-confirmation', confirmationCodeCheck, inputValidationMiddleware, async (req: Request, res: Response) => {
+authRouter.post('/registration-confirmation', async (req: Request, res: Response) => {
     const confirmationCode : string = req.body.code
     const status = await authService.checkForConfirmationCode(confirmationCode)
     if (!status) {
