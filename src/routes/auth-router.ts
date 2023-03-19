@@ -72,8 +72,11 @@ authRouter.post('/registration',
 authRouter.post('/registration-confirmation', confirmationCodeCheck, async (req: Request, res: Response) => {
     const confirmationCode : string = req.body.code
     const status = await authService.checkForConfirmationCode(confirmationCode)
-    if (!status) res.sendStatus(400)
-    res.sendStatus(204)
+    if (!status) {
+        res.sendStatus(400)
+    } else {
+        res.sendStatus(204)
+    }
 })
 
 //RESEND CODE CONFIRMATION
