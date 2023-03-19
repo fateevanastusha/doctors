@@ -38,5 +38,14 @@ export const authRepository = {
                 }
             })
         return status.matchedCount === 1
+    },
+    async checkForConfirmedAccount (email : string) : Promise <boolean> {
+        const user = await usersCollection.findOne({email : email})
+        if (user?.isConfirmed) {
+            return true
+        } else {
+            return false
+        }
+
     }
 }

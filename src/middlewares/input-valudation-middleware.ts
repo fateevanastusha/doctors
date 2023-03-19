@@ -1,4 +1,4 @@
-import { NextFunction } from "express";
+import e, { NextFunction } from "express";
 import { Response, Request } from "express";
 import { CustomValidator } from "express-validator/src/base";
 import { blogsRepository } from "../repositories/blogs-db-repositiory";
@@ -77,17 +77,24 @@ export const checkForEmail : CustomValidator = async email => {
 }
 
 //check for existing confirmation code
+
 export const checkForExistingConfirmationCode : CustomValidator = async code => {
     const status : boolean = await authRepository.checkForConfirmationCode(code)
     if (!status) {
         throw new Error('code is wrong')
+    } else {
+        return true
     }
 }
 
-export const checkForSameField : CustomValidator = async field => {
-    const User = await usersRepository.returnUserByField(field)
-    if (User !== null) {
-        throw new Error('this is not exist')
+//check for confirmed account
+
+export const checkForNotConfirmed : CustomValidator = async email => {
+    const status : boolean = await authRepository.checkForConfirmedAccount(email)
+    if (status) {
+        throw new Error('account is confirmed')
+    } else {
+        return true
     }
 }
 
@@ -125,5 +132,5 @@ export const commentContentCheck = body('content').trim().isLength({min:20, max:
 export const confirmationCodeCheck = body('code').trim().isLength({min:12, max: 14}).isString().matches(/^\d+$/).custom(checkForExistingConfirmationCode)
 
 //check for email
-export const emailExistingCheck =  body ('email').isString().isEmail().trim().custom(checkForEmail)
+export const emailExistingCheck =  body ('email').isString().isEmail().trim().custom(checkForEmail).custom(checkForNotConfirmed)
 
