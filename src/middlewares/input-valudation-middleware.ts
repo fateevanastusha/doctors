@@ -50,6 +50,7 @@ export const findByIdBlogs : CustomValidator = async value => {
 };
 
 //check for unique login
+
 export const checkForExistingLogin : CustomValidator = async login => {
     const User = await usersRepository.returnUserByLogin(login)
     if (User) {
@@ -58,7 +59,8 @@ export const checkForExistingLogin : CustomValidator = async login => {
     return true
 }
 //check for unique email
-export const checkForExistingEmail : CustomValidator = async email => {
+
+export const checkForUniqueEmail : CustomValidator = async email => {
     const User = await usersRepository.returnUserByEmail(email)
     if (User) {
         throw new Error('email is already exist')
@@ -79,7 +81,7 @@ export const checkForEmail : CustomValidator = async email => {
 //check for existing confirmation code
 
 export const checkForExistingConfirmationCode : CustomValidator = async code => {
-    const status : boolean = await authRepository.checkForConfirmationCode(code)
+    const status : boolean = await usersRepository.checkForConfirmationCode(code)
     if (!status) {
         throw new Error('code is wrong')
     } else {
@@ -89,17 +91,8 @@ export const checkForExistingConfirmationCode : CustomValidator = async code => 
 
 //check for confirmed account
 
-export const checkForNotConfirmed : CustomValidator = async email => {
-    const status : boolean = await authRepository.checkForConfirmedAccount(email)
-    if (status) {
-        throw new Error('account is confirmed')
-    } else {
-        return true
-    }
-}
-
-export const checkForNotConfirmedCode : CustomValidator = async code => {
-    const status : boolean = await authRepository.checkForConfirmedCode(code)
+export const checkForNotConfirmedByEmailOrCode : CustomValidator = async email => {
+    const status : boolean = await usersRepository.checkForConfirmedAccountByEmailOrCode(email)
     if (status) {
         throw new Error('account is confirmed')
     } else {
@@ -131,14 +124,12 @@ export const blogIdCheck = body('blogId').trim().custom(findByIdBlogs).isString(
 export const loginCheck = body('login').isString().trim().notEmpty().isLength({min:3, max: 10}).custom(checkForExistingLogin)
 export const passwordAuthCheck = body ('password').trim().custom(checkForPasswordAuth).isLength({min:6, max: 20}).isString()
 export const passwordCheck = body ('password').trim().isLength({min:6, max: 20}).isString()
-export const emailCheck =  body ('email').isString().isEmail().trim().custom(checkForExistingEmail)
+export const emailCheck =  body ('email').isString().isEmail().trim().custom(checkForUniqueEmail)
 
 //check for comments
 export const commentContentCheck = body('content').trim().isLength({min:20, max: 300}).isString()
 
-//check for confirmation code
-export const confirmationCodeCheck = body('code').trim().isLength({min:12, max: 14}).isString().matches(/^\d+$/).custom(checkForExistingConfirmationCode).custom(checkForNotConfirmedCode)
-
-//check for email
-export const emailExistingCheck =  body ('email').isString().isEmail().trim().custom(checkForEmail).custom(checkForNotConfirmed)
+//confirmationCheck
+export const codeConfirmationCheck = body('code').trim().isLength({min:12, max: 14}).isString().matches(/^\d+$/).custom(checkForExistingConfirmationCode).custom(checkForNotConfirmedByEmailOrCode)
+export const emailConfirmationCheck =  body ('email').isString().isEmail().trim().custom(checkForEmail).custom(checkForNotConfirmedByEmailOrCode)
 

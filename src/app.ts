@@ -21,6 +21,7 @@ app.use('/comments', commentsRouter)
 app.use('/email', emailRouter)
 
 //TESTING - DELETE ALL DATA
+
 app.delete('/testing/all-data', async (req: Request,res: Response) => {
     await postsRepository.deleteAllData();
     await blogsRepository.deleteAllData();

@@ -6,26 +6,23 @@ import {authService} from "../domain/auth-service";
 import {jwtService} from "../application/jwt-service";
 import {Token, User} from "../types/types";
 import {
-    confirmationCodeCheck,
-    emailCheck, emailExistingCheck,
+    codeConfirmationCheck,
+    emailCheck,
+    emailConfirmationCheck,
     inputValidationMiddleware,
     loginCheck,
     passwordCheck
 } from "../middlewares/input-valudation-middleware";
-import {usersRouter} from "./users-router";
-import {usersService} from "../domain/users-service";
-import {businessService} from "../domain/business-service";
+
 
 export const authRouter = Router()
 
+//LOGIN REQUEST
+
 authRouter.post('/login', async (req: Request, res: Response) => {
-    const status : boolean = await authService.authRequest(req.body)
-    if (status) {
-        const user : User | null = await authService.authFindUser(req.body.loginOrEmail)
-        if (user) {
-            const token : Token = await jwtService.createJWT(user)
-            res.status(200).send(token)
-        }
+    const token : Token | null = await authService.authRequest(req.body)
+    if (token) {
+        res.status(200).send(token)
     } else {
         res.sendStatus(401)
     }
@@ -33,15 +30,16 @@ authRouter.post('/login', async (req: Request, res: Response) => {
 
 //GET INFORMATION ABOUT CURRENT AUTH
 
-authRouter.get('/me', async (req: Request, res: Response) => {
-    const token : string = req.body.accessToken
-    const user : User | null = await authService.getUserByToken(token)
+authRouter.get('/me',
+    async (req: Request, res: Response) => {
+
+    const user : User | null = await authService.getInformationAboutCurrentUser(req.body.accessToken)
     if (user) {
         res.status(200).send(user)
+    } else {
+        res.sendStatus(401)
     }
-    else {
-        res.status(401)
-    }
+
 })
 
 //REGISTRATION IN THE SYSTEM
@@ -50,51 +48,47 @@ authRouter.post('/registration',
     loginCheck,
     passwordCheck,
     emailCheck,
-    inputValidationMiddleware, async (req: Request, res: Response) => {
+    inputValidationMiddleware,
+    async (req: Request, res: Response) => {
 
-    let confirmationCode : string = (+new Date()).toString()
+    const status : boolean = await authService.registrationUser(req.body);
 
-    //CREATE NEW USER
-    const user : User | null = await usersService.createNewUser(req.body, false, confirmationCode)
-    if (!user) {
-        res.sendStatus(404)
-    }
-    //SEND EMAIL
-    await businessService.sendConfirmationCode(req.body.email, confirmationCode)
-    if (confirmationCode) {
-        res.sendStatus(204)
-    }
+    if(status) {
+        res.send(204);
+    } else {
+        res.send(404);
+    };
 
 })
 
 //CODE CONFIRMATION
 
-authRouter.post('/registration-confirmation', confirmationCodeCheck, inputValidationMiddleware, async (req: Request, res: Response) => {
-    const confirmationCode : string = req.body.code
-    const status = await authService.checkForConfirmationCode(confirmationCode)
+authRouter.post('/registration-confirmation',
+    codeConfirmationCheck,
+    inputValidationMiddleware,
+    async (req: Request, res: Response) => {
+
+    const status = await authService.checkForConfirmationCode(req.body.code)
     if (!status) {
         res.sendStatus(400)
     } else {
         res.sendStatus(204)
     }
+
 })
 
 //RESEND CODE CONFIRMATION
 
-authRouter.post('/registration-email-resending', emailExistingCheck, inputValidationMiddleware, async (req: Request, res: Response) => {
+authRouter.post('/registration-email-resending',
+    emailConfirmationCheck,
+    inputValidationMiddleware,
+    async (req: Request, res: Response) => {
 
-        let confirmationCode : string = (+new Date()).toString()
-        let email : string = req.body.email
-
-        //UPDATE CONFIRMATION CODE
-        const status = await authService.updateConfirmationCode(confirmationCode, email)
-        if (!status) {
-            res.sendStatus(400)
-        }
-        //SEND EMAIL
-        await businessService.sendConfirmationCode(req.body.email, confirmationCode)
-        if (confirmationCode) {
-            res.sendStatus(204)
+        const status : boolean = await authService.emailResending(req.body)
+        if (status) {
+            res.send(204)
+        } else {
+            res.send(400)
         }
 
     })
