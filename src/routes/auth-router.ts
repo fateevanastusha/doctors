@@ -42,9 +42,13 @@ authRouter.get('/me',
         const [authType, token] = auth.split(' ')
         if (authType !== 'Bearer') return res.sendStatus(401)
         const user: User | null = await authService.getInformationAboutCurrentUser(token)
-
         if (user) {
-            res.status(200).send(user)
+            const currentUser = {
+                email: user.email,
+                login : user.login,
+                userId : user.id
+            }
+            res.status(200).send(currentUser)
         } else {
             res.sendStatus(401)
         }

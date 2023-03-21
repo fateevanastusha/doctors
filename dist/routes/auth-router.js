@@ -39,7 +39,12 @@ exports.authRouter.get('/me', (req, res) => __awaiter(void 0, void 0, void 0, fu
         return res.sendStatus(401);
     const user = yield auth_service_1.authService.getInformationAboutCurrentUser(token);
     if (user) {
-        res.status(200).send(user);
+        const currentUser = {
+            email: user.email,
+            login: user.login,
+            userId: user.id
+        };
+        res.status(200).send(currentUser);
     }
     else {
         res.sendStatus(401);
