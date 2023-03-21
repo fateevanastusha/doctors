@@ -32,3 +32,13 @@ export const checkForUser = async (req: Request, res: Response, next: NextFuncti
         res.sendStatus(403)
     }
 }
+
+export const checkForRefreshToken = async (req: Request, res: Response, next: NextFunction) => {
+    const refreshToken = req.cookies.refreshToken
+    const userId = await jwtService.getUserByIdToken(refreshToken)
+    if (userId) {
+        next()
+    } else {
+        res.sendStatus(401)
+    }
+}

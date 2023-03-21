@@ -1,13 +1,18 @@
 import jwt from 'jsonwebtoken'
-import {ObjectId} from "mongodb";
 import {settings} from "../settings";
-import {Token, User} from "../types/types";
+import {RefreshToken, Token, User} from "../types/types";
 
 export const jwtService = {
-    async createJWT (user : User) : Promise <Token>{
-        const token = jwt.sign({ userId : user.id }, settings.JWT_SECRET, { expiresIn: '1h' })
+    async createJWTAccess (user : User) : Promise <Token>{
+        const accessToken = jwt.sign({ userId : user.id }, settings.JWT_SECRET, { expiresIn: '10s' })
         return {
-            accessToken : token
+            accessToken : accessToken
+        }
+    },
+    async createJWTRefresh (user : User) : Promise <RefreshToken>{
+        const refreshToken = jwt.sign({ userId : user.id }, settings.JWT_SECRET, { expiresIn: '20s' })
+        return {
+            refreshToken : refreshToken
         }
     },
     async getUserByIdToken (token : string) {

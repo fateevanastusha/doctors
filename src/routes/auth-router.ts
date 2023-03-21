@@ -3,8 +3,7 @@ import {
     Response,
     Router} from "express";
 import {authService} from "../domain/auth-service";
-import {jwtService} from "../application/jwt-service";
-import {Token, User} from "../types/types";
+import {Token, TokenList, User} from "../types/types";
 import {
     codeConfirmationCheck,
     emailCheck,
@@ -13,6 +12,7 @@ import {
     loginCheck,
     passwordCheck
 } from "../middlewares/input-valudation-middleware";
+import {checkForRefreshToken} from "../middlewares/auth-middlewares";
 
 
 export const authRouter = Router()
@@ -20,8 +20,12 @@ export const authRouter = Router()
 //LOGIN REQUEST
 
 authRouter.post('/login', async (req: Request, res: Response) => {
-    const token : Token | null = await authService.authRequest(req.body)
-    if (token) {
+    const tokenList : TokenList | null = await authService.authRequest(req.body)
+    if (tokenList) {
+        let token : Token = {
+            accessToken : tokenList.accessToken
+        }
+        res.cookie('refreshToken', tokenList.refreshToken, {httpOnly: true, secure: true})
         res.status(200).send(token)
     } else {
         res.sendStatus(401)
@@ -91,4 +95,31 @@ authRouter.post('/registration-email-resending',
             res.send(400)
         }
 
-    })
+})
+
+//LOGOUT. KILL REFRESH TOKEN
+
+authRouter.post('/logout', checkForRefreshToken, async (req: Request, res: Response) => {
+    const status : boolean = await authService.addRefreshTokenToBlackList(req.cookies.refreshToken)
+    if (!status) {
+        res.sendStatus(204)
+    } else {
+        res.sendStatus(401)
+    }
+
+})
+
+//REFRESH TOKEN
+
+authRouter.post('/refresh-token', checkForRefreshToken, async (req: Request, res: Response) => {
+    const tokenList : TokenList | null = await authService.createNewToken(req.cookies.refreshToken)
+    if (tokenList) {
+        let token : Token = {
+            accessToken : tokenList.accessToken
+        }
+        res.cookie('refreshToken', tokenList.refreshToken, {httpOnly: true, secure: true})
+        res.status(200).send(token)
+    } else {
+        res.sendStatus(401)
+    }
+})

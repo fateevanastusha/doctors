@@ -51,3 +51,12 @@ export type Paginator = {
 export type Token = {
     accessToken : string
 }
+
+export type RefreshToken = {
+    refreshToken : string
+}
+
+export type TokenList = {
+    accessToken : string,
+    refreshToken : string
+}

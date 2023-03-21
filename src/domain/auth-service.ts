@@ -1,20 +1,24 @@
 import {authRepository} from "../repositories/auth-db-repository";
-import {Auth, Token, User} from "../types/types";
+import {Auth, RefreshToken, Token, TokenList, User} from "../types/types";
 import {jwtService} from "../application/jwt-service";
 import {usersService} from "./users-service";
 import {usersRepository} from "../repositories/users-db-repository";
 import {businessService} from "./business-service";
 
 export const authService = {
-    async authRequest (auth : Auth) : Promise<Token | null> {
+    async authRequest (auth : Auth) : Promise<TokenList | null> {
         const loginOrEmail = auth.loginOrEmail
         const password = auth.password
         const status = await authRepository.authRequest(loginOrEmail, password)
         if (status) {
             const user : User | null = await authService.authFindUser(auth.loginOrEmail)
             if (user) {
-                const token : Token = await jwtService.createJWT(user)
-                return token
+                const accessToken : Token = await jwtService.createJWTAccess(user)
+                const refreshToken : RefreshToken = await jwtService.createJWTRefresh(user)
+                return {
+                    accessToken : accessToken.accessToken,
+                    refreshToken : refreshToken.refreshToken
+                }
             }
             else {
                 return null
@@ -23,6 +27,29 @@ export const authService = {
             return null
         }
     },
+    //CREATE NEW TOKENS
+
+    async createNewToken (refreshToken : string) : Promise<TokenList | null> {
+        //ADD OLD REFRESH TOKEN IN BLACK LIST
+        await authRepository.addRefreshTokenToBlackList(refreshToken)
+        const userId : string = await jwtService.getUserByIdToken(refreshToken)
+        const user = await usersService.getUserById(userId)
+        if (user === null) {
+            return null
+        }
+        const accessToken : Token = await jwtService.createJWTAccess(user)
+        const newRefreshToken : RefreshToken = await jwtService.createJWTRefresh(user)
+        return {
+            accessToken : accessToken.accessToken,
+            refreshToken : newRefreshToken.refreshToken
+        }
+    },
+
+    async addRefreshTokenToBlackList (refreshToken : string) : Promise<boolean> {
+        //ADD OLD REFRESH TOKEN IN BLACK LIST
+        return await authRepository.addRefreshTokenToBlackList(refreshToken)
+    },
+
 
     //GET USER BY TOKEN
 
