@@ -31,7 +31,13 @@ exports.authRouter.post('/login', (req, res) => __awaiter(void 0, void 0, void 0
 }));
 //GET INFORMATION ABOUT CURRENT AUTH
 exports.authRouter.get('/me', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield auth_service_1.authService.getInformationAboutCurrentUser(req.body.accessToken);
+    const auth = req.headers.authorization;
+    if (!auth)
+        return res.sendStatus(401);
+    const [authType, token] = auth.split(' ');
+    if (authType !== 'Bearer')
+        return res.sendStatus(401);
+    const user = yield auth_service_1.authService.getInformationAboutCurrentUser(token);
     if (user) {
         res.status(200).send(user);
     }
@@ -73,7 +79,7 @@ exports.authRouter.post('/registration-email-resending', input_valudation_middle
 //LOGOUT. KILL REFRESH TOKEN
 exports.authRouter.post('/logout', auth_middlewares_1.checkForRefreshToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const status = yield auth_service_1.authService.addRefreshTokenToBlackList(req.cookies.refreshToken);
-    if (!status) {
+    if (status) {
         res.sendStatus(204);
     }
     else {
