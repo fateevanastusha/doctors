@@ -71,7 +71,7 @@ exports.authRouter.post('/registration-email-resending', input_valudation_middle
     }
 }));
 //LOGOUT. KILL REFRESH TOKEN
-exports.authRouter.post('/logout', auth_middlewares_1.checkForExistingRefreshToken, auth_middlewares_1.checkForRefreshToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.authRouter.post('/logout', auth_middlewares_1.checkForRefreshToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const status = yield auth_service_1.authService.addRefreshTokenToBlackList(req.cookies.refreshToken);
     if (!status) {
         res.sendStatus(204);
@@ -81,8 +81,7 @@ exports.authRouter.post('/logout', auth_middlewares_1.checkForExistingRefreshTok
     }
 }));
 //REFRESH TOKEN
-exports.authRouter.post('/refresh-token', auth_middlewares_1.checkForExistingRefreshToken, auth_middlewares_1.checkForRefreshToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(req.cookies.refreshToken);
+exports.authRouter.post('/refresh-token', auth_middlewares_1.checkForRefreshToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const tokenList = yield auth_service_1.authService.createNewToken(req.cookies.refreshToken);
     if (tokenList) {
         let token = {

@@ -2,6 +2,7 @@ import { NextFunction } from "express";
 import { Response, Request } from "express";
 import {jwtService} from "../application/jwt-service";
 import {commentsService} from "../domain/comments-service";
+import {authRepository} from "../repositories/auth-db-repository";
 
 
 export const authMiddlewares = async (req: Request, res: Response, next: NextFunction) => {
@@ -35,16 +36,11 @@ export const checkForUser = async (req: Request, res: Response, next: NextFuncti
 
 export const checkForRefreshToken = async (req: Request, res: Response, next: NextFunction) => {
     const refreshToken = req.cookies.refreshToken
+    if (!refreshToken) return res.sendStatus(401)
+    const isTokenBlocked : boolean = await authRepository.checkRefreshToken(refreshToken)
+    if (isTokenBlocked) return res.sendStatus(401)
     const userId = await jwtService.getUserByIdToken(refreshToken)
     if (userId) {
-        next()
-    } else {
-        res.sendStatus(401)
-    }
-}
-
-export const checkForExistingRefreshToken = async (req: Request, res: Response, next: NextFunction) => {
-    if (req.cookies.refreshToken !== undefined) {
         next()
     } else {
         res.sendStatus(401)

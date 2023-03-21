@@ -9,9 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkForExistingRefreshToken = exports.checkForRefreshToken = exports.checkForUser = exports.authMiddlewares = void 0;
+exports.checkForRefreshToken = exports.checkForUser = exports.authMiddlewares = void 0;
 const jwt_service_1 = require("../application/jwt-service");
 const comments_service_1 = require("../domain/comments-service");
+const auth_db_repository_1 = require("../repositories/auth-db-repository");
 const authMiddlewares = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.headers.authorization) {
         res.sendStatus(401);
@@ -46,6 +47,11 @@ const checkForUser = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
 exports.checkForUser = checkForUser;
 const checkForRefreshToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken)
+        return res.sendStatus(401);
+    const isTokenBlocked = yield auth_db_repository_1.authRepository.checkRefreshToken(refreshToken);
+    if (isTokenBlocked)
+        return res.sendStatus(401);
     const userId = yield jwt_service_1.jwtService.getUserByIdToken(refreshToken);
     if (userId) {
         next();
@@ -55,12 +61,3 @@ const checkForRefreshToken = (req, res, next) => __awaiter(void 0, void 0, void 
     }
 });
 exports.checkForRefreshToken = checkForRefreshToken;
-const checkForExistingRefreshToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    if (req.cookies.refreshToken !== undefined) {
-        next();
-    }
-    else {
-        res.sendStatus(401);
-    }
-});
-exports.checkForExistingRefreshToken = checkForExistingRefreshToken;
