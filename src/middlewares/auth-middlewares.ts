@@ -34,7 +34,7 @@ export const checkForUser = async (req: Request, res: Response, next: NextFuncti
 }
 
 export const checkForRefreshToken = async (req: Request, res: Response, next: NextFunction) => {
-    const refreshToken = req.cookies.split("=")[1].slice(0,-1)
+    const refreshToken = req.cookies.refreshToken
     const userId = await jwtService.getUserByIdToken(refreshToken)
     if (userId) {
         next()

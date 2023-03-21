@@ -112,7 +112,7 @@ authRouter.post('/logout', checkForRefreshToken, async (req: Request, res: Respo
 //REFRESH TOKEN
 
 authRouter.post('/refresh-token', checkForRefreshToken, async (req: Request, res: Response) => {
-    const tokenList : TokenList | null = await authService.createNewToken(req.cookies.split("=")[1].slice(0,-1))
+    const tokenList : TokenList | null = await authService.createNewToken(req.cookies.refreshToken)
     if (tokenList) {
         let token : Token = {
             accessToken : tokenList.accessToken
