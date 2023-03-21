@@ -25,7 +25,7 @@ authRouter.post('/login', async (req: Request, res: Response) => {
         let token : Token = {
             accessToken : tokenList.accessToken
         }
-        res.cookie('refreshToken', tokenList.refreshToken, {httpOnly: false, secure: false})
+        res.cookie('refreshToken', tokenList.refreshToken, {httpOnly: true, secure: true})
         res.status(200).send(token)
     } else {
         res.sendStatus(401)
@@ -118,7 +118,7 @@ authRouter.post('/refresh-token', checkForExistingRefreshToken, checkForRefreshT
         let token : Token = {
             accessToken : tokenList.accessToken
         }
-        res.cookie('refreshToken', tokenList.refreshToken, {httpOnly: false, secure: false})
+        res.cookie('refreshToken', tokenList.refreshToken, {httpOnly: true, secure: true})
         res.status(200).send(token)
     } else {
         res.sendStatus(401)
