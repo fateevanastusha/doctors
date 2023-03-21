@@ -42,3 +42,12 @@ export const checkForRefreshToken = async (req: Request, res: Response, next: Ne
         res.sendStatus(401)
     }
 }
+
+export const checkForExistingRefreshToken = async (req: Request, res: Response, next: NextFunction) => {
+    const refreshToken = req.cookies.refreshToken
+    if (refreshToken) {
+        next()
+    } else {
+        res.sendStatus(401)
+    }
+}

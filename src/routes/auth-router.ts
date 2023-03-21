@@ -12,7 +12,7 @@ import {
     loginCheck,
     passwordCheck
 } from "../middlewares/input-valudation-middleware";
-import {checkForRefreshToken} from "../middlewares/auth-middlewares";
+import {checkForExistingRefreshToken, checkForRefreshToken} from "../middlewares/auth-middlewares";
 
 
 export const authRouter = Router()
@@ -99,7 +99,7 @@ authRouter.post('/registration-email-resending',
 
 //LOGOUT. KILL REFRESH TOKEN
 
-authRouter.post('/logout', checkForRefreshToken, async (req: Request, res: Response) => {
+authRouter.post('/logout', checkForExistingRefreshToken, checkForRefreshToken, async (req: Request, res: Response) => {
     const status : boolean = await authService.addRefreshTokenToBlackList(req.cookies.refreshToken)
     if (!status) {
         res.sendStatus(204)
@@ -111,7 +111,7 @@ authRouter.post('/logout', checkForRefreshToken, async (req: Request, res: Respo
 
 //REFRESH TOKEN
 
-authRouter.post('/refresh-token', checkForRefreshToken, async (req: Request, res: Response) => {
+authRouter.post('/refresh-token', checkForExistingRefreshToken, checkForRefreshToken, async (req: Request, res: Response) => {
     const tokenList : TokenList | null = await authService.createNewToken(req.cookies.refreshToken)
     if (tokenList) {
         let token : Token = {
@@ -123,3 +123,5 @@ authRouter.post('/refresh-token', checkForRefreshToken, async (req: Request, res
         res.sendStatus(401)
     }
 })
+
+
