@@ -8,10 +8,11 @@ import { postsRepository } from './repositories/posts-db-repositiory';
 import { blogsRepository } from './repositories/blogs-db-repositiory';
 import { usersRepository } from "./repositories/users-db-repository";
 import {commentsRouter} from "./routes/comments-router";
-
+import cookieParser from "cookie-parser"
 export const app = express();
 
 app.use(express.json())
+app.use(cookieParser())
 
 app.use('/blogs', blogsRouter)
 app.use('/posts', postsRouter)
