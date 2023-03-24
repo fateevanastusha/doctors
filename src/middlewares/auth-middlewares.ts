@@ -39,7 +39,7 @@ export const checkForRefreshToken = async (req: Request, res: Response, next: Ne
     if (!refreshToken) return res.sendStatus(401)
     const isTokenBlocked : boolean = await authRepository.checkRefreshToken(refreshToken)
     if (isTokenBlocked) return res.sendStatus(401)
-    const userId = await jwtService.getUserByIdToken(refreshToken)
+    const userId = await jwtService.getIdByRefreshToken(refreshToken)
     if (userId) {
         next()
     } else {
