@@ -30,8 +30,8 @@ securityRouter.delete('/devices', checkForRefreshToken, async (req: Request, res
 
 //DELETE SESSION
 
-securityRouter.delete('/devices/:deviceId', checkForRefreshToken, async (req: Request, res: Response) => {
-    const status : boolean = await securityService.deleteOneSession(req.params.deviceId)
+securityRouter.delete('/devices/:id', checkForRefreshToken, async (req: Request, res: Response) => {
+    const status : boolean = await securityService.deleteOneSession(req.params.id)
     if (status) {
         res.sendStatus(204)
     } else {

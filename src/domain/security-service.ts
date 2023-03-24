@@ -15,6 +15,7 @@ export const securityService = {
         return await securityRepository.deleteAllSessions(idList.deviceId, idList.userId)
     },
     async deleteOneSession(deviceId : string) : Promise<boolean> {
+        console.log(deviceId)
         return await securityRepository.deleteOneSessions(deviceId)
     }
 }

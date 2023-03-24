@@ -1,7 +1,6 @@
 import jwt from 'jsonwebtoken'
 import {settings} from "../settings";
 import {RefreshToken, Token, User} from "../types/types";
-import exp from "constants";
 
 export const jwtService = {
     async createJWTAccess (userId : string) : Promise <Token>{
@@ -26,8 +25,10 @@ export const jwtService = {
         }
     },
     async getIdByRefreshToken (token : string) {
+
         try {
             const decoded : any = jwt.verify(token, settings.JWT_SECRET);
+            console.log(decoded)
             return {
                     userId : decoded.userId,
                     deviceId : decoded.deviceId

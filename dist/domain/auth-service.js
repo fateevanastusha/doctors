@@ -41,7 +41,7 @@ exports.authService = {
                 userId: userId,
                 ip: ip,
                 title: title,
-                lastActiveDate: date.exp,
+                lastActiveDate: date,
                 deviceId: deviceId
             };
             //CREATE NEW SESSION
@@ -82,7 +82,7 @@ exports.authService = {
             const newRefreshToken = yield jwt_service_1.jwtService.createJWTRefresh(userId, deviceId);
             const date = yield jwt_service_1.jwtService.getRefreshTokenDate(newRefreshToken.refreshToken);
             //UPDATE SESSION
-            yield security_db_repository_1.securityRepository.updateSession(ip, title, date.exp, deviceId);
+            yield security_db_repository_1.securityRepository.updateSession(ip, title, date, deviceId);
             return {
                 accessToken: accessToken.accessToken,
                 refreshToken: newRefreshToken.refreshToken
