@@ -29,7 +29,7 @@ export const authService = {
             userId : userId,
             ip: ip,
             title: title,
-            lastActiveDate: date!.exp,
+            lastActiveDate: date,
             deviceId: deviceId
         }
         //CREATE NEW SESSION
@@ -65,7 +65,7 @@ export const authService = {
         const newRefreshToken : RefreshToken = await jwtService.createJWTRefresh(userId, deviceId)
         const date = await jwtService.getRefreshTokenDate(newRefreshToken.refreshToken)
         //UPDATE SESSION
-        await securityRepository.updateSession(ip, title, date!.exp, deviceId)
+        await securityRepository.updateSession(ip, title, date, deviceId)
         return {
             accessToken : accessToken.accessToken,
             refreshToken : newRefreshToken.refreshToken

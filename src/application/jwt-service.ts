@@ -39,9 +39,7 @@ export const jwtService = {
     async getRefreshTokenDate (token : string) {
         try {
             const decoded : any = jwt.verify(token, settings.JWT_SECRET);
-            return {
-                exp: decoded.exp
-            }
+            return decoded.iat
         } catch (error) {
             return null
         }
