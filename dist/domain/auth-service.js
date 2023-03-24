@@ -31,19 +31,21 @@ exports.authService = {
             const deviceId = (+new Date()).toString();
             //GET USER ID
             const userId = user.id;
+            //GET TOKENS
+            const refreshToken = yield jwt_service_1.jwtService.createJWTRefresh(userId, deviceId);
+            const accessToken = yield jwt_service_1.jwtService.createJWTAccess(userId);
+            //GET DATE
+            const date = yield jwt_service_1.jwtService.getRefreshTokenDate(refreshToken.refreshToken);
             //CREATE REFRESH TOKENS META
             const refreshTokenMeta = {
                 userId: userId,
                 ip: ip,
                 title: title,
-                lastActiveDate: new Date().toString(),
+                lastActiveDate: date.exp,
                 deviceId: deviceId
             };
             //CREATE NEW SESSION
             yield security_db_repository_1.securityRepository.createNewSession(refreshTokenMeta);
-            //GET TOKENS
-            const refreshToken = yield jwt_service_1.jwtService.createJWTRefresh(userId, deviceId);
-            const accessToken = yield jwt_service_1.jwtService.createJWTAccess(userId);
             //RETURN TOKENS
             return {
                 accessToken: accessToken.accessToken,
@@ -65,7 +67,7 @@ exports.authService = {
         });
     },
     //CREATE NEW TOKENS
-    createNewToken(refreshToken, ip) {
+    createNewToken(refreshToken, ip, title) {
         return __awaiter(this, void 0, void 0, function* () {
             yield auth_db_repository_1.authRepository.addRefreshTokenToBlackList(refreshToken);
             const session = yield security_db_repository_1.securityRepository.findSessionByIp(ip);
@@ -78,6 +80,9 @@ exports.authService = {
                 return null;
             const accessToken = yield jwt_service_1.jwtService.createJWTAccess(userId);
             const newRefreshToken = yield jwt_service_1.jwtService.createJWTRefresh(userId, deviceId);
+            const date = yield jwt_service_1.jwtService.getRefreshTokenDate(newRefreshToken.refreshToken);
+            //UPDATE SESSION
+            yield security_db_repository_1.securityRepository.updateSession(ip, title, date.exp, deviceId);
             return {
                 accessToken: accessToken.accessToken,
                 refreshToken: newRefreshToken.refreshToken

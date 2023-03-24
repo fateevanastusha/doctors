@@ -122,7 +122,8 @@ authRouter.post('/logout', checkForRefreshToken, async (req: Request, res: Respo
 //REFRESH TOKEN
 
 authRouter.post('/refresh-token', checkForRefreshToken, async (req: Request, res: Response) => {
-    const tokenList: TokenList | null = await authService.createNewToken(req.cookies.refreshToken, req.ip)
+    const title = req.headers["user-agent"] || "unknown"
+    const tokenList: TokenList | null = await authService.createNewToken(req.cookies.refreshToken, req.ip, title)
     if (tokenList) {
         let token: Token = {
             accessToken: tokenList.accessToken

@@ -43,6 +43,17 @@ export const securityRepository ={
     async findSessionByDeviceId(deviceId: string) : Promise<RefreshTokensMeta | null> {
         return refreshTokensCollection
             .findOne({deviceId: deviceId})
+    },
+    async updateSession(ip : string, title : string, lastActiveDate : string, deviceId : string) : Promise<boolean>{
+        const result = await refreshTokensCollection
+            .updateOne({deviceId : deviceId},
+                {
+                ip: ip,
+                title: title,
+                lastActiveDate: lastActiveDate,
+                deviceId: deviceId
+            });
+        return result.matchedCount === 1;
     }
 
 

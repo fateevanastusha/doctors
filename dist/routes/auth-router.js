@@ -94,7 +94,8 @@ exports.authRouter.post('/logout', auth_middlewares_1.checkForRefreshToken, (req
 }));
 //REFRESH TOKEN
 exports.authRouter.post('/refresh-token', auth_middlewares_1.checkForRefreshToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const tokenList = yield auth_service_1.authService.createNewToken(req.cookies.refreshToken, req.ip);
+    const title = req.headers["user-agent"] || "unknown";
+    const tokenList = yield auth_service_1.authService.createNewToken(req.cookies.refreshToken, req.ip, title);
     if (tokenList) {
         let token = {
             accessToken: tokenList.accessToken

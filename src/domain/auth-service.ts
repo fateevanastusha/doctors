@@ -19,19 +19,21 @@ export const authService = {
         const deviceId : string = (+new Date()).toString();
         //GET USER ID
         const userId : string = user.id;
+        //GET TOKENS
+        const refreshToken : RefreshToken = await jwtService.createJWTRefresh(userId, deviceId);
+        const accessToken = await jwtService.createJWTAccess(userId)
+        //GET DATE
+        const date = await jwtService.getRefreshTokenDate(refreshToken.refreshToken)
         //CREATE REFRESH TOKENS META
         const refreshTokenMeta : RefreshTokensMeta = {
             userId : userId,
             ip: ip,
             title: title,
-            lastActiveDate: new Date().toString(),
+            lastActiveDate: date!.exp,
             deviceId: deviceId
         }
         //CREATE NEW SESSION
         await securityRepository.createNewSession(refreshTokenMeta)
-        //GET TOKENS
-        const refreshToken : RefreshToken = await jwtService.createJWTRefresh(userId, deviceId);
-        const accessToken = await jwtService.createJWTAccess(userId)
         //RETURN TOKENS
         return {
             accessToken : accessToken.accessToken,
@@ -51,7 +53,7 @@ export const authService = {
 
     //CREATE NEW TOKENS
 
-    async createNewToken (refreshToken : string, ip : string) : Promise<TokenList | null> {
+    async createNewToken (refreshToken : string, ip : string, title : string) : Promise<TokenList | null> {
         await authRepository.addRefreshTokenToBlackList(refreshToken)
         const session : RefreshTokensMeta | null = await securityRepository.findSessionByIp(ip)
         if (!session) return null
@@ -61,6 +63,9 @@ export const authService = {
         if (user === null) return null
         const accessToken : Token = await jwtService.createJWTAccess(userId)
         const newRefreshToken : RefreshToken = await jwtService.createJWTRefresh(userId, deviceId)
+        const date = await jwtService.getRefreshTokenDate(newRefreshToken.refreshToken)
+        //UPDATE SESSION
+        await securityRepository.updateSession(ip, title, date!.exp, deviceId)
         return {
             accessToken : accessToken.accessToken,
             refreshToken : newRefreshToken.refreshToken
