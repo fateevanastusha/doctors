@@ -4,7 +4,7 @@ import {refreshTokensCollection} from "../db/db";
 export const securityRepository ={
     async getAllSessions(deviceId : string) : Promise<RefreshTokensMeta[] | null> {
         return refreshTokensCollection
-            .find({deviceId}, {projection : {_id : 0}})
+            .find({deviceId}, {projection : {_id : 0, userId : 0}})
             .toArray()
     },
 

@@ -13,7 +13,7 @@ securityRouter.get('/devices', checkForRefreshToken, async (req: Request, res: R
     if (sessions) {
         res.status(200).send(sessions)
     } else {
-        res.status(401)
+        res.sendStatus(401)
     }
 })
 
@@ -30,8 +30,8 @@ securityRouter.delete('/devices', checkForRefreshToken, async (req: Request, res
 
 //DELETE SESSION
 
-securityRouter.delete('/devices/:id', checkForRefreshToken, async (req: Request, res: Response) => {
-    const status : boolean = await securityService.deleteOneSession(req.params.id)
+securityRouter.delete('/devices/:deviceId', checkForRefreshToken, async (req: Request, res: Response) => {
+    const status : boolean = await securityService.deleteOneSession(req.params.deviceId)
     if (status) {
         res.sendStatus(204)
     } else {
