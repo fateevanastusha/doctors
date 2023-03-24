@@ -17,7 +17,8 @@ const auth_middlewares_1 = require("../middlewares/auth-middlewares");
 exports.authRouter = (0, express_1.Router)();
 //LOGIN REQUEST
 exports.authRouter.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const tokenList = yield auth_service_1.authService.authRequest(req.body);
+    const title = req.headers["user-agent"] || "unknown";
+    const tokenList = yield auth_service_1.authService.authRequest(req.body.password, req.ip, req.body.loginOrEmail, title);
     if (tokenList) {
         let token = {
             accessToken: tokenList.accessToken
@@ -81,9 +82,9 @@ exports.authRouter.post('/registration-email-resending', input_valudation_middle
         res.send(400);
     }
 }));
-//LOGOUT. KILL REFRESH TOKEN
+//LOGOUT. KILL REFRESH TOKEN + KILL SESSION
 exports.authRouter.post('/logout', auth_middlewares_1.checkForRefreshToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const status = yield auth_service_1.authService.addRefreshTokenToBlackList(req.cookies.refreshToken);
+    const status = yield auth_service_1.authService.logoutRequest(req.cookies.refreshToken);
     if (status) {
         res.sendStatus(204);
     }
@@ -93,7 +94,7 @@ exports.authRouter.post('/logout', auth_middlewares_1.checkForRefreshToken, (req
 }));
 //REFRESH TOKEN
 exports.authRouter.post('/refresh-token', auth_middlewares_1.checkForRefreshToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const tokenList = yield auth_service_1.authService.createNewToken(req.cookies.refreshToken);
+    const tokenList = yield auth_service_1.authService.createNewToken(req.cookies.refreshToken, req.ip);
     if (tokenList) {
         let token = {
             accessToken: tokenList.accessToken

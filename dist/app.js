@@ -19,6 +19,7 @@ const posts_router_1 = require("./routes/posts-router");
 const users_router_1 = require("./routes/users-router");
 const auth_router_1 = require("./routes/auth-router");
 const email_router_1 = require("./routes/email-router");
+const security_router_1 = require("./routes/security-router");
 const posts_db_repositiory_1 = require("./repositories/posts-db-repositiory");
 const blogs_db_repositiory_1 = require("./repositories/blogs-db-repositiory");
 const users_db_repository_1 = require("./repositories/users-db-repository");
@@ -33,6 +34,7 @@ exports.app.use('/users', users_router_1.usersRouter);
 exports.app.use('/auth', auth_router_1.authRouter);
 exports.app.use('/comments', comments_router_1.commentsRouter);
 exports.app.use('/email', email_router_1.emailRouter);
+exports.app.use('/security', security_router_1.securityRouter);
 //TESTING - DELETE ALL DATA
 exports.app.delete('/testing/all-data', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield posts_db_repositiory_1.postsRepository.deleteAllData();

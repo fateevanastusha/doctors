@@ -15,43 +15,69 @@ const jwt_service_1 = require("../application/jwt-service");
 const users_service_1 = require("./users-service");
 const users_db_repository_1 = require("../repositories/users-db-repository");
 const business_service_1 = require("./business-service");
+const security_db_repository_1 = require("../repositories/security-db-repository");
 exports.authService = {
-    authRequest(auth) {
+    authRequest(password, ip, loginOrEmail, title) {
         return __awaiter(this, void 0, void 0, function* () {
-            const loginOrEmail = auth.loginOrEmail;
-            const password = auth.password;
+            //CHECK FOR CORRECT PASSWORD
             const status = yield auth_db_repository_1.authRepository.authRequest(loginOrEmail, password);
-            if (status) {
-                const user = yield exports.authService.authFindUser(auth.loginOrEmail);
-                if (user) {
-                    const accessToken = yield jwt_service_1.jwtService.createJWTAccess(user);
-                    const refreshToken = yield jwt_service_1.jwtService.createJWTRefresh(user);
-                    return {
-                        accessToken: accessToken.accessToken,
-                        refreshToken: refreshToken.refreshToken
-                    };
-                }
-                else {
-                    return null;
-                }
-            }
-            else {
+            if (!status)
                 return null;
-            }
+            //CHECK FOR USER
+            const user = yield exports.authService.authFindUser(loginOrEmail);
+            if (!user)
+                return null;
+            //CREATE DEVICE ID
+            const deviceId = (+new Date()).toString();
+            //GET USER ID
+            const userId = user.id;
+            //CREATE REFRESH TOKENS META
+            const refreshTokenMeta = {
+                userId: userId,
+                ip: ip,
+                title: title,
+                lastActiveDate: new Date().toString(),
+                deviceId: deviceId
+            };
+            //CREATE NEW SESSION
+            yield security_db_repository_1.securityRepository.createNewSession(refreshTokenMeta);
+            //GET TOKENS
+            const refreshToken = yield jwt_service_1.jwtService.createJWTRefresh(userId, deviceId);
+            const accessToken = yield jwt_service_1.jwtService.createJWTAccess(userId);
+            //RETURN TOKENS
+            return {
+                accessToken: accessToken.accessToken,
+                refreshToken: refreshToken.refreshToken
+            };
+        });
+    },
+    logoutRequest(refreshToken) {
+        return __awaiter(this, void 0, void 0, function* () {
+            //ADD REFRESH TO BLACK LIST
+            const statusBlackList = yield exports.authService.addRefreshTokenToBlackList(refreshToken);
+            if (!statusBlackList)
+                return false;
+            //GET USER ID AND DEVICE ID BY REFRESH TOKEN
+            const idList = yield jwt_service_1.jwtService.getIdByRefreshToken(refreshToken);
+            if (!idList)
+                return false;
+            return yield security_db_repository_1.securityRepository.deleteOneSessions(idList.deviceId);
         });
     },
     //CREATE NEW TOKENS
-    createNewToken(refreshToken) {
+    createNewToken(refreshToken, ip) {
         return __awaiter(this, void 0, void 0, function* () {
-            //ADD OLD REFRESH TOKEN IN BLACK LIST
             yield auth_db_repository_1.authRepository.addRefreshTokenToBlackList(refreshToken);
+            const session = yield security_db_repository_1.securityRepository.findSessionByIp(ip);
+            if (!session)
+                return null;
+            const deviceId = session.deviceId;
             const userId = yield jwt_service_1.jwtService.getUserByIdToken(refreshToken);
             const user = yield users_service_1.usersService.getUserById(userId);
-            if (user === null) {
+            if (user === null)
                 return null;
-            }
-            const accessToken = yield jwt_service_1.jwtService.createJWTAccess(user);
-            const newRefreshToken = yield jwt_service_1.jwtService.createJWTRefresh(user);
+            const accessToken = yield jwt_service_1.jwtService.createJWTAccess(userId);
+            const newRefreshToken = yield jwt_service_1.jwtService.createJWTRefresh(userId, deviceId);
             return {
                 accessToken: accessToken.accessToken,
                 refreshToken: newRefreshToken.refreshToken
@@ -60,7 +86,6 @@ exports.authService = {
     },
     addRefreshTokenToBlackList(refreshToken) {
         return __awaiter(this, void 0, void 0, function* () {
-            //ADD OLD REFRESH TOKEN IN BLACK LIST
             return yield auth_db_repository_1.authRepository.addRefreshTokenToBlackList(refreshToken);
         });
     },

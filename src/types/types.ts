@@ -60,3 +60,11 @@ export type TokenList = {
     accessToken : string,
     refreshToken : string
 }
+
+export type RefreshTokensMeta = {
+    userId : string,
+    ip: string,
+    title: string,
+    lastActiveDate: string,
+    deviceId: string
+}

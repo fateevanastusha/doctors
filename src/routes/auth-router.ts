@@ -21,7 +21,8 @@ export const authRouter = Router()
 //LOGIN REQUEST
 
 authRouter.post('/login', async (req: Request, res: Response) => {
-    const tokenList: TokenList | null = await authService.authRequest(req.body)
+    const title = req.headers["user-agent"] || "unknown"
+    const tokenList: TokenList | null = await authService.authRequest(req.body.password, req.ip, req.body.loginOrEmail, title)
     if (tokenList) {
         let token: Token = {
             accessToken: tokenList.accessToken
@@ -106,10 +107,10 @@ authRouter.post('/registration-email-resending',
 
     })
 
-//LOGOUT. KILL REFRESH TOKEN
+//LOGOUT. KILL REFRESH TOKEN + KILL SESSION
 
 authRouter.post('/logout', checkForRefreshToken, async (req: Request, res: Response) => {
-    const status: boolean = await authService.addRefreshTokenToBlackList(req.cookies.refreshToken)
+    const status : boolean = await authService.logoutRequest(req.cookies.refreshToken)
     if (status) {
         res.sendStatus(204)
     } else {
@@ -121,7 +122,7 @@ authRouter.post('/logout', checkForRefreshToken, async (req: Request, res: Respo
 //REFRESH TOKEN
 
 authRouter.post('/refresh-token', checkForRefreshToken, async (req: Request, res: Response) => {
-    const tokenList: TokenList | null = await authService.createNewToken(req.cookies.refreshToken)
+    const tokenList: TokenList | null = await authService.createNewToken(req.cookies.refreshToken, req.ip)
     if (tokenList) {
         let token: Token = {
             accessToken: tokenList.accessToken

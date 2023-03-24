@@ -1,44 +1,66 @@
 import {authRepository} from "../repositories/auth-db-repository";
-import {Auth, RefreshToken, Token, TokenList, User} from "../types/types";
+import {Auth, RefreshToken, RefreshTokensMeta, Token, TokenList, User} from "../types/types";
 import {jwtService} from "../application/jwt-service";
 import {usersService} from "./users-service";
 import {usersRepository} from "../repositories/users-db-repository";
 import {businessService} from "./business-service";
+import {securityRepository} from "../repositories/security-db-repository";
+import jwt from "jsonwebtoken";
 
 export const authService = {
-    async authRequest (auth : Auth) : Promise<TokenList | null> {
-        const loginOrEmail = auth.loginOrEmail
-        const password = auth.password
-        const status = await authRepository.authRequest(loginOrEmail, password)
-        if (status) {
-            const user : User | null = await authService.authFindUser(auth.loginOrEmail)
-            if (user) {
-                const accessToken : Token = await jwtService.createJWTAccess(user)
-                const refreshToken : RefreshToken = await jwtService.createJWTRefresh(user)
-                return {
-                    accessToken : accessToken.accessToken,
-                    refreshToken : refreshToken.refreshToken
-                }
-            }
-            else {
-                return null
-            }
-        } else {
-            return null
+    async authRequest (password : string, ip : string, loginOrEmail : string, title : string) : Promise<TokenList | null> {
+        //CHECK FOR CORRECT PASSWORD
+        const status : boolean = await authRepository.authRequest(loginOrEmail, password)
+        if (!status) return null
+        //CHECK FOR USER
+        const user : User | null = await authService.authFindUser(loginOrEmail);
+        if (!user) return null;
+        //CREATE DEVICE ID
+        const deviceId : string = (+new Date()).toString();
+        //GET USER ID
+        const userId : string = user.id;
+        //CREATE REFRESH TOKENS META
+        const refreshTokenMeta : RefreshTokensMeta = {
+            userId : userId,
+            ip: ip,
+            title: title,
+            lastActiveDate: new Date().toString(),
+            deviceId: deviceId
+        }
+        //CREATE NEW SESSION
+        await securityRepository.createNewSession(refreshTokenMeta)
+        //GET TOKENS
+        const refreshToken : RefreshToken = await jwtService.createJWTRefresh(userId, deviceId);
+        const accessToken = await jwtService.createJWTAccess(userId)
+        //RETURN TOKENS
+        return {
+            accessToken : accessToken.accessToken,
+            refreshToken : refreshToken.refreshToken
         }
     },
+    async logoutRequest (refreshToken : string) : Promise<boolean> {
+        //ADD REFRESH TO BLACK LIST
+        const statusBlackList : boolean = await authService.addRefreshTokenToBlackList(refreshToken)
+        if (!statusBlackList) return false
+        //GET USER ID AND DEVICE ID BY REFRESH TOKEN
+        const idList = await jwtService.getIdByRefreshToken(refreshToken)
+        if (!idList) return false
+        return await securityRepository.deleteOneSessions(idList.deviceId)
+
+    },
+
     //CREATE NEW TOKENS
 
-    async createNewToken (refreshToken : string) : Promise<TokenList | null> {
-        //ADD OLD REFRESH TOKEN IN BLACK LIST
+    async createNewToken (refreshToken : string, ip : string) : Promise<TokenList | null> {
         await authRepository.addRefreshTokenToBlackList(refreshToken)
+        const session : RefreshTokensMeta | null = await securityRepository.findSessionByIp(ip)
+        if (!session) return null
+        const deviceId : string = session.deviceId
         const userId : string = await jwtService.getUserByIdToken(refreshToken)
         const user = await usersService.getUserById(userId)
-        if (user === null) {
-            return null
-        }
-        const accessToken : Token = await jwtService.createJWTAccess(user)
-        const newRefreshToken : RefreshToken = await jwtService.createJWTRefresh(user)
+        if (user === null) return null
+        const accessToken : Token = await jwtService.createJWTAccess(userId)
+        const newRefreshToken : RefreshToken = await jwtService.createJWTRefresh(userId, deviceId)
         return {
             accessToken : accessToken.accessToken,
             refreshToken : newRefreshToken.refreshToken
@@ -46,7 +68,6 @@ export const authService = {
     },
 
     async addRefreshTokenToBlackList (refreshToken : string) : Promise<boolean> {
-        //ADD OLD REFRESH TOKEN IN BLACK LIST
         return await authRepository.addRefreshTokenToBlackList(refreshToken)
     },
 
