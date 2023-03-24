@@ -8,9 +8,12 @@ export const securityRepository ={
             .toArray()
     },
 
-    async deleteAllSessions(deviceId : string) : Promise<boolean> {
+    async deleteAllSessions(deviceId : string, userId : string) : Promise<boolean> {
         const result = await refreshTokensCollection
-            .deleteMany({deviceId})
+            .deleteMany({
+                userId,
+                deviceId : {$ne : deviceId}
+            })
         return result.deletedCount > 0
     },
     async deleteOneSessions(deviceId : string) : Promise<boolean> {
@@ -36,6 +39,10 @@ export const securityRepository ={
     async findSessionByIp(ip : string) : Promise<RefreshTokensMeta | null> {
         return refreshTokensCollection
             .findOne({ip: ip})
+    },
+    async findSessionByDeviceId(deviceId: string) : Promise<RefreshTokensMeta | null> {
+        return refreshTokensCollection
+            .findOne({deviceId: deviceId})
     }
 
 

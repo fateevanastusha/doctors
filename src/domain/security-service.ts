@@ -12,8 +12,7 @@ export const securityService = {
     async deleteAllSessions(refreshToken : string) : Promise<boolean> {
         const idList = await jwtService.getIdByRefreshToken(refreshToken)
         if(!idList) return false
-        const deviceId = idList.deviceId
-        return await securityRepository.deleteAllSessions(deviceId)
+        return await securityRepository.deleteAllSessions(idList.deviceId, idList.userId)
     },
     async deleteOneSession(deviceId : string) : Promise<boolean> {
         return await securityRepository.deleteOneSessions(deviceId)
