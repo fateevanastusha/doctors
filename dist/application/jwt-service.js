@@ -62,7 +62,7 @@ exports.jwtService = {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const decoded = jsonwebtoken_1.default.verify(token, settings_1.settings.JWT_SECRET);
-                return decoded.iat;
+                return new Date(decoded.iat * 1000).toISOString();
             }
             catch (error) {
                 return null;

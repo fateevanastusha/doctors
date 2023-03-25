@@ -28,7 +28,7 @@ securityRouter.delete('/devices', checkForRefreshToken, async (req: Request, res
     }
 })
 
-//CANT DELETE MY OWN, CREATE SEVERAL SESSIONS WITH SEVERAL LOGIN
+
 
 //DELETE SESSION
 

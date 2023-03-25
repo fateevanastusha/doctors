@@ -34,21 +34,14 @@ exports.securityRouter.delete('/devices', auth_middlewares_1.checkForRefreshToke
         res.sendStatus(401);
     }
 }));
-//CANT DELETE MY OWN, CREATE SEVERAL SESSIONS WITH SEVERAL LOGIN
 //DELETE SESSION
 exports.securityRouter.delete('/devices/:id', auth_middlewares_1.checkForRefreshToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const refreshToken = req.cookies.refreshToken;
     console.log(refreshToken);
     if (!refreshToken)
-        res.status(401);
+        return res.sendStatus(401);
     const status = yield security_service_1.securityService.deleteOneSession1(req.params.id, refreshToken);
     if (!status)
-        res.sendStatus(404);
+        return res.sendStatus(404);
     res.sendStatus(204);
-    // const status : boolean = await securityService.deleteOneSession(req.params.id)
-    // if (status) {
-    //     res.sendStatus(204)
-    // } else {
-    //     res.sendStatus(404)
-    // }
 }));
