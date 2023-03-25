@@ -41,7 +41,6 @@ export const checkForRefreshToken = async (req: Request, res: Response, next: Ne
 
     //CHECK FOR EXISTING REFRESH TOKEN
     const refreshToken = req.cookies.refreshToken
-    console.log(refreshToken)
     if (!refreshToken) return res.sendStatus(401)
     //CHECK FOR NOT BLOCKED REFRESH TOKEN
     const isTokenBlocked : boolean = await authRepository.checkRefreshToken(refreshToken)
