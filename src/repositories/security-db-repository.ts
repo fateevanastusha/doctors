@@ -2,9 +2,9 @@ import {RefreshTokensMeta} from "../types/types";
 import {refreshTokensCollection} from "../db/db";
 
 export const securityRepository ={
-    async getAllSessions(deviceId : string) : Promise<RefreshTokensMeta[] | null> {
+    async getAllSessions(userId : string) : Promise<RefreshTokensMeta[] | null> {
         return refreshTokensCollection
-            .find({deviceId}, {projection : {_id : 0, userId : 0}})
+            .find({userId}, {projection : {_id : 0, userId : 0}})
             .toArray()
     },
 

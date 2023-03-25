@@ -4,8 +4,6 @@ import { CustomValidator } from "express-validator/src/base";
 import { blogsRepository } from "../repositories/blogs-db-repositiory";
 import { body, validationResult } from 'express-validator';
 import {usersRepository} from "../repositories/users-db-repository";
-import exp from "constants";
-import {authRepository} from "../repositories/auth-db-repository";
 
 //errors storage
 export const inputValidationMiddleware = (req: Request, res: Response, next: NextFunction) => {

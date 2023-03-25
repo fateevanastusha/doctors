@@ -28,13 +28,21 @@ securityRouter.delete('/devices', checkForRefreshToken, async (req: Request, res
     }
 })
 
+//CANT DELETE MY OWN, CREATE SEVERAL SESSIONS WITH SEVERAL LOGIN
+
 //DELETE SESSION
 
-securityRouter.delete('/devices/:id', checkForRefreshToken, async (req: Request, res: Response) => {
-    const status : boolean = await securityService.deleteOneSession(req.params.id)
-    if (status) {
-        res.sendStatus(204)
-    } else {
-        res.sendStatus(404)
-    }
+securityRouter.delete('/devices/:id',checkForRefreshToken, async (req: Request, res: Response) => {
+    const refreshToken = req.cookies.refreshToken;
+    console.log(refreshToken)
+    if(!refreshToken) res.status(401)
+    const status : boolean = await securityService.deleteOneSession1(req.params.id, refreshToken)
+    if(!status) res.sendStatus(404)
+    res.sendStatus(204)
+    // const status : boolean = await securityService.deleteOneSession(req.params.id)
+    // if (status) {
+    //     res.sendStatus(204)
+    // } else {
+    //     res.sendStatus(404)
+    // }
 })

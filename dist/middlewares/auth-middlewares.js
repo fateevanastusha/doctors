@@ -49,6 +49,7 @@ exports.checkForUser = checkForUser;
 const checkForRefreshToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     //CHECK FOR EXISTING REFRESH TOKEN
     const refreshToken = req.cookies.refreshToken;
+    console.log(refreshToken);
     if (!refreshToken)
         return res.sendStatus(401);
     //CHECK FOR NOT BLOCKED REFRESH TOKEN
