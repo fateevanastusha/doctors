@@ -1,5 +1,5 @@
 import {RefreshTokensMeta} from "../types/types";
-import {refreshTokensCollection} from "../db/db";
+import {postsCollection, refreshTokensCollection} from "../db/db";
 
 export const securityRepository ={
     async getAllSessions(userId : string) : Promise<RefreshTokensMeta[] | null> {
@@ -54,7 +54,12 @@ export const securityRepository ={
                 deviceId: deviceId
             });
         return result.matchedCount === 1;
-    }
+    },
+    //DELETE ALL DATA
+    async deleteAllData() {
+        await refreshTokensCollection.deleteMany({});
+        return [];
+    },
 
 
 }

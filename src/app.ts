@@ -10,6 +10,7 @@ import { blogsRepository } from './repositories/blogs-db-repositiory';
 import { usersRepository } from "./repositories/users-db-repository";
 import {commentsRouter} from "./routes/comments-router";
 import cookieParser from "cookie-parser"
+import {securityRepository} from "./repositories/security-db-repository";
 export const app = express();
 
 app.use(express.json())
@@ -29,5 +30,6 @@ app.delete('/testing/all-data', async (req: Request,res: Response) => {
     await postsRepository.deleteAllData();
     await blogsRepository.deleteAllData();
     await usersRepository.deleteAllData();
+    await securityRepository.deleteAllData();
     res.sendStatus(204)
 });
