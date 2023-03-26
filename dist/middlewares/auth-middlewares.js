@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkForSameUser = exports.checkForSameDevice = exports.checkForRefreshToken = exports.checkForUser = exports.authMiddlewares = void 0;
+exports.checkForDeviceId = exports.checkForSameUser = exports.checkForSameDevice = exports.checkForRefreshToken = exports.checkForUser = exports.authMiddlewares = void 0;
 const jwt_service_1 = require("../application/jwt-service");
 const comments_service_1 = require("../domain/comments-service");
 const auth_db_repository_1 = require("../repositories/auth-db-repository");
@@ -64,12 +64,9 @@ const checkForRefreshToken = (req, res, next) => __awaiter(void 0, void 0, void 
     if (!session)
         return res.sendStatus(401);
     const userId = yield jwt_service_1.jwtService.getIdByRefreshToken(refreshToken);
-    if (userId) {
-        next();
-    }
-    else {
-        res.sendStatus(401);
-    }
+    if (!userId)
+        return res.sendStatus(401);
+    next();
 });
 exports.checkForRefreshToken = checkForRefreshToken;
 const checkForSameDevice = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -95,3 +92,11 @@ const checkForSameUser = (req, res, next) => __awaiter(void 0, void 0, void 0, f
     next();
 });
 exports.checkForSameUser = checkForSameUser;
+const checkForDeviceId = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const deviceId = req.params.id;
+    const session = yield security_db_repository_1.securityRepository.findSessionByDeviceId(deviceId);
+    if (!session)
+        return res.sendStatus(404);
+    next();
+});
+exports.checkForDeviceId = checkForDeviceId;

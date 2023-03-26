@@ -42,20 +42,20 @@ export const checkForRefreshToken = async (req: Request, res: Response, next: Ne
     //CHECK FOR EXISTING REFRESH TOKEN
     const refreshToken = req.cookies.refreshToken
     if (!refreshToken) return res.sendStatus(401)
+
     //CHECK FOR NOT BLOCKED REFRESH TOKEN
     const isTokenBlocked : boolean = await authRepository.checkRefreshToken(refreshToken)
     if (isTokenBlocked) return res.sendStatus(401)
+
     //CHECK FOR EXISTING SESSION WITH THIS REFRESH TOKEN
+
     const tokenList = await jwtService.getIdByRefreshToken(refreshToken)
     if (!tokenList) return res.sendStatus(401)
     const session : RefreshTokensMeta | null = await securityRepository.findSessionByDeviceId(tokenList.deviceId)
     if (!session) return res.sendStatus(401)
     const userId = await jwtService.getIdByRefreshToken(refreshToken)
-    if (userId) {
-        next()
-    } else {
-        res.sendStatus(401)
-    }
+    if(!userId) return res.sendStatus(401)
+    next();
 }
 
 export const checkForSameDevice = async (req: Request, res: Response, next: NextFunction) => {

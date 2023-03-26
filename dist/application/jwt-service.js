@@ -18,7 +18,7 @@ const settings_1 = require("../settings");
 exports.jwtService = {
     createJWTAccess(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const accessToken = jsonwebtoken_1.default.sign({ userId: userId }, settings_1.settings.JWT_SECRET, { expiresIn: '10s' });
+            const accessToken = jsonwebtoken_1.default.sign({ userId: userId }, settings_1.settings.JWT_SECRET, { expiresIn: '10m' });
             return {
                 accessToken: accessToken
             };
@@ -26,7 +26,7 @@ exports.jwtService = {
     },
     createJWTRefresh(userId, deviceId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const refreshToken = jsonwebtoken_1.default.sign({ userId: userId, deviceId: deviceId }, settings_1.settings.JWT_SECRET, { expiresIn: '20s' });
+            const refreshToken = jsonwebtoken_1.default.sign({ userId: userId, deviceId: deviceId }, settings_1.settings.JWT_SECRET, { expiresIn: '20m' });
             return {
                 refreshToken: refreshToken
             };

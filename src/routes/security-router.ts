@@ -8,7 +8,7 @@ export const securityRouter = Router()
 
 //GET ALL SESSIONS
 
-securityRouter.get('/devices', checkForRefreshToken, async (req: Request, res: Response) => {
+securityRouter.get('/devices', checkForRefreshToken, checkForSameUser, async (req: Request, res: Response) => {
     const sessions : RefreshTokensMeta[] | null = await securityService.getAllSessions(req.cookies.refreshToken)
     if (sessions) {
         res.status(200).send(sessions)
