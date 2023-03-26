@@ -31,7 +31,7 @@ const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
 exports.app.use(express_1.default.json());
 exports.app.use((0, cookie_parser_1.default)());
 const apiLimiter = (0, express_rate_limit_1.default)({
-    windowMs: 10 * 100,
+    windowMs: 10 * 1000,
     max: 5,
     standardHeaders: true,
     legacyHeaders: false,

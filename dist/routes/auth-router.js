@@ -22,7 +22,6 @@ exports.authRouter = (0, express_1.Router)();
 const authLimiter = (0, express_rate_limit_1.default)({
     windowMs: 10 * 1000,
     max: 5,
-    message: 'Too many accounts created from this IP, please try again after an hour',
     standardHeaders: true,
     legacyHeaders: false,
     statusCode: 429
