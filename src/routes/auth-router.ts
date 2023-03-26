@@ -62,11 +62,11 @@ authRouter.get('/me',
 //REGISTRATION IN THE SYSTEM
 
 authRouter.post('/registration',
-    requestAttemptsMiddleware,
     loginCheck,
     passwordCheck,
     emailCheck,
     inputValidationMiddleware,
+    requestAttemptsMiddleware,
     async (req: Request, res: Response) => {
 
         const status: boolean = await authService.registrationUser(req.body);
