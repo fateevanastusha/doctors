@@ -41,6 +41,6 @@ exports.securityRouter.delete('/devices/:id', auth_middlewares_1.checkForRefresh
         return res.sendStatus(401);
     const status = yield security_service_1.securityService.deleteOneSession(req.params.id);
     if (!status)
-        return res.sendStatus(404);
+        return res.sendStatus(403);
     res.sendStatus(204);
 }));

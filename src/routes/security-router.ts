@@ -36,6 +36,6 @@ securityRouter.delete('/devices/:id', checkForRefreshToken, checkForSameUser, as
     const refreshToken = req.cookies.refreshToken;
     if(!refreshToken) return res.sendStatus(401)
     const status : boolean = await securityService.deleteOneSession(req.params.id)
-    if(!status) return res.sendStatus(404)
+    if(!status) return res.sendStatus(403)
     res.sendStatus(204)
 })
