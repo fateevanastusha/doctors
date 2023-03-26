@@ -35,12 +35,11 @@ exports.securityRouter.delete('/devices', auth_middlewares_1.checkForRefreshToke
     }
 }));
 //DELETE SESSION
-exports.securityRouter.delete('/devices/:id', auth_middlewares_1.checkForRefreshToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.securityRouter.delete('/devices/:id', auth_middlewares_1.checkForRefreshToken, auth_middlewares_1.checkForSameUser, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const refreshToken = req.cookies.refreshToken;
-    console.log(refreshToken);
     if (!refreshToken)
         return res.sendStatus(401);
-    const status = yield security_service_1.securityService.deleteOneSession1(req.params.id, refreshToken);
+    const status = yield security_service_1.securityService.deleteOneSession(req.params.id);
     if (!status)
         return res.sendStatus(404);
     res.sendStatus(204);

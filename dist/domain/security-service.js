@@ -36,20 +36,6 @@ exports.securityService = {
             return yield security_db_repository_1.securityRepository.deleteOneSessions(deviceId);
         });
     },
-    deleteOneSession1(deviceId, refreshToken) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (!refreshToken)
-                return false;
-            const user = yield jwt_service_1.jwtService.getIdByRefreshToken(refreshToken);
-            if (!user)
-                return false;
-            const device = yield security_db_repository_1.securityRepository.findSessionByDeviceId(deviceId);
-            if (!device)
-                return false;
-            //if (user.userId !== device.deviceId) throw new createError(401);
-            return security_db_repository_1.securityRepository.deleteAllSessions(deviceId, user.userId);
-        });
-    },
     checkForSameDevice(title, userId) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield security_db_repository_1.securityRepository.checkSameDevice(title, userId);
