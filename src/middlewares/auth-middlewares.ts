@@ -66,5 +66,14 @@ export const checkForSameDevice = async (req: Request, res: Response, next: Next
     const status : boolean = await securityService.checkForSameDevice(title, userId);
     if (!status) return res.sendStatus(403);
     next();
-
 }
+
+export const checkForSameUser = async (req: Request, res: Response, next: NextFunction) => {
+    const refreshToken : string = req.cookies.refreshToken;
+    const id : string = req.params.id;
+    const userInfo = await jwtService.getIdByRefreshToken(refreshToken)
+    if (!userInfo) return res.sendStatus(401)
+    if (id !== userInfo.deviceId) return res.sendStatus(403)
+    next()
+}
+

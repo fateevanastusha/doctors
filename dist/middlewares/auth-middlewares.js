@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkForSameDevice = exports.checkForRefreshToken = exports.checkForUser = exports.authMiddlewares = void 0;
+exports.checkForSameUser = exports.checkForSameDevice = exports.checkForRefreshToken = exports.checkForUser = exports.authMiddlewares = void 0;
 const jwt_service_1 = require("../application/jwt-service");
 const comments_service_1 = require("../domain/comments-service");
 const auth_db_repository_1 = require("../repositories/auth-db-repository");
@@ -84,3 +84,14 @@ const checkForSameDevice = (req, res, next) => __awaiter(void 0, void 0, void 0,
     next();
 });
 exports.checkForSameDevice = checkForSameDevice;
+const checkForSameUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const refreshToken = req.cookies.refreshToken;
+    const id = req.params.id;
+    const userInfo = yield jwt_service_1.jwtService.getIdByRefreshToken(refreshToken);
+    if (!userInfo)
+        return res.sendStatus(401);
+    if (id !== userInfo.deviceId)
+        return res.sendStatus(403);
+    next();
+});
+exports.checkForSameUser = checkForSameUser;

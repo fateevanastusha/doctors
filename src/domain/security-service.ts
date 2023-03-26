@@ -18,15 +18,6 @@ export const securityService = {
     async deleteOneSession(deviceId : string) : Promise<boolean> {
         return await securityRepository.deleteOneSessions(deviceId)
     },
-    async deleteOneSession1(deviceId : string, refreshToken : string) : Promise<boolean> {
-        if(!refreshToken) return false
-        const user = await jwtService.getIdByRefreshToken(refreshToken)
-        if (!user) return false
-        const device = await securityRepository.findSessionByDeviceId(deviceId)
-        if (!device) return false
-        //if (user.userId !== device.deviceId) throw new createError(401);
-        return securityRepository.deleteAllSessions(deviceId,user.userId)
-    },
     async checkForSameDevice(title : string, userId : string) : Promise<boolean> {
         return await securityRepository.checkSameDevice(title,userId)
     }
