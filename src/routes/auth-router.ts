@@ -27,7 +27,7 @@ authRouter.post('/login', checkForSameDevice, async (req: Request, res: Response
         let token: Token = {
             accessToken: tokenList.accessToken
         }
-        res.cookie('refreshToken', tokenList.refreshToken, {httpOnly: false, secure: false})
+        res.cookie('refreshToken', tokenList.refreshToken, {httpOnly: true, secure: true})
         res.status(200).send(token)
     } else {
         res.sendStatus(401)
@@ -128,7 +128,7 @@ authRouter.post('/refresh-token', checkForRefreshToken, async (req: Request, res
         let token: Token = {
             accessToken: tokenList.accessToken
         }
-        res.cookie('refreshToken', tokenList.refreshToken, {httpOnly: false, secure: false})
+        res.cookie('refreshToken', tokenList.refreshToken, {httpOnly: true, secure: true})
         res.status(200).send(token)
     } else {
         res.sendStatus(401)
