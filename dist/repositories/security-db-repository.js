@@ -67,11 +67,12 @@ exports.securityRepository = {
     updateSession(ip, title, lastActiveDate, deviceId) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield db_1.refreshTokensCollection
-                .updateOne({ deviceId: deviceId }, {
-                ip: ip,
-                title: title,
-                lastActiveDate: lastActiveDate,
-                deviceId: deviceId
+                .updateOne({ deviceId: deviceId }, { $set: {
+                    ip: ip,
+                    title: title,
+                    lastActiveDate: lastActiveDate,
+                    deviceId: deviceId
+                }
             });
             return result.matchedCount === 1;
         });

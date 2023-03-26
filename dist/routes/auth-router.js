@@ -23,7 +23,7 @@ exports.authRouter.post('/login', auth_middlewares_1.checkForSameDevice, (req, r
         let token = {
             accessToken: tokenList.accessToken
         };
-        res.cookie('refreshToken', tokenList.refreshToken, { httpOnly: false, secure: false });
+        res.cookie('refreshToken', tokenList.refreshToken, { httpOnly: true, secure: true });
         res.status(200).send(token);
     }
     else {
@@ -100,7 +100,7 @@ exports.authRouter.post('/refresh-token', auth_middlewares_1.checkForRefreshToke
         let token = {
             accessToken: tokenList.accessToken
         };
-        res.cookie('refreshToken', tokenList.refreshToken, { httpOnly: false, secure: false });
+        res.cookie('refreshToken', tokenList.refreshToken, { httpOnly: true, secure: true });
         res.status(200).send(token);
     }
     else {
