@@ -30,14 +30,14 @@ exports.app = (0, express_1.default)();
 const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
 exports.app.use(express_1.default.json());
 exports.app.use((0, cookie_parser_1.default)());
-const limiter = (0, express_rate_limit_1.default)({
-    windowMs: 10 * 10000,
+const apiLimiter = (0, express_rate_limit_1.default)({
+    windowMs: 10 * 100,
     max: 5,
     standardHeaders: true,
     legacyHeaders: false,
     statusCode: 429
 });
-exports.app.use(limiter);
+exports.app.use('/api/', apiLimiter);
 exports.app.use('/blogs', blogs_router_1.blogsRouter);
 exports.app.use('/posts', posts_router_1.postsRouter);
 exports.app.use('/users', users_router_1.usersRouter);
