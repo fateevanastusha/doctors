@@ -2,7 +2,7 @@ import {Request, Response} from 'express'
 import { Router } from "express"
 import {securityService} from "../domain/security-service";
 import {RefreshTokensMeta} from "../types/types";
-import {checkForRefreshToken, checkForSameUser} from "../middlewares/auth-middlewares";
+import {checkForDeviceId, checkForRefreshToken, checkForSameUser} from "../middlewares/auth-middlewares";
 
 export const securityRouter = Router()
 
@@ -32,7 +32,7 @@ securityRouter.delete('/devices', checkForRefreshToken, async (req: Request, res
 
 //DELETE SESSION
 
-securityRouter.delete('/devices/:id', checkForRefreshToken, checkForSameUser, async (req: Request, res: Response) => {
+securityRouter.delete('/devices/:id', checkForRefreshToken, checkForSameUser, checkForDeviceId, async (req: Request, res: Response) => {
     const refreshToken = req.cookies.refreshToken;
     if(!refreshToken) return res.sendStatus(401)
     const status : boolean = await securityService.deleteOneSession(req.params.id)

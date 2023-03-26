@@ -77,3 +77,10 @@ export const checkForSameUser = async (req: Request, res: Response, next: NextFu
     next()
 }
 
+export const checkForDeviceId = async (req: Request, res: Response, next: NextFunction) => {
+    const deviceId : string = req.params.id;
+    const session : RefreshTokensMeta | null = await securityRepository.findSessionByDeviceId(deviceId);
+    if (!session) return res.sendStatus(404)
+    next()
+}
+
