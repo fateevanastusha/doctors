@@ -68,3 +68,9 @@ export type RefreshTokensMeta = {
     lastActiveDate: string,
     deviceId: string
 }
+
+export type Attempts = {
+    userIP: String,
+    url: String,
+    time: Date
+}

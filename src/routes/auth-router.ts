@@ -16,22 +16,15 @@ import {
 import {checkForRefreshToken,
     checkForSameDevice
 } from "../middlewares/auth-middlewares";
-import rateLimit from "express-rate-limit";
+import {requestAttemptsMiddleware} from "../middlewares/attempts-middleware";
 
 
 export const authRouter = Router()
 
-const authLimiter = rateLimit({
-    windowMs: 10 * 1000, // 1 hour
-    max: 5, // Limit each IP to 5 create account requests per `window` (here, per hour)
-    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-    statusCode : 429
-})
 
 //LOGIN REQUEST
 
-authRouter.post('/login', authLimiter, checkForSameDevice, async (req: Request, res: Response) => {
+authRouter.post('/login', requestAttemptsMiddleware, checkForSameDevice, async (req: Request, res: Response) => {
     const title = req.headers["user-agent"] || "unknown"
     const tokenList: TokenList | null = await authService.authRequest(req.body.password, req.ip, req.body.loginOrEmail, title)
     if (tokenList) {
@@ -69,7 +62,7 @@ authRouter.get('/me',
 //REGISTRATION IN THE SYSTEM
 
 authRouter.post('/registration',
-    authLimiter,
+    requestAttemptsMiddleware,
     loginCheck,
     passwordCheck,
     emailCheck,
@@ -90,7 +83,7 @@ authRouter.post('/registration',
 //CODE CONFIRMATION
 
 authRouter.post('/registration-confirmation',
-    authLimiter,
+    requestAttemptsMiddleware,
     codeConfirmationCheck,
     inputValidationMiddleware,
     async (req: Request, res: Response) => {
@@ -107,7 +100,7 @@ authRouter.post('/registration-confirmation',
 //RESEND CODE CONFIRMATION
 
 authRouter.post('/registration-email-resending',
-    authLimiter,
+    requestAttemptsMiddleware,
     emailConfirmationCheck,
     inputValidationMiddleware,
     async (req: Request, res: Response) => {
@@ -138,7 +131,7 @@ authRouter.post('/logout',
 //REFRESH TOKEN
 
 authRouter.post('/refresh-token',
-    authLimiter,
+    requestAttemptsMiddleware,
     checkForRefreshToken,
     async (req: Request, res: Response) => {
     const title = req.headers["user-agent"] || "unknown"

@@ -12,22 +12,9 @@ import {commentsRouter} from "./routes/comments-router";
 import cookieParser from "cookie-parser"
 import {securityRepository} from "./repositories/security-db-repository";
 export const app = express();
-import rateLimit from 'express-rate-limit'
-
 
 app.use(express.json())
 app.use(cookieParser())
-
-const apiLimiter = rateLimit({
-    windowMs: 10 * 1000,
-    max: 5,
-    standardHeaders: true,
-    legacyHeaders: false,
-    statusCode : 429
-})
-
-app.use('/api/', apiLimiter)
-
 
 
 app.use('/blogs', blogsRouter)

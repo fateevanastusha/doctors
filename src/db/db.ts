@@ -1,5 +1,5 @@
 import {MongoClient} from "mongodb";
-import {Blog, Post, User, Comment, RefreshToken, RefreshTokensMeta} from "../types/types";
+import {Blog, Post, User, Comment, RefreshToken, RefreshTokensMeta, Attempts} from "../types/types";
 
 
 
@@ -13,6 +13,7 @@ export const usersCollection = db.collection<User>("users");
 export const commentsCollection = db.collection<Comment>("comments");
 export const tokenBlackListCollection = db.collection<RefreshToken>("refresh-token");
 export const refreshTokensCollection = db.collection<RefreshTokensMeta>("refresh-tokens-meta")
+export const attemptsCollection = db.collection<Attempts>("attempts")
 
 export async function runDb() {
     try{
