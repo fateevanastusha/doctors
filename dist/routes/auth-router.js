@@ -16,7 +16,7 @@ const input_valudation_middleware_1 = require("../middlewares/input-valudation-m
 const auth_middlewares_1 = require("../middlewares/auth-middlewares");
 exports.authRouter = (0, express_1.Router)();
 //LOGIN REQUEST
-exports.authRouter.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.authRouter.post('/login', auth_middlewares_1.checkForSameDevice, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const title = req.headers["user-agent"] || "unknown";
     const tokenList = yield auth_service_1.authService.authRequest(req.body.password, req.ip, req.body.loginOrEmail, title);
     if (tokenList) {

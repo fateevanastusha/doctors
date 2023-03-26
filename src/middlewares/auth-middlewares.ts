@@ -3,9 +3,10 @@ import { Response, Request } from "express";
 import {jwtService} from "../application/jwt-service";
 import {commentsService} from "../domain/comments-service";
 import {authRepository} from "../repositories/auth-db-repository";
-import {deflateRaw} from "zlib";
-import {RefreshTokensMeta} from "../types/types";
+import {RefreshTokensMeta, User} from "../types/types";
 import {securityRepository} from "../repositories/security-db-repository";
+import {authService} from "../domain/auth-service";
+import {securityService} from "../domain/security-service";
 
 
 export const authMiddlewares = async (req: Request, res: Response, next: NextFunction) => {
@@ -13,7 +14,6 @@ export const authMiddlewares = async (req: Request, res: Response, next: NextFun
     if (!req.headers.authorization) {
         res.sendStatus(401)
     } else {
-        //req.headers.authorization - "bearer fsfsdrgrgwerwgwg"
         const token : string = req.headers.authorization.split(" ")[1]
         const user = await jwtService.getUserByIdToken(token)
         if (user) {
@@ -56,4 +56,15 @@ export const checkForRefreshToken = async (req: Request, res: Response, next: Ne
     } else {
         res.sendStatus(401)
     }
+}
+
+export const checkForSameDevice = async (req: Request, res: Response, next: NextFunction) => {
+    const title : string = req.headers["user-agent"] || "unknown";
+    const user : User | null = await authService.authFindUser(req.body.loginOrEmail);
+    if (!user) return res.sendStatus(401);
+    const userId : string = user.id;
+    const status : boolean = await securityService.checkForSameDevice(title, userId);
+    if (!status) return res.sendStatus(403);
+    next();
+
 }

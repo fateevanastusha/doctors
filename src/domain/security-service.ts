@@ -26,5 +26,8 @@ export const securityService = {
         if (!device) return false
         //if (user.userId !== device.deviceId) throw new createError(401);
         return securityRepository.deleteAllSessions(deviceId,user.userId)
+    },
+    async checkForSameDevice(title : string, userId : string) : Promise<boolean> {
+        return await securityRepository.checkSameDevice(title,userId)
     }
 }

@@ -75,5 +75,21 @@ exports.securityRepository = {
             });
             return result.matchedCount === 1;
         });
+    },
+    //DELETE ALL DATA
+    deleteAllData() {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield db_1.refreshTokensCollection.deleteMany({});
+            return [];
+        });
+    },
+    //CHECK FOR THE SAME SESSION
+    checkSameDevice(title, userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield db_1.refreshTokensCollection.find({ title: title, userId: userId });
+            if (result)
+                return true;
+            return false;
+        });
     }
 };

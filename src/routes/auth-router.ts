@@ -13,14 +13,14 @@ import {
     loginCheck,
     passwordCheck
 } from "../middlewares/input-valudation-middleware";
-import {checkForRefreshToken} from "../middlewares/auth-middlewares";
+import {checkForRefreshToken, checkForSameDevice} from "../middlewares/auth-middlewares";
 
 
 export const authRouter = Router()
 
 //LOGIN REQUEST
 
-authRouter.post('/login', async (req: Request, res: Response) => {
+authRouter.post('/login', checkForSameDevice, async (req: Request, res: Response) => {
     const title = req.headers["user-agent"] || "unknown"
     const tokenList: TokenList | null = await authService.authRequest(req.body.password, req.ip, req.body.loginOrEmail, title)
     if (tokenList) {

@@ -60,6 +60,12 @@ export const securityRepository ={
         await refreshTokensCollection.deleteMany({});
         return [];
     },
+    //CHECK FOR THE SAME SESSION
+    async checkSameDevice(title : string, userId : string) : Promise<boolean> {
+        const result = await refreshTokensCollection.find({title: title, userId : userId})
+        if (result) return true
+        return false
+    }
 
 
 }

@@ -49,5 +49,10 @@ exports.securityService = {
             //if (user.userId !== device.deviceId) throw new createError(401);
             return security_db_repository_1.securityRepository.deleteAllSessions(deviceId, user.userId);
         });
+    },
+    checkForSameDevice(title, userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield security_db_repository_1.securityRepository.checkSameDevice(title, userId);
+        });
     }
 };

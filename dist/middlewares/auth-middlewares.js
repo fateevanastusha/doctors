@@ -9,17 +9,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkForRefreshToken = exports.checkForUser = exports.authMiddlewares = void 0;
+exports.checkForSameDevice = exports.checkForRefreshToken = exports.checkForUser = exports.authMiddlewares = void 0;
 const jwt_service_1 = require("../application/jwt-service");
 const comments_service_1 = require("../domain/comments-service");
 const auth_db_repository_1 = require("../repositories/auth-db-repository");
 const security_db_repository_1 = require("../repositories/security-db-repository");
+const auth_service_1 = require("../domain/auth-service");
+const security_service_1 = require("../domain/security-service");
 const authMiddlewares = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.headers.authorization) {
         res.sendStatus(401);
     }
     else {
-        //req.headers.authorization - "bearer fsfsdrgrgwerwgwg"
         const token = req.headers.authorization.split(" ")[1];
         const user = yield jwt_service_1.jwtService.getUserByIdToken(token);
         if (user) {
@@ -71,3 +72,15 @@ const checkForRefreshToken = (req, res, next) => __awaiter(void 0, void 0, void 
     }
 });
 exports.checkForRefreshToken = checkForRefreshToken;
+const checkForSameDevice = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const title = req.headers["user-agent"] || "unknown";
+    const user = yield auth_service_1.authService.authFindUser(req.body.loginOrEmail);
+    if (!user)
+        return res.sendStatus(401);
+    const userId = user.id;
+    const status = yield security_service_1.securityService.checkForSameDevice(title, userId);
+    if (!status)
+        return res.sendStatus(403);
+    next();
+});
+exports.checkForSameDevice = checkForSameDevice;

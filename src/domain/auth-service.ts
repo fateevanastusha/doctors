@@ -23,7 +23,8 @@ export const authService = {
         const refreshToken : RefreshToken = await jwtService.createJWTRefresh(userId, deviceId);
         const accessToken = await jwtService.createJWTAccess(userId)
         //GET DATE
-        const date = await jwtService.getRefreshTokenDate(refreshToken.refreshToken)
+        const date : string | null = await jwtService.getRefreshTokenDate(refreshToken.refreshToken)
+        if (!date) return null
         //CREATE REFRESH TOKENS META
         const refreshTokenMeta : RefreshTokensMeta = {
             userId : userId,
@@ -63,7 +64,8 @@ export const authService = {
         if (user === null) return null
         const accessToken : Token = await jwtService.createJWTAccess(userId)
         const newRefreshToken : RefreshToken = await jwtService.createJWTRefresh(userId, deviceId)
-        const date = await jwtService.getRefreshTokenDate(newRefreshToken.refreshToken)
+        const date : string | null = await jwtService.getRefreshTokenDate(newRefreshToken.refreshToken)
+        if (!date) return null
         //UPDATE SESSION
         await securityRepository.updateSession(ip, title, date, deviceId)
         return {

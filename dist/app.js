@@ -25,6 +25,7 @@ const blogs_db_repositiory_1 = require("./repositories/blogs-db-repositiory");
 const users_db_repository_1 = require("./repositories/users-db-repository");
 const comments_router_1 = require("./routes/comments-router");
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
+const security_db_repository_1 = require("./repositories/security-db-repository");
 exports.app = (0, express_1.default)();
 exports.app.use(express_1.default.json());
 exports.app.use((0, cookie_parser_1.default)());
@@ -40,5 +41,6 @@ exports.app.delete('/testing/all-data', (req, res) => __awaiter(void 0, void 0, 
     yield posts_db_repositiory_1.postsRepository.deleteAllData();
     yield blogs_db_repositiory_1.blogsRepository.deleteAllData();
     yield users_db_repository_1.usersRepository.deleteAllData();
+    yield security_db_repository_1.securityRepository.deleteAllData();
     res.sendStatus(204);
 }));
