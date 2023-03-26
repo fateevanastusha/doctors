@@ -87,11 +87,8 @@ const checkForSameUser = (req, res, next) => __awaiter(void 0, void 0, void 0, f
     const userInfo = yield jwt_service_1.jwtService.getIdByRefreshToken(refreshToken);
     if (!userInfo)
         return res.sendStatus(401);
-    if (id === userInfo.deviceId)
+    if (id !== userInfo.deviceId)
         return res.sendStatus(403);
-    const user = security_db_repository_1.securityRepository.findSessionByDeviceIdAndUserId(userInfo.userId, userInfo.deviceId);
-    if (!user)
-        return res.sendStatus(404);
     next();
 });
 exports.checkForSameUser = checkForSameUser;

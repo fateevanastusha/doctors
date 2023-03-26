@@ -14,13 +14,14 @@ import {
     passwordCheck
 } from "../middlewares/input-valudation-middleware";
 import {checkForRefreshToken, checkForSameDevice} from "../middlewares/auth-middlewares";
+import {authRequestsLimiter} from "../app";
 
 
 export const authRouter = Router()
 
 //LOGIN REQUEST
 
-authRouter.post('/login', checkForSameDevice, async (req: Request, res: Response) => {
+authRouter.post('/login',  authRequestsLimiter, checkForSameDevice, async (req: Request, res: Response) => {
     const title = req.headers["user-agent"] || "unknown"
     const tokenList: TokenList | null = await authService.authRequest(req.body.password, req.ip, req.body.loginOrEmail, title)
     if (tokenList) {
@@ -58,6 +59,7 @@ authRouter.get('/me',
 //REGISTRATION IN THE SYSTEM
 
 authRouter.post('/registration',
+    authRequestsLimiter,
     loginCheck,
     passwordCheck,
     emailCheck,
@@ -78,6 +80,7 @@ authRouter.post('/registration',
 //CODE CONFIRMATION
 
 authRouter.post('/registration-confirmation',
+    authRequestsLimiter,
     codeConfirmationCheck,
     inputValidationMiddleware,
     async (req: Request, res: Response) => {
@@ -94,6 +97,7 @@ authRouter.post('/registration-confirmation',
 //RESEND CODE CONFIRMATION
 
 authRouter.post('/registration-email-resending',
+    authRequestsLimiter,
     emailConfirmationCheck,
     inputValidationMiddleware,
     async (req: Request, res: Response) => {
@@ -109,7 +113,9 @@ authRouter.post('/registration-email-resending',
 
 //LOGOUT. KILL REFRESH TOKEN + KILL SESSION
 
-authRouter.post('/logout', checkForRefreshToken, async (req: Request, res: Response) => {
+authRouter.post('/logout',
+    checkForRefreshToken,
+    async (req: Request, res: Response) => {
     const status : boolean = await authService.logoutRequest(req.cookies.refreshToken)
     if (status) {
         res.sendStatus(204)

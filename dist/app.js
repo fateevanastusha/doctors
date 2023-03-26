@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.app = void 0;
+exports.authRequestsLimiter = exports.app = void 0;
 const express_1 = __importDefault(require("express"));
 const blogs_router_1 = require("./routes/blogs-router");
 const posts_router_1 = require("./routes/posts-router");
@@ -27,6 +27,21 @@ const comments_router_1 = require("./routes/comments-router");
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const security_db_repository_1 = require("./repositories/security-db-repository");
 exports.app = (0, express_1.default)();
+const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
+const limiter = (0, express_rate_limit_1.default)({
+    windowMs: 10000,
+    max: 5,
+    standardHeaders: true,
+    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
+exports.authRequestsLimiter = (0, express_rate_limit_1.default)({
+    windowMs: 10000,
+    max: 5,
+    message: 'Too many attempts from your ip',
+    standardHeaders: true,
+    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
+exports.app.use(limiter);
 exports.app.use(express_1.default.json());
 exports.app.use((0, cookie_parser_1.default)());
 exports.app.use('/blogs', blogs_router_1.blogsRouter);
