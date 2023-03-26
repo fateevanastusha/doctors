@@ -28,8 +28,6 @@ securityRouter.delete('/devices', checkForRefreshToken, async (req: Request, res
     }
 })
 
-
-
 //DELETE SESSION
 
 securityRouter.delete('/devices/:id', checkForRefreshToken, checkForDeviceId, checkForSameUser, async (req: Request, res: Response) => {
