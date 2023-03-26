@@ -14,10 +14,9 @@ const express_1 = require("express");
 const auth_service_1 = require("../domain/auth-service");
 const input_valudation_middleware_1 = require("../middlewares/input-valudation-middleware");
 const auth_middlewares_1 = require("../middlewares/auth-middlewares");
-const app_1 = require("../app");
 exports.authRouter = (0, express_1.Router)();
 //LOGIN REQUEST
-exports.authRouter.post('/login', app_1.authRequestsLimiter, auth_middlewares_1.checkForSameDevice, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.authRouter.post('/login', auth_middlewares_1.checkForSameDevice, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const title = req.headers["user-agent"] || "unknown";
     const tokenList = yield auth_service_1.authService.authRequest(req.body.password, req.ip, req.body.loginOrEmail, title);
     if (tokenList) {
@@ -53,7 +52,7 @@ exports.authRouter.get('/me', (req, res) => __awaiter(void 0, void 0, void 0, fu
     }
 }));
 //REGISTRATION IN THE SYSTEM
-exports.authRouter.post('/registration', app_1.authRequestsLimiter, input_valudation_middleware_1.loginCheck, input_valudation_middleware_1.passwordCheck, input_valudation_middleware_1.emailCheck, input_valudation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.authRouter.post('/registration', input_valudation_middleware_1.loginCheck, input_valudation_middleware_1.passwordCheck, input_valudation_middleware_1.emailCheck, input_valudation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const status = yield auth_service_1.authService.registrationUser(req.body);
     if (status) {
         res.send(204);
@@ -64,7 +63,7 @@ exports.authRouter.post('/registration', app_1.authRequestsLimiter, input_valuda
     ;
 }));
 //CODE CONFIRMATION
-exports.authRouter.post('/registration-confirmation', app_1.authRequestsLimiter, input_valudation_middleware_1.codeConfirmationCheck, input_valudation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.authRouter.post('/registration-confirmation', input_valudation_middleware_1.codeConfirmationCheck, input_valudation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const status = yield auth_service_1.authService.checkForConfirmationCode(req.body.code);
     if (!status) {
         res.sendStatus(400);
@@ -74,7 +73,7 @@ exports.authRouter.post('/registration-confirmation', app_1.authRequestsLimiter,
     }
 }));
 //RESEND CODE CONFIRMATION
-exports.authRouter.post('/registration-email-resending', app_1.authRequestsLimiter, input_valudation_middleware_1.emailConfirmationCheck, input_valudation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.authRouter.post('/registration-email-resending', input_valudation_middleware_1.emailConfirmationCheck, input_valudation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const status = yield auth_service_1.authService.emailResending(req.body);
     if (status) {
         res.send(204);

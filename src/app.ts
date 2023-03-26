@@ -14,26 +14,20 @@ import {securityRepository} from "./repositories/security-db-repository";
 export const app = express();
 import rateLimit from 'express-rate-limit'
 
-const limiter = rateLimit({
-    windowMs: 10000, // 15 minutes
-    max: 5, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
-    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-})
-
-export const authRequestsLimiter = rateLimit({
-    windowMs: 10000, // 1 hour
-    max: 5, // Limit each IP to 5 create account requests per `window` (here, per hour)
-    message:
-        'Too many attempts from your ip',
-    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-})
-
-app.use(limiter)
 
 app.use(express.json())
 app.use(cookieParser())
+
+const limiter = rateLimit({
+    windowMs: 10 * 10000,
+    max: 5,
+    standardHeaders: true,
+    legacyHeaders: false,
+    statusCode : 429
+})
+
+
+app.use(limiter)
 
 app.use('/blogs', blogsRouter)
 app.use('/posts', postsRouter)
