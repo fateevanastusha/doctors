@@ -64,6 +64,12 @@ exports.securityRepository = {
                 .findOne({ deviceId: deviceId });
         });
     },
+    findSessionByDeviceIdAndUserId(userId, deviceId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return db_1.refreshTokensCollection
+                .findOne({ userId: userId, deviceId: deviceId });
+        });
+    },
     updateSession(ip, title, lastActiveDate, deviceId) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield db_1.refreshTokensCollection

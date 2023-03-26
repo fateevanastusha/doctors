@@ -44,6 +44,10 @@ export const securityRepository ={
         return refreshTokensCollection
             .findOne({deviceId: deviceId})
     },
+    async findSessionByDeviceIdAndUserId(userId : string, deviceId: string) : Promise<RefreshTokensMeta | null> {
+        return refreshTokensCollection
+            .findOne({userId : userId, deviceId: deviceId})
+    },
     async updateSession(ip : string, title : string, lastActiveDate : string, deviceId : string) : Promise<boolean>{
         const result = await refreshTokensCollection
             .updateOne({deviceId : deviceId},
