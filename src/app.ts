@@ -19,7 +19,7 @@ app.use(express.json())
 app.use(cookieParser())
 
 const limiter = rateLimit({
-    windowMs: 10 * 10000,
+    windowMs: 10 * 1000,
     max: 5,
     standardHeaders: true,
     legacyHeaders: false,
