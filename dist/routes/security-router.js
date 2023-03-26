@@ -15,7 +15,7 @@ const security_service_1 = require("../domain/security-service");
 const auth_middlewares_1 = require("../middlewares/auth-middlewares");
 exports.securityRouter = (0, express_1.Router)();
 //GET ALL SESSIONS
-exports.securityRouter.get('/devices', auth_middlewares_1.checkForRefreshToken, auth_middlewares_1.checkForSameUser, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.securityRouter.get('/devices', auth_middlewares_1.checkForRefreshToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const sessions = yield security_service_1.securityService.getAllSessions(req.cookies.refreshToken);
     if (sessions) {
         res.status(200).send(sessions);
