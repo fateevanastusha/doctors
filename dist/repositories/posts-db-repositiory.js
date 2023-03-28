@@ -10,47 +10,47 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.postsRepository = void 0;
-const db_1 = require("../db/db");
+const models_1 = require("../types/models");
 exports.postsRepository = {
     //return all posts
     returnAllPost() {
         return __awaiter(this, void 0, void 0, function* () {
-            return db_1.postsCollection
+            return models_1.PostModel
                 .find({}, { projection: { _id: 0 } })
-                .toArray();
+                .lean();
         });
     },
     //return post by Id
     returnPostById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return db_1.postsCollection.findOne({ id: id }, { projection: { _id: 0 } });
+            return models_1.PostModel.findOne({ id: id }, { projection: { _id: 0 } });
         });
     },
     //delete post by Id
     deletePostById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.postsCollection.deleteOne({ id: id });
+            const result = yield models_1.PostModel.deleteOne({ id: id });
             return result.deletedCount === 1;
         });
     },
     //delete all data
     deleteAllData() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield db_1.postsCollection.deleteMany({});
+            yield models_1.PostModel.deleteMany({});
             return [];
         });
     },
     //create new post
     createNewPost(newPost) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield db_1.postsCollection.insertOne(newPost);
+            yield models_1.PostModel.insertMany(newPost);
             return this.returnPostById(newPost.id);
         });
     },
     //update post by id
     updatePostById(post, id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.postsCollection.updateOne({ id: id }, { $set: {
+            const result = yield models_1.PostModel.updateOne({ id: id }, { $set: {
                     title: post.title,
                     shortDescription: post.shortDescription,
                     content: post.content,
@@ -63,7 +63,7 @@ exports.postsRepository = {
     //return all posts by blogId
     getAllPostsByBlogId(blogId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return db_1.postsCollection.find({ blogId }, { projection: { _id: 0 } }).toArray();
+            return models_1.PostModel.find({ blogId }, { projection: { _id: 0 } }).lean();
         });
     }
 };

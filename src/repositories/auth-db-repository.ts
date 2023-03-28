@@ -1,7 +1,7 @@
 import {RefreshToken, User} from "../types/types";
-import {tokenBlackListCollection} from "../db/db";
 import {usersRepository} from "./users-db-repository";
 import bcrypt from "bcrypt";
+import {RefreshTokenBlackListModel} from "../types/models";
 
 export const authRepository = {
 
@@ -23,7 +23,7 @@ export const authRepository = {
 
     async checkRefreshToken(refreshToken : string) : Promise <boolean> {
         //find by loginOrEmail
-        const status : RefreshToken | null =  await tokenBlackListCollection.findOne({refreshToken : refreshToken})
+        const status : RefreshToken | null =  await RefreshTokenBlackListModel.findOne({refreshToken : refreshToken})
         if (status) {
             return true
         } else {
@@ -35,7 +35,7 @@ export const authRepository = {
 
     async addRefreshTokenToBlackList(refreshToken : string) : Promise <boolean> {
         //find by loginOrEmail
-        await tokenBlackListCollection.insertOne({refreshToken : refreshToken})
+        await RefreshTokenBlackListModel.insertMany({refreshToken : refreshToken})
         const status = await this.checkRefreshToken(refreshToken)
         if (status) {
             return true

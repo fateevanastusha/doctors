@@ -13,9 +13,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.authRepository = void 0;
-const db_1 = require("../db/db");
 const users_db_repository_1 = require("./users-db-repository");
 const bcrypt_1 = __importDefault(require("bcrypt"));
+const models_1 = require("../types/models");
 exports.authRepository = {
     //AUTH
     authRequest(loginOrEmail, password) {
@@ -34,7 +34,7 @@ exports.authRepository = {
     checkRefreshToken(refreshToken) {
         return __awaiter(this, void 0, void 0, function* () {
             //find by loginOrEmail
-            const status = yield db_1.tokenBlackListCollection.findOne({ refreshToken: refreshToken });
+            const status = yield models_1.RefreshTokenBlackListModel.findOne({ refreshToken: refreshToken });
             if (status) {
                 return true;
             }
@@ -47,7 +47,7 @@ exports.authRepository = {
     addRefreshTokenToBlackList(refreshToken) {
         return __awaiter(this, void 0, void 0, function* () {
             //find by loginOrEmail
-            yield db_1.tokenBlackListCollection.insertOne({ refreshToken: refreshToken });
+            yield models_1.RefreshTokenBlackListModel.insertMany({ refreshToken: refreshToken });
             const status = yield this.checkRefreshToken(refreshToken);
             if (status) {
                 return true;

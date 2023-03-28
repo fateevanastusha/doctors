@@ -10,20 +10,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.usersRepository = void 0;
-const db_1 = require("../db/db");
+const models_1 = require("../types/models");
 exports.usersRepository = {
     //RETURN ALL USERS
     returnAllUsers() {
         return __awaiter(this, void 0, void 0, function* () {
-            return db_1.usersCollection
+            return models_1.UserModel
                 .find({ projection: { _id: 0, password: 0, isConfirmed: 0, confirmedCode: 0 } })
-                .toArray();
+                .lean();
         });
     },
     //COUNT USERS WITH SEARCH LOGIN TERM AND SEARCH EMAIL TERM
     returnUsersCount(searchLoginTerm, searchEmailTerm) {
         return __awaiter(this, void 0, void 0, function* () {
-            return db_1.usersCollection.countDocuments({
+            return models_1.UserModel.countDocuments({
                 $or: [
                     { login: { $regex: searchLoginTerm, $options: 'i' } },
                     { email: { $regex: searchEmailTerm, $options: 'i' } }
@@ -34,14 +34,14 @@ exports.usersRepository = {
     //GET USER BY ID
     returnUserById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return db_1.usersCollection
+            return models_1.UserModel
                 .findOne({ id: id }, { projection: { _id: 0, password: 0, isConfirmed: 0, confirmedCode: 0 } });
         });
     },
     //GET USER BY FIELD
     returnUserByField(field) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield db_1.usersCollection
+            const user = yield models_1.UserModel
                 .findOne({ $or: [{ login: field }, { email: field }] });
             return user;
         });
@@ -49,7 +49,7 @@ exports.usersRepository = {
     //GET USER BY LOGIN
     returnUserByLogin(login) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = db_1.usersCollection
+            const user = models_1.UserModel
                 .findOne({ login: login }, { projection: { _id: 0 } });
             return user;
         });
@@ -57,7 +57,7 @@ exports.usersRepository = {
     //GET USER BY EMAIL OR LOGIN
     returnUserByEmail(email) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = db_1.usersCollection
+            const user = models_1.UserModel
                 .findOne({ email: email }, { projection: { _id: 0 } });
             return user;
         });
@@ -65,7 +65,7 @@ exports.usersRepository = {
     //CREATE NEW USER
     createNewUser(newUser) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield db_1.usersCollection.insertOne(newUser);
+            yield models_1.UserModel.insertMany([newUser]);
             const updatedUser = yield this.returnUserById(newUser.id);
             if (updatedUser) {
                 return updatedUser;
@@ -76,21 +76,21 @@ exports.usersRepository = {
     //DELETE USER BY ID
     deleteUserById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.usersCollection.deleteOne({ id: id });
+            const result = yield models_1.UserModel.deleteOne({ id: id });
             return result.deletedCount === 1;
         });
     },
     //CHECK FOR CONFIRMATION CODE
     checkForConfirmationCode(confirmedCode) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield db_1.usersCollection.findOne({ confirmedCode: confirmedCode });
+            const user = yield models_1.UserModel.findOne({ confirmedCode: confirmedCode });
             return user !== null;
         });
     },
     //CHANGE CONFIRMATION STATUS
     changeConfirmedStatus(confirmedCode) {
         return __awaiter(this, void 0, void 0, function* () {
-            const status = yield db_1.usersCollection.updateOne({ confirmedCode: confirmedCode }, { $set: {
+            const status = yield models_1.UserModel.updateOne({ confirmedCode: confirmedCode }, { $set: {
                     isConfirmed: true
                 }
             });
@@ -100,7 +100,7 @@ exports.usersRepository = {
     //CHANGE CONFIRMATION CODE
     changeConfirmationCode(confirmationCode, email) {
         return __awaiter(this, void 0, void 0, function* () {
-            const status = yield db_1.usersCollection.updateOne({ email: email }, { $set: {
+            const status = yield models_1.UserModel.updateOne({ email: email }, { $set: {
                     confirmedCode: confirmationCode
                 }
             });
@@ -110,7 +110,7 @@ exports.usersRepository = {
     //CHECK FOR CONFIRMED ACCOUNT
     checkForConfirmedAccountByEmailOrCode(emailOrCode) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield db_1.usersCollection.findOne({ $or: [{ email: emailOrCode }, { confirmedCode: emailOrCode }] });
+            const user = yield models_1.UserModel.findOne({ $or: [{ email: emailOrCode }, { confirmedCode: emailOrCode }] });
             if (user === null || user === void 0 ? void 0 : user.isConfirmed) {
                 return true;
             }
@@ -122,7 +122,7 @@ exports.usersRepository = {
     //DELETE ALL DATA
     deleteAllData() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield db_1.usersCollection.deleteMany({});
+            yield models_1.UserModel.deleteMany({});
             return [];
         });
     }

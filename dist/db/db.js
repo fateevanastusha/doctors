@@ -8,28 +8,35 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.runDb = exports.attemptsCollection = exports.refreshTokensCollection = exports.tokenBlackListCollection = exports.commentsCollection = exports.usersCollection = exports.postsCollection = exports.blogsCollection = exports.client = void 0;
-const mongodb_1 = require("mongodb");
+exports.runDb = void 0;
+const mongoose_1 = __importDefault(require("mongoose"));
+function main() {
+    return __awaiter(this, void 0, void 0, function* () {
+        yield mongoose_1.default.connect('mongodb://127.0.0.1:27017/test');
+    });
+}
 const mongoUri = process.env.mongoURI || "mongodb+srv://admin:2S50j20AC3UhzPFC@cluster0.leufa1s.mongodb.net/?retryWrites=true&w=majority";
-exports.client = new mongodb_1.MongoClient(mongoUri);
-const db = exports.client.db("blogs-platform");
-exports.blogsCollection = db.collection("blogs");
-exports.postsCollection = db.collection("posts");
-exports.usersCollection = db.collection("users");
-exports.commentsCollection = db.collection("comments");
-exports.tokenBlackListCollection = db.collection("refresh-token");
-exports.refreshTokensCollection = db.collection("refresh-tokens-meta");
-exports.attemptsCollection = db.collection("attempts");
+//export const client = new MongoClient(mongoUri);
+//const db = client.db ("blogs-platform")
+//export const blogsCollection = db.collection<Blog>("blogs");
+//export const postsCollection = db.collection<Post>("posts");
+//export const usersCollection = db.collection<User>("users");
+//export const commentsCollection = db.collection<Comment>("comments");
+//export const tokenBlackListCollection = db.collection<RefreshToken>("refresh-token");
+//export const refreshTokensCollection = db.collection<RefreshTokensMeta>("refresh-tokens-meta")
+//export const attemptsCollection = db.collection<Attempts>("attempts")
 function runDb() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            yield exports.client.connect();
-            yield exports.client.db("blogs-platform").command({ ping: 1 });
+            yield mongoose_1.default.connect(mongoUri + '/' + "blogs-platform");
             console.log("Connected successfully to mongo server");
         }
         catch (_a) {
-            yield exports.client.close();
+            yield mongoose_1.default.disconnect();
         }
     });
 }

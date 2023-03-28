@@ -10,18 +10,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.securityRepository = void 0;
-const db_1 = require("../db/db");
+const models_1 = require("../types/models");
 exports.securityRepository = {
     getAllSessions(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return db_1.refreshTokensCollection
+            return models_1.RefreshTokensMetaModel
                 .find({ userId }, { projection: { _id: 0, userId: 0 } })
-                .toArray();
+                .lean();
         });
     },
     deleteAllSessions(deviceId, userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.refreshTokensCollection
+            const result = yield models_1.RefreshTokensMetaModel
                 .deleteMany({
                 userId,
                 deviceId: { $ne: deviceId }
@@ -31,15 +31,15 @@ exports.securityRepository = {
     },
     deleteOneSessions(deviceId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.refreshTokensCollection
+            const result = yield models_1.RefreshTokensMetaModel
                 .deleteOne({ deviceId });
             return result.deletedCount === 1;
         });
     },
     createNewSession(refreshTokensMeta) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield db_1.refreshTokensCollection
-                .insertOne({
+            yield models_1.RefreshTokensMetaModel
+                .insertMany({
                 userId: refreshTokensMeta.userId,
                 ip: refreshTokensMeta.ip,
                 title: refreshTokensMeta.title,
@@ -54,25 +54,25 @@ exports.securityRepository = {
     },
     findSessionByIp(ip) {
         return __awaiter(this, void 0, void 0, function* () {
-            return db_1.refreshTokensCollection
+            return models_1.RefreshTokensMetaModel
                 .findOne({ ip: ip });
         });
     },
     findSessionByDeviceId(deviceId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return db_1.refreshTokensCollection
+            return models_1.RefreshTokensMetaModel
                 .findOne({ deviceId: deviceId });
         });
     },
     findSessionByDeviceIdAndUserId(userId, deviceId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return db_1.refreshTokensCollection
+            return models_1.RefreshTokensMetaModel
                 .findOne({ userId: userId, deviceId: deviceId });
         });
     },
     updateSession(ip, title, lastActiveDate, deviceId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.refreshTokensCollection
+            const result = yield models_1.RefreshTokensMetaModel
                 .updateOne({ deviceId: deviceId }, { $set: {
                     ip: ip,
                     title: title,
@@ -86,14 +86,14 @@ exports.securityRepository = {
     //DELETE ALL DATA
     deleteAllData() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield db_1.refreshTokensCollection.deleteMany({});
+            yield models_1.RefreshTokensMetaModel.deleteMany({});
             return [];
         });
     },
     //CHECK FOR THE SAME SESSION
     checkSameDevice(title, userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.refreshTokensCollection.find({ title: title, userId: userId });
+            const result = yield models_1.RefreshTokensMetaModel.find({ title: title, userId: userId });
             if (result)
                 return true;
             return false;

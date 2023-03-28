@@ -13,6 +13,7 @@ import cookieParser from "cookie-parser"
 import {securityRepository} from "./repositories/security-db-repository";
 export const app = express();
 
+
 app.use(express.json())
 app.use(cookieParser())
 

@@ -14,12 +14,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const supertest_1 = __importDefault(require("supertest"));
 const app_1 = require("../../app");
+const imap_service_1 = require("./imap.service");
+const nodemailerMock = require('nodemailer-mock');
+const MailParser = require('mailparser').MailParser;
 describe('auth', () => {
     //DELETE ALL DATA
+    jest.setTimeout(3 * 60 * 1000);
+    const imapService = new imap_service_1.MailBoxImap();
     beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
         yield (0, supertest_1.default)(app_1.app)
             .delete('/testing/all-data')
             .expect(204);
+        yield imapService.connectToMail();
+    }));
+    afterAll(() => __awaiter(void 0, void 0, void 0, function* () {
+        yield imapService.disconnect();
     }));
     //SUCCESSFULLY CREATE USER
     let createResponseUser = null;
@@ -149,6 +158,67 @@ describe('auth', () => {
             .send({
             content: 'too little'
         });
+    }));
+    //SUCCESSFULLY REGISTRATION
+    //MOCK FUNCTION JEST
+    it('TEST EMAIL SENDING', () => __awaiter(void 0, void 0, void 0, function* () {
+        //MAKE REQUEST REGISTRATION
+        const resp = yield (0, supertest_1.default)(app_1.app)
+            .post('/auth/registration')
+            .send({
+            login: "nastya1",
+            email: "fateevanastushatest@yandex.ru",
+            password: "qwerty1"
+        });
+        //UNSUCCESSFULLY EMAIL RESENDING
+        yield (0, supertest_1.default)(app_1.app)
+            .post('/auth/registration-email-resending')
+            .send({
+            email: "notexisting@gmail.com"
+        })
+            .expect(400);
+        //SUCCESSFULLY EMAIL RESENDING
+        yield (0, supertest_1.default)(app_1.app)
+            .post('/auth/registration-email-resending')
+            .send({
+            email: "fateevanastushatest@yandex.ru"
+        })
+            .expect(204);
+        const sentMessage = yield imapService.waitNewMessage(1);
+        const html = yield imapService.getMessageHtml(sentMessage);
+        expect(html).toBeDefined();
+        const code = html.split("?code=")[1].split("'")[0];
+        //NOT EXISTING CODE - EXPECT 400
+        yield (0, supertest_1.default)(app_1.app)
+            .post('/auth/registration-confirmation')
+            .send({
+            "code": "not existing code"
+        })
+            .expect(400);
+        //CORRECT CODE - EXPECT 204 AND CONFIRMED ACCOUNT
+        yield (0, supertest_1.default)(app_1.app)
+            .post('/auth/registration-confirmation')
+            .send({
+            "code": code
+        })
+            .expect(204);
+    }));
+    //TESTING LOGIN
+    it('TEST LOGIN IN SYSTEM', () => __awaiter(void 0, void 0, void 0, function* () {
+        yield (0, supertest_1.default)(app_1.app)
+            .post('auth/login')
+            .send({
+            loginOrEmail: 'fateevanastushatest@yandex.ru',
+            password: 'WRONG PASSWORD'
+        })
+            .expect(401);
+        yield (0, supertest_1.default)(app_1.app)
+            .post('auth/login')
+            .send({
+            loginOrEmail: 'fateevanastushatest@yandex.ru',
+            password: 'WRONG PASSWORD'
+        })
+            .expect(200);
     }));
     //UNSUCCESSFULLY CREATE NEW COMMENT WITHOUT TOKEN
     //UNSUCCESSFULLY CREATE NEW COMMENT WITH WRONG DATA

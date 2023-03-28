@@ -16,7 +16,6 @@ const input_valudation_middleware_1 = require("../middlewares/input-valudation-m
 const auth_middlewares_1 = require("../middlewares/auth-middlewares");
 const attempts_middleware_1 = require("../middlewares/attempts-middleware");
 exports.authRouter = (0, express_1.Router)();
-//LOGIN REQUEST
 exports.authRouter.post('/login', attempts_middleware_1.requestAttemptsMiddleware, auth_middlewares_1.checkForSameDevice, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const title = req.headers["user-agent"] || "unknown";
     const tokenList = yield auth_service_1.authService.authRequest(req.body.password, req.ip, req.body.loginOrEmail, title);
@@ -53,7 +52,7 @@ exports.authRouter.get('/me', (req, res) => __awaiter(void 0, void 0, void 0, fu
     }
 }));
 //REGISTRATION IN THE SYSTEM
-exports.authRouter.post('/registration', attempts_middleware_1.requestAttemptsMiddleware, input_valudation_middleware_1.loginCheck, input_valudation_middleware_1.passwordCheck, input_valudation_middleware_1.emailCheck, input_valudation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.authRouter.post('/registration', input_valudation_middleware_1.loginCheck, input_valudation_middleware_1.passwordCheck, input_valudation_middleware_1.emailCheck, input_valudation_middleware_1.inputValidationMiddleware, attempts_middleware_1.requestAttemptsMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const status = yield auth_service_1.authService.registrationUser(req.body);
     if (status) {
         res.send(204);

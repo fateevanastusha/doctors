@@ -20,7 +20,7 @@ export const usersService = {
     },
     //CREATE NEW USER
     async createNewUser(user : User, isConfirmed : boolean = true, confirmationCode : null | string = null) : Promise<User | null>{
-        const hash = bcrypt.hashSync(user.password, 10)
+        const hash = bcrypt.hashSync(user.password, 10, )
         const newUser =  {
             id: (+new Date()).toString(),
             login: user.login,

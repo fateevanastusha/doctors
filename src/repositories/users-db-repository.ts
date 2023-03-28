@@ -1,20 +1,20 @@
 import {User} from "../types/types";
-import {blogsCollection, usersCollection} from "../db/db";
+import {UserModel} from "../types/models";
 
 export const usersRepository = {
 
     //RETURN ALL USERS
 
     async returnAllUsers() : Promise <User[]> {
-        return usersCollection
+        return UserModel
             .find({projection: {_id: 0, password : 0, isConfirmed: 0, confirmedCode : 0}})
-            .toArray()
+            .lean()
     },
 
     //COUNT USERS WITH SEARCH LOGIN TERM AND SEARCH EMAIL TERM
 
     async returnUsersCount(searchLoginTerm : string, searchEmailTerm : string) : Promise<number>{
-        return usersCollection.countDocuments({
+        return UserModel.countDocuments({
                 $or: [
                     {login: {$regex: searchLoginTerm, $options: 'i'}},
                     {email: {$regex: searchEmailTerm, $options: 'i'}}
@@ -25,7 +25,7 @@ export const usersRepository = {
     //GET USER BY ID
 
     async returnUserById(id : string) : Promise <User | null> {
-       return usersCollection
+       return UserModel
             .findOne({id: id}, {projection: {_id: 0, password : 0,  isConfirmed: 0, confirmedCode : 0}})
 
     },
@@ -33,7 +33,7 @@ export const usersRepository = {
     //GET USER BY FIELD
 
     async returnUserByField(field : string) : Promise <User | null> {
-        const user = await usersCollection
+        const user = await UserModel
             .findOne({$or : [{login: field} , {email: field}]})
         return user
 
@@ -43,7 +43,7 @@ export const usersRepository = {
     //GET USER BY LOGIN
 
     async returnUserByLogin(login : string) : Promise <User | null> {
-        const user =  usersCollection
+        const user =  UserModel
             .findOne({login : login}, {projection: {_id: 0}})
         return user
 
@@ -52,18 +52,17 @@ export const usersRepository = {
     //GET USER BY EMAIL OR LOGIN
 
     async returnUserByEmail(email : string) : Promise <User | null> {
-        const user =  usersCollection
+        const user =  UserModel
             .findOne({email : email}, {projection: {_id: 0}})
         return user
 
     },
 
     //CREATE NEW USER
-
     async createNewUser(newUser : User) : Promise <User | null> {
-        await usersCollection.insertOne(newUser)
+        await UserModel.insertMany([newUser])
         const updatedUser = await this.returnUserById(newUser.id)
-        if(updatedUser) {
+        if (updatedUser) {
             return updatedUser
         }
         return null
@@ -72,21 +71,21 @@ export const usersRepository = {
     //DELETE USER BY ID
 
     async deleteUserById(id: string) : Promise<boolean>{
-        const result = await usersCollection.deleteOne({id: id})
+        const result = await UserModel.deleteOne({id: id})
         return result.deletedCount === 1
     },
 
     //CHECK FOR CONFIRMATION CODE
 
     async checkForConfirmationCode (confirmedCode : string) : Promise<boolean> {
-        const user = await usersCollection.findOne({confirmedCode : confirmedCode})
+        const user = await UserModel.findOne({confirmedCode : confirmedCode})
         return user !== null
     },
 
     //CHANGE CONFIRMATION STATUS
 
     async changeConfirmedStatus (confirmedCode : string) : Promise<boolean> {
-        const status = await usersCollection.updateOne(
+        const status = await UserModel.updateOne(
             {confirmedCode : confirmedCode},
             { $set : {
                     isConfirmed : true
@@ -98,7 +97,7 @@ export const usersRepository = {
     //CHANGE CONFIRMATION CODE
 
     async changeConfirmationCode (confirmationCode : string, email : string) : Promise <boolean> {
-        const status = await usersCollection.updateOne(
+        const status = await UserModel.updateOne(
             {email : email},
             { $set : {
                     confirmedCode : confirmationCode
@@ -110,7 +109,7 @@ export const usersRepository = {
     //CHECK FOR CONFIRMED ACCOUNT
 
     async checkForConfirmedAccountByEmailOrCode (emailOrCode : string) : Promise <boolean> {
-        const user = await usersCollection.findOne({$or: [{email: emailOrCode}, {confirmedCode: emailOrCode}]})
+        const user = await UserModel.findOne({$or: [{email: emailOrCode}, {confirmedCode: emailOrCode}]})
         if (user?.isConfirmed) {
             return true
         } else {
@@ -121,7 +120,7 @@ export const usersRepository = {
     //DELETE ALL DATA
 
     async deleteAllData(){
-        await usersCollection.deleteMany({})
+        await UserModel.deleteMany({})
         return []
     }
 

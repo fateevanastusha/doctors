@@ -10,19 +10,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.blogsRepository = void 0;
-const db_1 = require("../db/db");
+const models_1 = require("../types/models");
 exports.blogsRepository = {
     //GET - return all
     returnAllBlogs() {
         return __awaiter(this, void 0, void 0, function* () {
-            return db_1.blogsCollection
+            return models_1.BlogModel
                 .find({ projection: { _id: 0 } })
-                .toArray();
+                .lean();
         });
     },
     returnBlogsCount(searchNameTerm) {
         return __awaiter(this, void 0, void 0, function* () {
-            return db_1.blogsCollection
+            return models_1.BlogModel
                 .find({ name: { $regex: searchNameTerm, $options: 'i' } })
                 .count();
         });
@@ -30,28 +30,28 @@ exports.blogsRepository = {
     //GET - return by ID
     returnBlogById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const blog = yield db_1.blogsCollection.findOne({ id: id }, { projection: { _id: 0 } });
+            const blog = yield models_1.BlogModel.findOne({ id: id }, { projection: { _id: 0 } });
             return blog;
         });
     },
     //DELETE - delete by ID
     deleteBlogById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.blogsCollection.deleteOne({ id: id });
+            const result = yield models_1.BlogModel.deleteOne({ id: id });
             return result.deletedCount === 1;
         });
     },
     //delete all data
     deleteAllData() {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.blogsCollection.deleteMany({});
+            const result = yield models_1.BlogModel.deleteMany({});
             return [];
         });
     },
     //POST - create new 
     createNewBlog(newBlog) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield db_1.blogsCollection.insertOne(newBlog);
+            yield models_1.BlogModel.insertMany(newBlog);
             const createdBlog = yield this.returnBlogById(newBlog.id);
             if (createdBlog) {
                 return createdBlog;
@@ -62,7 +62,7 @@ exports.blogsRepository = {
     //PUT - update
     updateBlogById(blog, id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.blogsCollection.updateOne({ id: id }, { $set: blog });
+            const result = yield models_1.BlogModel.updateOne({ id: id }, { $set: blog });
             return result.matchedCount === 1;
         });
     },

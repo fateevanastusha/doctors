@@ -4,7 +4,11 @@ import {
     Router
 } from "express";
 import {authService} from "../domain/auth-service";
-import {Token, TokenList, User} from "../types/types";
+import {
+    Token,
+    TokenList,
+    User
+} from "../types/types";
 import {
     codeConfirmationCheck,
     emailCheck,
@@ -21,8 +25,6 @@ import {requestAttemptsMiddleware} from "../middlewares/attempts-middleware";
 
 export const authRouter = Router()
 
-
-//LOGIN REQUEST
 
 authRouter.post('/login', requestAttemptsMiddleware, checkForSameDevice, async (req: Request, res: Response) => {
     const title = req.headers["user-agent"] || "unknown"
