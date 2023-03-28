@@ -10,56 +10,56 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.QueryRepository = void 0;
-const db_1 = require("./db/db");
+const models_1 = require("./types/models");
 exports.QueryRepository = {
     PaginatorForBlogs(PageCount, PageSize, Page, sortBy, sortDirection, searchNameTerm) {
         return __awaiter(this, void 0, void 0, function* () {
             const skipSize = PageSize * (Page - 1);
-            return db_1.blogsCollection
+            return models_1.BlogModel
                 .find({ name: { $regex: searchNameTerm, $options: 'i' } }, { projection: { _id: 0 } })
                 .sort({ [sortBy]: sortDirection })
                 .skip(skipSize)
                 .limit(PageSize)
-                .toArray();
+                .lean();
         });
     },
     PaginatorForPosts(PageCount, PageSize, Page, sortBy, sortDirection) {
         return __awaiter(this, void 0, void 0, function* () {
             const skipSize = PageSize * (Page - 1);
-            return db_1.postsCollection
+            return models_1.PostModel
                 .find({}, { projection: { _id: 0 } })
                 .sort({ [sortBy]: sortDirection })
                 .skip(skipSize)
                 .limit(PageSize)
-                .toArray();
+                .lean();
         });
     },
     PaginatorForCommentsByBlogId(PageCount, PageSize, Page, sortBy, sortDirection, postId) {
         return __awaiter(this, void 0, void 0, function* () {
             const skipSize = PageSize * (Page - 1);
-            return db_1.commentsCollection
+            return models_1.CommentModel
                 .find({ postId: postId }, { projection: { _id: 0, postId: 0 } })
                 .sort({ [sortBy]: sortDirection })
                 .skip(skipSize)
                 .limit(PageSize)
-                .toArray();
+                .lean();
         });
     },
     PaginatorForPostsByBlogId(PageCount, PageSize, Page, sortBy, sortDirection, blogId) {
         return __awaiter(this, void 0, void 0, function* () {
             const skipSize = PageSize * (Page - 1);
-            return db_1.postsCollection
+            return models_1.PostModel
                 .find({ blogId: blogId }, { projection: { _id: 0 } })
                 .sort({ [sortBy]: sortDirection })
                 .skip(skipSize)
                 .limit(PageSize)
-                .toArray();
+                .lean();
         });
     },
     PaginatorForUsers(PageCount, PageSize, Page, sortBy, sortDirection, searchLoginTerm, searchEmailTerm) {
         return __awaiter(this, void 0, void 0, function* () {
             const skipSize = PageSize * (Page - 1);
-            return db_1.usersCollection
+            return models_1.UserModel
                 .find({
                 $or: [
                     { login: { $regex: searchLoginTerm, $options: 'i' } },
@@ -69,19 +69,18 @@ exports.QueryRepository = {
                 .sort({ [sortBy]: sortDirection })
                 .skip(skipSize)
                 .limit(PageSize)
-                .toArray();
+                .lean();
         });
     },
     PaginationForm(PageCount, PageSize, Page, total, Items) {
         return __awaiter(this, void 0, void 0, function* () {
-            const paginator = {
+            return {
                 pagesCount: PageCount,
                 page: Page,
                 pageSize: PageSize,
                 totalCount: total,
                 items: Items
             };
-            return paginator;
         });
     },
 };
