@@ -18,7 +18,7 @@ export const usersRepository = {
 
     async returnUserById(id : string) : Promise <User | null> {
        return UserModel
-            .findOne({id: id}, {_id: 0, password : 0,  isConfirmed: 0, confirmedCode : 0})
+            .findOne({id: id}, {_id: 0, password : 0,  isConfirmed: 0, confirmedCode : 0, __v: 0})
 
     },
 
@@ -36,7 +36,7 @@ export const usersRepository = {
 
     async returnUserByLogin(login : string) : Promise <User | null> {
         const user =  UserModel
-            .findOne({login : login}, {_id: 0})
+            .findOne({login : login}, {_id: 0, __v: 0})
         return user
 
     },
@@ -45,7 +45,7 @@ export const usersRepository = {
 
     async returnUserByEmail(email : string) : Promise <User | null> {
         const user =  UserModel
-            .findOne({email : email},{_id: 0})
+            .findOne({email : email},{_id: 0, __v: 0})
         return user
 
     },
@@ -63,7 +63,7 @@ export const usersRepository = {
     //DELETE USER BY ID
 
     async deleteUserById(id: string) : Promise<boolean>{
-        const result = await UserModel.deleteOne({id: id})
+        const result = await UserModel.deleteOne({id: id, __v: 0})
         return result.deletedCount === 1
     },
 

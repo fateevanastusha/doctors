@@ -25,9 +25,9 @@ export const blogsRepository = {
     },
     //POST - create new 
     async createNewBlog(newBlog: Blog) : Promise<Blog | null>{
+        console.log(newBlog)
         await BlogModel.insertMany(newBlog)
         const createdBlog = await this.returnBlogById(newBlog.id)
-        console.log(createdBlog + "created blog")
         if(createdBlog) {
             return createdBlog
         }

@@ -15,7 +15,7 @@ exports.securityRepository = {
     getAllSessions(userId) {
         return __awaiter(this, void 0, void 0, function* () {
             return models_1.RefreshTokensMetaModel
-                .find({ userId }, { projection: { _id: 0, userId: 0 } })
+                .find({ userId }, { _id: 0, __v: 0, userId: 0 })
                 .lean();
         });
     },

@@ -16,14 +16,14 @@ exports.postsRepository = {
     returnAllPost() {
         return __awaiter(this, void 0, void 0, function* () {
             return models_1.PostModel
-                .find({}, { projection: { _id: 0 } })
+                .find({}, { _id: 0, __v: 0 })
                 .lean();
         });
     },
     //return post by Id
     returnPostById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return models_1.PostModel.findOne({ id: id }, { projection: { _id: 0 } });
+            return models_1.PostModel.findOne({ id: id }, { _id: 0, __v: 0 });
         });
     },
     //delete post by Id

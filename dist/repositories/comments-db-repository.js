@@ -14,7 +14,7 @@ const models_1 = require("../types/models");
 exports.commentsRepository = {
     getCommentById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield models_1.CommentModel.findOne({ id: id }, { projection: { _id: 0, postId: 0 } });
+            return yield models_1.CommentModel.findOne({ id: id }, { _id: 0, __v: 0, postId: 0 });
         });
     },
     deleteCommentById(id) {
@@ -25,7 +25,6 @@ exports.commentsRepository = {
     },
     updateCommentById(content, id) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("db repository " + content);
             const result = yield models_1.CommentModel.updateOne({ id: id }, { $set: {
                     content: content
                 }
@@ -38,7 +37,6 @@ exports.commentsRepository = {
             yield models_1.CommentModel.insertMany(comment);
             const createdComment = yield this.getCommentById(comment.id);
             if (createdComment) {
-                console.log('hello there');
                 return createdComment;
             }
             else {
@@ -49,7 +47,7 @@ exports.commentsRepository = {
     getAllCommentsByPostId(postId) {
         return __awaiter(this, void 0, void 0, function* () {
             return models_1.CommentModel
-                .find({ postId: postId }, { projection: { _id: 0, postId: 0 } })
+                .find({ postId: postId }, { _id: 0, __v: 0, postId: 0 })
                 .lean();
         });
     },

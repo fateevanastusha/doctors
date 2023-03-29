@@ -19,7 +19,7 @@ const mongoUri = process.env.mongoURI || "mongodb+srv://admin:2S50j20AC3UhzPFC@c
 
 export async function runDb() {
     try {
-        await mongoose.connect(mongoUri + '/' + "blogs-platform");
+        await mongoose.connect(mongoUri);
         console.log("Connected successfully to mongo server");
     } catch {
         console.log("Connection is wrong");

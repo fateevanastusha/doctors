@@ -12,14 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.usersRepository = void 0;
 const models_1 = require("../types/models");
 exports.usersRepository = {
-    //RETURN ALL USERS
-    returnAllUsers() {
-        return __awaiter(this, void 0, void 0, function* () {
-            return models_1.UserModel
-                .find({ projection: { _id: 0, password: 0, isConfirmed: 0, confirmedCode: 0 } })
-                .lean();
-        });
-    },
     //COUNT USERS WITH SEARCH LOGIN TERM AND SEARCH EMAIL TERM
     returnUsersCount(searchLoginTerm, searchEmailTerm) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -35,7 +27,7 @@ exports.usersRepository = {
     returnUserById(id) {
         return __awaiter(this, void 0, void 0, function* () {
             return models_1.UserModel
-                .findOne({ id: id }, { projection: { _id: 0, password: 0, isConfirmed: 0, confirmedCode: 0 } });
+                .findOne({ id: id }, { _id: 0, password: 0, isConfirmed: 0, confirmedCode: 0, __v: 0 });
         });
     },
     //GET USER BY FIELD
@@ -50,7 +42,7 @@ exports.usersRepository = {
     returnUserByLogin(login) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = models_1.UserModel
-                .findOne({ login: login }, { projection: { _id: 0 } });
+                .findOne({ login: login }, { _id: 0, __v: 0 });
             return user;
         });
     },
@@ -58,7 +50,7 @@ exports.usersRepository = {
     returnUserByEmail(email) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = models_1.UserModel
-                .findOne({ email: email }, { projection: { _id: 0 } });
+                .findOne({ email: email }, { _id: 0, __v: 0 });
             return user;
         });
     },
@@ -76,7 +68,7 @@ exports.usersRepository = {
     //DELETE USER BY ID
     deleteUserById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield models_1.UserModel.deleteOne({ id: id });
+            const result = yield models_1.UserModel.deleteOne({ id: id, __v: 0 });
             return result.deletedCount === 1;
         });
     },

@@ -32,7 +32,7 @@ const mongoUri = process.env.mongoURI || "mongodb+srv://admin:2S50j20AC3UhzPFC@c
 function runDb() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            yield mongoose_1.default.connect(mongoUri + '/' + "blogs-platform");
+            yield mongoose_1.default.connect(mongoUri);
             console.log("Connected successfully to mongo server");
         }
         catch (_a) {

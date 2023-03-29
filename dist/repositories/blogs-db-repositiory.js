@@ -42,9 +42,9 @@ exports.blogsRepository = {
     //POST - create new 
     createNewBlog(newBlog) {
         return __awaiter(this, void 0, void 0, function* () {
+            console.log(newBlog);
             yield models_1.BlogModel.insertMany(newBlog);
             const createdBlog = yield this.returnBlogById(newBlog.id);
-            console.log(createdBlog + "created blog");
             if (createdBlog) {
                 return createdBlog;
             }
