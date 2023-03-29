@@ -3,20 +3,14 @@ import {BlogModel} from "../types/models";
 
 
 export const blogsRepository = {
-    //GET - return all
-    async returnAllBlogs() : Promise<Blog[]>{
-        return BlogModel
-            .find({projection: {_id: 0}})
-            .lean()
-    },
+
     async returnBlogsCount(searchNameTerm : string) : Promise<number>{
         return BlogModel
-            .find({name: {$regex: searchNameTerm, $options : 'i'}})
-            .count()
+            .countDocuments({name: {$regex: searchNameTerm, $options : 'i'}})
     },
     //GET - return by ID
     async returnBlogById(id: string) : Promise<Blog | null>{
-        const blog : Blog | null = await BlogModel.findOne({id: id}, {projection: {_id: 0}})
+        const blog : Blog | null = await BlogModel.findOne({id: id}, {_id: 0, __v: 0})
         return blog
     },
     //DELETE - delete by ID
@@ -33,6 +27,7 @@ export const blogsRepository = {
     async createNewBlog(newBlog: Blog) : Promise<Blog | null>{
         await BlogModel.insertMany(newBlog)
         const createdBlog = await this.returnBlogById(newBlog.id)
+        console.log(createdBlog + "created blog")
         if(createdBlog) {
             return createdBlog
         }

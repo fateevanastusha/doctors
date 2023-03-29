@@ -1,7 +1,7 @@
 import {blogsRepository} from "../repositories/blogs-db-repositiory";
-import {Blog, Paginator, Post} from "../types/types";
+import {Blog, Paginator, SortDirection} from "../types/types";
 import {QueryRepository} from "../queryRepo";
-import {SortDirection} from "mongodb";
+
 
 export const blogsService = {
     //GET - return all

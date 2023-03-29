@@ -1,7 +1,6 @@
-import {Paginator, User} from "../types/types";
+import {Paginator, User, SortDirection} from "../types/types";
 import {usersRepository} from "../repositories/users-db-repository";
 import {postsRepository} from "../repositories/posts-db-repositiory";
-import {SortDirection} from "mongodb";
 import {QueryRepository} from "../queryRepo";
 import bcrypt from "bcrypt"
 

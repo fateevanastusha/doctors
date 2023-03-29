@@ -1,8 +1,6 @@
-import {Comment, Paginator, User} from "../types/types";
+import {Comment, Paginator, User, SortDirection} from "../types/types";
 import {commentsRepository} from "../repositories/comments-db-repository";
 import {usersService} from "./users-service";
-import {SortDirection} from "mongodb";
-import {postsRepository} from "../repositories/posts-db-repositiory";
 import {QueryRepository} from "../queryRepo";
 
 export const commentsService = {

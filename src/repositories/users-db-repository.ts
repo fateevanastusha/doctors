@@ -3,14 +3,6 @@ import {UserModel} from "../types/models";
 
 export const usersRepository = {
 
-    //RETURN ALL USERS
-
-    async returnAllUsers() : Promise <User[]> {
-        return UserModel
-            .find({projection: {_id: 0, password : 0, isConfirmed: 0, confirmedCode : 0}})
-            .lean()
-    },
-
     //COUNT USERS WITH SEARCH LOGIN TERM AND SEARCH EMAIL TERM
 
     async returnUsersCount(searchLoginTerm : string, searchEmailTerm : string) : Promise<number>{
@@ -26,7 +18,7 @@ export const usersRepository = {
 
     async returnUserById(id : string) : Promise <User | null> {
        return UserModel
-            .findOne({id: id}, {projection: {_id: 0, password : 0,  isConfirmed: 0, confirmedCode : 0}})
+            .findOne({id: id}, {_id: 0, password : 0,  isConfirmed: 0, confirmedCode : 0})
 
     },
 
@@ -44,7 +36,7 @@ export const usersRepository = {
 
     async returnUserByLogin(login : string) : Promise <User | null> {
         const user =  UserModel
-            .findOne({login : login}, {projection: {_id: 0}})
+            .findOne({login : login}, {_id: 0})
         return user
 
     },
@@ -53,7 +45,7 @@ export const usersRepository = {
 
     async returnUserByEmail(email : string) : Promise <User | null> {
         const user =  UserModel
-            .findOne({email : email}, {projection: {_id: 0}})
+            .findOne({email : email},{_id: 0})
         return user
 
     },

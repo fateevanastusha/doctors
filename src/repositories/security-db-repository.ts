@@ -4,7 +4,7 @@ import {RefreshTokensMetaModel} from "../types/models";
 export const securityRepository ={
     async getAllSessions(userId : string) : Promise<RefreshTokensMeta[] | null> {
         return RefreshTokensMetaModel
-            .find({userId}, {projection : {_id : 0, userId : 0}})
+            .find({userId}, {_id: 0, __v: 0, userId : 0})
             .lean()
     },
 

@@ -5,12 +5,12 @@ export const postsRepository = {
   //return all posts
   async returnAllPost() : Promise<Post[]>{
     return PostModel
-        .find({}, {projection: {_id: 0}})
+        .find({}, {_id: 0, __v: 0})
         .lean()
   },
   //return post by Id
   async returnPostById(id: string) : Promise<Post | null>{
-    return PostModel.findOne({id : id}, {projection: {_id: 0}});
+    return PostModel.findOne({id : id}, {_id: 0, __v: 0});
   },
   //delete post by Id
   async deletePostById(id:string) : Promise<boolean>{

@@ -1,6 +1,3 @@
-import {MongoClient} from "mongodb";
-import {Blog, Post, User, Comment, RefreshToken, RefreshTokensMeta, Attempts} from "../types/types";
-
 import mongoose from "mongoose";
 
 async function main() {
@@ -25,6 +22,7 @@ export async function runDb() {
         await mongoose.connect(mongoUri + '/' + "blogs-platform");
         console.log("Connected successfully to mongo server");
     } catch {
+        console.log("Connection is wrong");
         await mongoose.disconnect();
     }
 }

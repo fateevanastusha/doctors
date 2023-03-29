@@ -12,25 +12,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.blogsRepository = void 0;
 const models_1 = require("../types/models");
 exports.blogsRepository = {
-    //GET - return all
-    returnAllBlogs() {
-        return __awaiter(this, void 0, void 0, function* () {
-            return models_1.BlogModel
-                .find({ projection: { _id: 0 } })
-                .lean();
-        });
-    },
     returnBlogsCount(searchNameTerm) {
         return __awaiter(this, void 0, void 0, function* () {
             return models_1.BlogModel
-                .find({ name: { $regex: searchNameTerm, $options: 'i' } })
-                .count();
+                .countDocuments({ name: { $regex: searchNameTerm, $options: 'i' } });
         });
     },
     //GET - return by ID
     returnBlogById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const blog = yield models_1.BlogModel.findOne({ id: id }, { projection: { _id: 0 } });
+            const blog = yield models_1.BlogModel.findOne({ id: id }, { _id: 0, __v: 0 });
             return blog;
         });
     },
@@ -53,6 +44,7 @@ exports.blogsRepository = {
         return __awaiter(this, void 0, void 0, function* () {
             yield models_1.BlogModel.insertMany(newBlog);
             const createdBlog = yield this.returnBlogById(newBlog.id);
+            console.log(createdBlog + "created blog");
             if (createdBlog) {
                 return createdBlog;
             }

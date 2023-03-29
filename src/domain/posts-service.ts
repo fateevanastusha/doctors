@@ -1,7 +1,6 @@
 import {postsRepository} from "../repositories/posts-db-repositiory";
-import {Paginator, Post} from "../types/types";
+import {Paginator, Post, SortDirection} from "../types/types";
 import {QueryRepository} from "../queryRepo";
-import {SortDirection} from "mongodb";
 
 export const postsService = {
     //return all posts

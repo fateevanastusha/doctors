@@ -74,3 +74,5 @@ export type Attempts = {
     url: String,
     time: Date
 }
+
+export type SortDirection = 1 | -1

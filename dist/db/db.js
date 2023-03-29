@@ -36,6 +36,7 @@ function runDb() {
             console.log("Connected successfully to mongo server");
         }
         catch (_a) {
+            console.log("Connection is wrong");
             yield mongoose_1.default.disconnect();
         }
     });
