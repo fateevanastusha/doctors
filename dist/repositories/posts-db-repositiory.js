@@ -50,12 +50,7 @@ exports.postsRepository = {
     //update post by id
     updatePostById(post, id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield models_1.PostModel.updateOne({ id: id }, { $set: {
-                    title: post.title,
-                    shortDescription: post.shortDescription,
-                    content: post.content,
-                    blogId: post.blogId
-                }
+            const result = yield models_1.PostModel.updateOne({ id: id }, { $set: post
             });
             return result.matchedCount === 1;
         });

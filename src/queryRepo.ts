@@ -14,7 +14,7 @@ export const QueryRepository = {
     async PaginatorForPosts(PageCount: number, PageSize: number, Page: number, sortBy: string, sortDirection: 1 | -1): Promise<Post[]> {
         const skipSize: number = PageSize * (Page - 1)
         return PostModel
-            .find({}, {projection: {_id: 0}})
+            .find({},{_id: 0, __v: 0})
             .sort({[sortBy]: sortDirection})
             .skip(skipSize)
             .limit(PageSize)

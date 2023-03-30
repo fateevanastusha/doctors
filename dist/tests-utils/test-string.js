@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userFilterString05 = exports.userFilterString04 = exports.userFilterString03 = exports.userFilterString02 = exports.userFilterString01 = exports.userPasswordString = exports.userEmailString = exports.userLoginString = exports.postFilterString05 = exports.postFilterString04 = exports.postFilterString03 = exports.postFilterString02 = exports.postFilterString01 = exports.postContentString = exports.postDescriptionString = exports.postTitleString = exports.blogFilterString05 = exports.blogFilterString04 = exports.blogFilterString03 = exports.blogFilterString02 = exports.blogFilterString01 = exports.blogWebsiteUrlString = exports.blogDescriptionString = exports.blogNameString = exports.invalidURI = exports.commentsURI = exports.usersURI = exports.postsURI = exports.blogsURI = exports.loginURI = exports.accountURI = void 0;
+exports.userEmailFilterString05 = exports.userEmailFilterString04 = exports.userEmailFilterString03 = exports.userEmailFilterString02 = exports.userEmailFilterString01 = exports.userFilterString05 = exports.userFilterString04 = exports.userFilterString03 = exports.userFilterString02 = exports.userFilterString01 = exports.userPasswordString = exports.userEmailString = exports.userLoginString = exports.postFilterString05 = exports.postFilterString04 = exports.postFilterString03 = exports.postFilterString02 = exports.postFilterString01 = exports.postContentString = exports.postDescriptionString = exports.postTitleString = exports.blogFilterString05 = exports.blogFilterString04 = exports.blogFilterString03 = exports.blogFilterString02 = exports.blogFilterString01 = exports.blogWebsiteUrlString = exports.blogDescriptionString = exports.blogNameString = exports.invalidURI = exports.commentsURI = exports.usersURI = exports.postsURI = exports.blogsURI = exports.loginURI = exports.accountURI = void 0;
 exports.accountURI = "/auth/me";
 exports.loginURI = "/auth/login";
 exports.blogsURI = "/blogs/";
@@ -35,3 +35,8 @@ exports.userFilterString02 = "bbbbbb";
 exports.userFilterString03 = "dddddd";
 exports.userFilterString04 = "cccccc";
 exports.userFilterString05 = "eeeeee";
+exports.userEmailFilterString01 = "fateevanastusha1@gmail.com";
+exports.userEmailFilterString02 = "fateevanastusha2@gmail.com";
+exports.userEmailFilterString03 = "fateevanastusha3@gmail.com";
+exports.userEmailFilterString04 = "fateevanastusha4@gmail.com";
+exports.userEmailFilterString05 = "fateevanastusha5@gmail.com";

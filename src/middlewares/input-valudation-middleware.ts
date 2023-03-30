@@ -43,7 +43,7 @@ export const websiteUrlCheck = body('websiteUrl').trim().isLength({min: 1, max: 
 //check for blogId
 export const findByIdBlogs : CustomValidator = async value => {
     const foundBlog = await blogsRepository.returnBlogById(value);
-    if (foundBlog === null) {
+    if (!foundBlog) {
         throw new Error('not blogId')
     }
 };

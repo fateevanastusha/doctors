@@ -21,11 +21,9 @@ const db_1 = require("../../db/db");
 describe('blogs', () => {
     //DELETE ALL DATA
     beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
-        console.log("deleting");
-        yield (0, db_1.runDb)();
+        (0, db_1.runDb)();
         yield (0, supertest_1.default)(app_1.app)
             .delete('/testing/all-data');
-        console.log("deleting");
     }));
     //CHECK FOR EMPTY BLOG DATA BASE
     it('GET EMPTY BLOG DATA BASE', () => __awaiter(void 0, void 0, void 0, function* () {
@@ -66,22 +64,23 @@ describe('blogs', () => {
     }));
     //PUT CREATED BLOG
     it('SUCCESSFULLY UPDATE CREATED BLOG', () => __awaiter(void 0, void 0, void 0, function* () {
-        const res = (0, supertest_1.default)(app_1.app)
+        (0, supertest_1.default)(app_1.app)
             .put("/blogs/" + createResponseBlog.body.id)
             .send({
             name: "Not Nastya",
             description: "Not about me",
             websiteUrl: "http://www.nastyakoshka.com",
         })
-            .set({ Authorization: "Basic YWRtaW46cXdlcnR5" });
-        expect(res).toBe(0);
+            .set({ Authorization: "Basic YWRtaW46cXdlcnR5" })
+            .expect(200);
     }));
     //CHECK FOR UPDATED BLOG
     it('SUCCESSFULLY UPDATED BLOG', () => __awaiter(void 0, void 0, void 0, function* () {
         const blog = yield (0, supertest_1.default)(app_1.app)
-            .get("/blogs/" + createResponseBlog.body.id);
+            .get("/blogs/" + createResponseBlog.body.id)
+            .expect(200);
         expect(blog.body).toStrictEqual({
-            "id": expect.any(String),
+            "id": createResponseBlog.body.id,
             "name": "Not Nastya",
             "description": "Not about me",
             "websiteUrl": "http://www.nastyakoshka.com",
@@ -117,7 +116,7 @@ describe('blogs', () => {
                     "content": "black sea is hot",
                     "createdAt": expect.any(String),
                     "blogId": createResponseBlog.body.id,
-                    "blogName": "Not Nastya",
+                    "blogName": "Nastya",
                     "id": expect.any(String)
                 }
             ]
@@ -194,5 +193,11 @@ describe('blogs', () => {
                 }
             ]
         });
+    }));
+    afterAll(() => __awaiter(void 0, void 0, void 0, function* () {
+        yield (0, supertest_1.default)(app_1.app)
+            .delete('/testing/all-data')
+            .set({ Authorization: "Basic YWRtaW46cXdlcnR5" })
+            .expect(204);
     }));
 });

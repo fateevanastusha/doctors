@@ -1,11 +1,14 @@
 import request from "supertest";
 import {app} from "../../app";
+import {runDb} from "../../db/db";
 
 describe('comments',  () => {
 
+    jest.setTimeout(3 * 60 * 1000)
     //DELETE ALL DATA
 
     beforeAll(async () => {
+        await runDb()
         await request(app)
             .delete('/testing/all-data')
             .expect(204)
@@ -45,7 +48,8 @@ describe('comments',  () => {
                         id : createResponseUser.body.id,
                         login : "nastya",
                         email: "anastasiafateeva2406@gmail.com",
-                        createdAt: expect.any(String)
+                        createdAt: expect.any(String),
+                        isConfirmed : true
                     }
                 ]
             }
@@ -90,7 +94,7 @@ describe('comments',  () => {
 
     it('SUCCESSFULLY AUTH', async () => {
         let token = await request(app)
-            .post('/auth')
+            .post('/auth/login')
             .send(
                 {
                     loginOrEmail : "nastya",
@@ -113,7 +117,13 @@ describe('comments',  () => {
 
     //SUCCESSFULLY DELETE COMMENT
 
+    afterAll(async () => {
+        await request(app)
+            .delete('/testing/all-data')
+            .set({Authorization : "Basic YWRtaW46cXdlcnR5"})
+            .expect(204)
 
+    })
 
 
 })

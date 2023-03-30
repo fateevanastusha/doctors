@@ -145,6 +145,7 @@ describe('auth', () => {
         const res = yield (0, supertest_1.default)(app_1.app)
             .get('/auth/me')
             .send(token.body);
+        expect(res.status).toBe(200);
         expect(res.body).toStrictEqual({
             login: "nastya",
             email: "anastasiafateeva2406@gmail.com",
@@ -184,7 +185,7 @@ describe('auth', () => {
             email: "fateevanastushatest@yandex.ru"
         })
             .expect(204);
-        const sentMessage = yield imapService.waitNewMessage(1);
+        const sentMessage = yield imapService.waitNewMessage(2);
         const html = yield imapService.getMessageHtml(sentMessage);
         expect(html).toBeDefined();
         const code = html.split("?code=")[1].split("'")[0];

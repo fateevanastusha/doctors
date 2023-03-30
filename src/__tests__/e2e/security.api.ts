@@ -1,6 +1,7 @@
 import request from "supertest";
 import {app} from "../../app";
 import {MailBoxImap} from "./imap.service";
+import {runDb} from "../../db/db";
 const nodemailerMock = require('nodemailer-mock');
 const MailParser = require('mailparser').MailParser;
 
@@ -13,6 +14,7 @@ describe('security', () => {
     const imapService = new MailBoxImap()
 
     beforeAll(async () => {
+        runDb()
         await request(app)
             .delete('/testing/all-data')
             .expect(204)
@@ -124,9 +126,6 @@ describe('security', () => {
 
 
     })
-
-
-
 
     //DELETE ALL DATA
 

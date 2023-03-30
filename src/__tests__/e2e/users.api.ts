@@ -2,6 +2,11 @@ import request from "supertest";
 import {app} from "../../app";
 import {userCreator} from "../../tests-utils/tests-functions";
 import {
+    userEmailFilterString01,
+    userEmailFilterString02,
+    userEmailFilterString03,
+    userEmailFilterString04,
+    userEmailFilterString05,
     userFilterString01,
     userFilterString02,
     userFilterString03,
@@ -9,12 +14,16 @@ import {
     userFilterString05
 
 } from "../../tests-utils/test-string";
+import {runDb} from "../../db/db";
 
 describe('users', () => {
+
+    jest.setTimeout(3 * 60 * 1000)
 
     //DELETE ALL DATA
 
     beforeAll(async () => {
+        runDb()
         await request(app)
             .delete('/testing/all-data')
     })
@@ -22,7 +31,9 @@ describe('users', () => {
     //CHECK FOR EMPTY USERS DATA BASE
 
     it ('GET EMPTY USERS DATA BASE', async  () => {
-        const res = await request(app).get('/users')
+        const res = await request(app)
+            .get('/users')
+            .set({Authorization: "Basic YWRtaW46cXdlcnR5"})
         expect(res.body).toStrictEqual({
             pagesCount: 0,
             page: 1,
@@ -92,7 +103,8 @@ describe('users', () => {
                         id : createResponseUser.body.id,
                         login : "nastya",
                         email: "anastasiafateeva2406@gmail.com",
-                        createdAt: expect.any(String)
+                        createdAt: expect.any(String),
+                        isConfirmed : true
                     }
                 ]
             }
@@ -129,13 +141,12 @@ describe('users', () => {
     //SUCCESSFULLY CREATE 5 NEW USERS
 
     it('SUCCESSFULLY CREATE 5 POSTS', async () => {
-        await userCreator(undefined, userFilterString01);
-        await userCreator(undefined, userFilterString02);
-        await userCreator(undefined, userFilterString03);
-        await userCreator(undefined, userFilterString04);
-        const lastPostResponse = await userCreator(undefined, userFilterString05);
-        console.log(lastPostResponse.body)
-        expect(lastPostResponse.status).toEqual(201);
+        await userCreator(undefined, userFilterString01, userEmailFilterString01);
+        await userCreator(undefined, userFilterString02, userEmailFilterString02);
+        await userCreator(undefined, userFilterString03, userEmailFilterString03);
+        await userCreator(undefined, userFilterString04, userEmailFilterString04);
+        const lastUserResponse = await userCreator(undefined, userFilterString05, userEmailFilterString05);
+        expect(lastUserResponse.status).toEqual(201);
     })
 
     //CHECK CREATED 5 USERS WITH PAGINATION AND SORT BY TITLE

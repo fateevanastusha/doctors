@@ -51,7 +51,7 @@ exports.websiteUrlCheck = (0, express_validator_1.body)('websiteUrl').trim().isL
 //check for blogId
 const findByIdBlogs = (value) => __awaiter(void 0, void 0, void 0, function* () {
     const foundBlog = yield blogs_db_repositiory_1.blogsRepository.returnBlogById(value);
-    if (foundBlog === null) {
+    if (!foundBlog) {
         throw new Error('not blogId');
     }
 });

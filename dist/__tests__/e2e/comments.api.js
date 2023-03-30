@@ -14,9 +14,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const supertest_1 = __importDefault(require("supertest"));
 const app_1 = require("../../app");
+const db_1 = require("../../db/db");
 describe('comments', () => {
+    jest.setTimeout(3 * 60 * 1000);
     //DELETE ALL DATA
     beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
+        yield (0, db_1.runDb)();
         yield (0, supertest_1.default)(app_1.app)
             .delete('/testing/all-data')
             .expect(204);
@@ -49,7 +52,8 @@ describe('comments', () => {
                     id: createResponseUser.body.id,
                     login: "nastya",
                     email: "anastasiafateeva2406@gmail.com",
-                    createdAt: expect.any(String)
+                    createdAt: expect.any(String),
+                    isConfirmed: true
                 }
             ]
         });
@@ -84,7 +88,7 @@ describe('comments', () => {
     //SUCCESSFULLY AUTH
     it('SUCCESSFULLY AUTH', () => __awaiter(void 0, void 0, void 0, function* () {
         let token = yield (0, supertest_1.default)(app_1.app)
-            .post('/auth')
+            .post('/auth/login')
             .send({
             loginOrEmail: "nastya",
             password: "qwerty"
@@ -96,4 +100,10 @@ describe('comments', () => {
     //DELETE COMMENT WITH WRONG TOKEN
     //DELETE COMMENT WITHOUT TOKEN
     //SUCCESSFULLY DELETE COMMENT
+    afterAll(() => __awaiter(void 0, void 0, void 0, function* () {
+        yield (0, supertest_1.default)(app_1.app)
+            .delete('/testing/all-data')
+            .set({ Authorization: "Basic YWRtaW46cXdlcnR5" })
+            .expect(204);
+    }));
 });

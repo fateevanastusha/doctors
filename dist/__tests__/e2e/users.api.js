@@ -16,15 +16,20 @@ const supertest_1 = __importDefault(require("supertest"));
 const app_1 = require("../../app");
 const tests_functions_1 = require("../../tests-utils/tests-functions");
 const test_string_1 = require("../../tests-utils/test-string");
+const db_1 = require("../../db/db");
 describe('users', () => {
+    jest.setTimeout(3 * 60 * 1000);
     //DELETE ALL DATA
     beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
+        (0, db_1.runDb)();
         yield (0, supertest_1.default)(app_1.app)
             .delete('/testing/all-data');
     }));
     //CHECK FOR EMPTY USERS DATA BASE
     it('GET EMPTY USERS DATA BASE', () => __awaiter(void 0, void 0, void 0, function* () {
-        const res = yield (0, supertest_1.default)(app_1.app).get('/users');
+        const res = yield (0, supertest_1.default)(app_1.app)
+            .get('/users')
+            .set({ Authorization: "Basic YWRtaW46cXdlcnR5" });
         expect(res.body).toStrictEqual({
             pagesCount: 0,
             page: 1,
@@ -84,7 +89,8 @@ describe('users', () => {
                     id: createResponseUser.body.id,
                     login: "nastya",
                     email: "anastasiafateeva2406@gmail.com",
-                    createdAt: expect.any(String)
+                    createdAt: expect.any(String),
+                    isConfirmed: true
                 }
             ]
         });
@@ -111,13 +117,12 @@ describe('users', () => {
     }));
     //SUCCESSFULLY CREATE 5 NEW USERS
     it('SUCCESSFULLY CREATE 5 POSTS', () => __awaiter(void 0, void 0, void 0, function* () {
-        yield (0, tests_functions_1.userCreator)(undefined, test_string_1.userFilterString01);
-        yield (0, tests_functions_1.userCreator)(undefined, test_string_1.userFilterString02);
-        yield (0, tests_functions_1.userCreator)(undefined, test_string_1.userFilterString03);
-        yield (0, tests_functions_1.userCreator)(undefined, test_string_1.userFilterString04);
-        const lastPostResponse = yield (0, tests_functions_1.userCreator)(undefined, test_string_1.userFilterString05);
-        console.log(lastPostResponse.body);
-        expect(lastPostResponse.status).toEqual(201);
+        yield (0, tests_functions_1.userCreator)(undefined, test_string_1.userFilterString01, test_string_1.userEmailFilterString01);
+        yield (0, tests_functions_1.userCreator)(undefined, test_string_1.userFilterString02, test_string_1.userEmailFilterString02);
+        yield (0, tests_functions_1.userCreator)(undefined, test_string_1.userFilterString03, test_string_1.userEmailFilterString03);
+        yield (0, tests_functions_1.userCreator)(undefined, test_string_1.userFilterString04, test_string_1.userEmailFilterString04);
+        const lastUserResponse = yield (0, tests_functions_1.userCreator)(undefined, test_string_1.userFilterString05, test_string_1.userEmailFilterString05);
+        expect(lastUserResponse.status).toEqual(201);
     }));
     //CHECK CREATED 5 USERS WITH PAGINATION AND SORT BY TITLE
     it('SUCCESSFULLY GET CREATED USERS WITH PAGINATION', () => __awaiter(void 0, void 0, void 0, function* () {

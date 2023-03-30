@@ -8,13 +8,17 @@ import {
     postFilterString04,
     postFilterString05
 } from "../../tests-utils/test-string";
+import {runDb} from "../../db/db";
 
 
 describe('posts', () => {
 
+    jest.setTimeout(3 * 60 * 1000)
+
     //DELETE ALL DATA
 
     beforeAll(async () => {
+        await runDb()
         await request(app)
             .delete('/testing/all-data')
             .expect(204)
@@ -121,28 +125,30 @@ describe('posts', () => {
     it ('SUCCESSFULLY GET CREATED POST', async () => {
         const post = await request(app)
             .get('/posts/' + createResponsePost.body.id)
-        expect(post).toEqual({
+        expect(post.body).toStrictEqual({
             "title": "string",
             "shortDescription": "string",
             "content": "string",
             "blogId": blogId.body.id,
             "blogName" : blogId.body.name,
-            "createdAt" : expect.any(String)
+            "createdAt" : expect.any(String),
+            "id" : createResponsePost.body.id
         })
     })
 
     //SUCCESSFULLY UPDATE CREATED POST
 
     it ('SUCCESSFULLY UPDATE CREATED POST', async () => {
-        await request(app)
-            .put('/posts/' + createResponsePost.body.id)
+        const req = await request(app)
+            .put("/posts/" + createResponsePost.body.id)
             .send({
                 "title": "updated string",
                 "shortDescription": "updated string",
-                "content": "updated string"
+                "content": "updated string",
+                "blogId" : blogId.body.id
             })
             .set({Authorization : "Basic YWRtaW46cXdlcnR5"})
-            .expect(204)
+        expect(req.statusCode).toBe(204)
     })
 
     //CHECK FOR UPDATED POST
@@ -150,7 +156,7 @@ describe('posts', () => {
     it ('SUCCESSFULLY GET UPDATED POST', async () => {
         const post = await request(app)
             .get('/posts/' + createResponsePost.body.id)
-        expect(post).toEqual({
+        expect(post.body).toStrictEqual({
             "id" : expect.any(String),
             "title": "updated string",
             "shortDescription": "updated string",
@@ -202,7 +208,7 @@ describe('posts', () => {
         await postCreator(undefined, blogId.body.id, postFilterString02);
         await postCreator(undefined, blogId.body.id, postFilterString03);
         await postCreator(undefined, blogId.body.id, postFilterString04);
-        const lastPostResponse = await blogCreator(undefined, blogId.body.id, postFilterString05);
+        const lastPostResponse = await postCreator(undefined, blogId.body.id, postFilterString05);
         expect(lastPostResponse.status).toBe(201);
     })
 

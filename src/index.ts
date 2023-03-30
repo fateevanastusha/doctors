@@ -2,7 +2,7 @@ import {app} from "./app";
 import {runDb} from "./db/db";
 
 const port = 218;
-const start = async () => {
+export const start = async () => {
     try {
         await runDb()
         app.listen(port, () => {

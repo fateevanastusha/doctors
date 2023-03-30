@@ -27,7 +27,7 @@ exports.QueryRepository = {
         return __awaiter(this, void 0, void 0, function* () {
             const skipSize = PageSize * (Page - 1);
             return models_1.PostModel
-                .find({}, { projection: { _id: 0 } })
+                .find({}, { _id: 0, __v: 0 })
                 .sort({ [sortBy]: sortDirection })
                 .skip(skipSize)
                 .limit(PageSize)

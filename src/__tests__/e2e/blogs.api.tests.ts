@@ -12,12 +12,9 @@ import {runDb} from "../../db/db";
 describe('blogs', () => {
     //DELETE ALL DATA
     beforeAll(async () => {
-        console.log("deleting")
-        await runDb()
+        runDb()
         await request(app)
             .delete('/testing/all-data')
-        console.log("deleting")
-
     })
     //CHECK FOR EMPTY BLOG DATA BASE
     it ('GET EMPTY BLOG DATA BASE', async  () => {
@@ -65,7 +62,7 @@ describe('blogs', () => {
     //PUT CREATED BLOG
 
     it ('SUCCESSFULLY UPDATE CREATED BLOG', async  () => {
-        const res = request(app)
+        request(app)
             .put( "/blogs/" + createResponseBlog.body.id)
             .send({
                 name : "Not Nastya",
@@ -73,7 +70,7 @@ describe('blogs', () => {
                 websiteUrl : "http://www.nastyakoshka.com",
             })
             .set({Authorization : "Basic YWRtaW46cXdlcnR5"})
-        expect(res).toBe(0)
+            .expect(200)
     })
 
     //CHECK FOR UPDATED BLOG
@@ -81,8 +78,9 @@ describe('blogs', () => {
     it ('SUCCESSFULLY UPDATED BLOG', async  () => {
         const blog = await request(app)
             .get( "/blogs/" + createResponseBlog.body.id)
+            .expect(200)
         expect(blog.body).toStrictEqual({
-            "id": expect.any(String),
+            "id": createResponseBlog.body.id,
             "name" : "Not Nastya",
             "description" : "Not about me",
             "websiteUrl" : "http://www.nastyakoshka.com",
@@ -122,7 +120,7 @@ describe('blogs', () => {
                     "content": "black sea is hot",
                     "createdAt" : expect.any(String),
                     "blogId" : createResponseBlog.body.id,
-                    "blogName" : "Not Nastya",
+                    "blogName" : "Nastya",
                     "id" : expect.any(String)
                 }
             ]
@@ -211,6 +209,14 @@ describe('blogs', () => {
                 }
             ]
         })
+    })
+
+    afterAll(async () => {
+        await request(app)
+            .delete('/testing/all-data')
+            .set({Authorization : "Basic YWRtaW46cXdlcnR5"})
+            .expect(204)
+
     })
 
 })

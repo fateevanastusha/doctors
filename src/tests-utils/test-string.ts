@@ -44,3 +44,9 @@ export const userFilterString02 = "bbbbbb";
 export const userFilterString03 = "dddddd";
 export const userFilterString04 = "cccccc";
 export const userFilterString05 = "eeeeee";
+
+export const userEmailFilterString01 = "fateevanastusha1@gmail.com";
+export const userEmailFilterString02 = "fateevanastusha2@gmail.com";
+export const userEmailFilterString03 = "fateevanastusha3@gmail.com";
+export const userEmailFilterString04 = "fateevanastusha4@gmail.com";
+export const userEmailFilterString05 = "fateevanastusha5@gmail.com";

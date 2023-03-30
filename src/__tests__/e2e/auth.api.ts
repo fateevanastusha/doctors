@@ -167,11 +167,13 @@ describe('auth', () => {
         const res = await request(app)
             .get('/auth/me')
             .send(token.body)
+        expect(res.status).toBe(200)
         expect(res.body).toStrictEqual({
             login : "nastya",
             email : "anastasiafateeva2406@gmail.com",
             id: createResponseUser.body.id
         })
+
     })
 
     //UNSUCCESSFULLY CREATE NEW COMMENT WITH WRONG TOKEN
@@ -217,7 +219,7 @@ describe('auth', () => {
             })
             .expect(204)
 
-        const sentMessage = await imapService.waitNewMessage(1)
+        const sentMessage = await imapService.waitNewMessage(2)
         const html: string | null = await imapService.getMessageHtml(sentMessage)
         expect(html).toBeDefined()
         const code : string = html!.split("?code=")[1].split("'")[0]

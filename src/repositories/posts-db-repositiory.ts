@@ -29,13 +29,7 @@ export const postsRepository = {
   },
   //update post by id
   async updatePostById(post : Post, id : string) : Promise <boolean>{
-    const result = await PostModel.updateOne({id: id}, {$set :
-      {
-      title : post.title,
-      shortDescription : post.shortDescription,
-      content : post.content,
-      blogId : post.blogId
-      }
+    const result = await PostModel.updateOne({id: id}, {$set : post
     })
     return result.matchedCount === 1
 

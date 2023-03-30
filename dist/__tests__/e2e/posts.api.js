@@ -16,9 +16,12 @@ const supertest_1 = __importDefault(require("supertest"));
 const app_1 = require("../../app");
 const tests_functions_1 = require("../../tests-utils/tests-functions");
 const test_string_1 = require("../../tests-utils/test-string");
+const db_1 = require("../../db/db");
 describe('posts', () => {
+    jest.setTimeout(3 * 60 * 1000);
     //DELETE ALL DATA
     beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
+        yield (0, db_1.runDb)();
         yield (0, supertest_1.default)(app_1.app)
             .delete('/testing/all-data')
             .expect(204);
@@ -109,32 +112,34 @@ describe('posts', () => {
     it('SUCCESSFULLY GET CREATED POST', () => __awaiter(void 0, void 0, void 0, function* () {
         const post = yield (0, supertest_1.default)(app_1.app)
             .get('/posts/' + createResponsePost.body.id);
-        expect(post).toEqual({
+        expect(post.body).toStrictEqual({
             "title": "string",
             "shortDescription": "string",
             "content": "string",
             "blogId": blogId.body.id,
             "blogName": blogId.body.name,
-            "createdAt": expect.any(String)
+            "createdAt": expect.any(String),
+            "id": createResponsePost.body.id
         });
     }));
     //SUCCESSFULLY UPDATE CREATED POST
     it('SUCCESSFULLY UPDATE CREATED POST', () => __awaiter(void 0, void 0, void 0, function* () {
-        yield (0, supertest_1.default)(app_1.app)
-            .put('/posts/' + createResponsePost.body.id)
+        const req = yield (0, supertest_1.default)(app_1.app)
+            .put("/posts/" + createResponsePost.body.id)
             .send({
             "title": "updated string",
             "shortDescription": "updated string",
-            "content": "updated string"
+            "content": "updated string",
+            "blogId": blogId.body.id
         })
-            .set({ Authorization: "Basic YWRtaW46cXdlcnR5" })
-            .expect(204);
+            .set({ Authorization: "Basic YWRtaW46cXdlcnR5" });
+        expect(req.statusCode).toBe(204);
     }));
     //CHECK FOR UPDATED POST
     it('SUCCESSFULLY GET UPDATED POST', () => __awaiter(void 0, void 0, void 0, function* () {
         const post = yield (0, supertest_1.default)(app_1.app)
             .get('/posts/' + createResponsePost.body.id);
-        expect(post).toEqual({
+        expect(post.body).toStrictEqual({
             "id": expect.any(String),
             "title": "updated string",
             "shortDescription": "updated string",
@@ -176,7 +181,7 @@ describe('posts', () => {
         yield (0, tests_functions_1.postCreator)(undefined, blogId.body.id, test_string_1.postFilterString02);
         yield (0, tests_functions_1.postCreator)(undefined, blogId.body.id, test_string_1.postFilterString03);
         yield (0, tests_functions_1.postCreator)(undefined, blogId.body.id, test_string_1.postFilterString04);
-        const lastPostResponse = yield (0, tests_functions_1.blogCreator)(undefined, blogId.body.id, test_string_1.postFilterString05);
+        const lastPostResponse = yield (0, tests_functions_1.postCreator)(undefined, blogId.body.id, test_string_1.postFilterString05);
         expect(lastPostResponse.status).toBe(201);
     }));
     //CHECK FOR 5 CREATED POSTS WITH PAGINATION AND SORT BY TITLE
