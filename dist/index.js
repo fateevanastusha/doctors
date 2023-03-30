@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.start = void 0;
 const app_1 = require("./app");
 const db_1 = require("./db/db");
 const port = 218;
@@ -23,4 +24,6 @@ const start = () => __awaiter(void 0, void 0, void 0, function* () {
         console.log(e);
     }
 });
-start();
+exports.start = start;
+(0, exports.start)();
+module.exports = app_1.app;
