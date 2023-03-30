@@ -15,7 +15,7 @@ exports.QueryRepository = {
     PaginatorForBlogs(PageCount, PageSize, Page, sortBy, sortDirection, searchNameTerm) {
         return __awaiter(this, void 0, void 0, function* () {
             const skipSize = PageSize * (Page - 1);
-            return models_1.BlogModel
+            return models_1.BlogModelClass
                 .find({ name: { $regex: searchNameTerm, $options: 'i' } }, { _id: 0, __v: 0 })
                 .sort({ [sortBy]: sortDirection })
                 .skip(skipSize)
@@ -65,7 +65,7 @@ exports.QueryRepository = {
                     { login: { $regex: searchLoginTerm, $options: 'i' } },
                     { email: { $regex: searchEmailTerm, $options: 'i' } }
                 ]
-            }, { _id: 0, __v: 0, password: 0 })
+            }, { _id: 0, __v: 0, password: 0, confirmedCode: 0 })
                 .sort({ [sortBy]: sortDirection })
                 .skip(skipSize)
                 .limit(PageSize)

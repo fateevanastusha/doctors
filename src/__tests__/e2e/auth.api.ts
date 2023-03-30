@@ -1,6 +1,7 @@
 import request from "supertest";
 import {app} from "../../app";
 import {MailBoxImap} from "./imap.service";
+import {runDb} from "../../db/db";
 const nodemailerMock = require('nodemailer-mock');
 const MailParser = require('mailparser').MailParser;
 
@@ -11,6 +12,7 @@ describe('auth', () => {
     const imapService = new MailBoxImap()
 
     beforeAll(async () => {
+        await runDb()
         await request(app)
             .delete('/testing/all-data')
             .expect(204)
@@ -55,8 +57,7 @@ describe('auth', () => {
                         login : "nastya",
                         email: "anastasiafateeva2406@gmail.com",
                         createdAt: expect.any(String),
-                        isConfirmed : true,
-                        confirmedCode : null
+                        isConfirmed : true
                     }
                 ]
             }
@@ -162,15 +163,14 @@ describe('auth', () => {
 
     //GET INFO ABOUT USER
 
-    it('SUCCESSFULLY GET USER INFO WITH JWT TOKEN', async () => {
+    it('SUCCESSFULLY GET USER INFO', async () => {
         const res = await request(app)
             .get('/auth/me')
             .send(token.body)
         expect(res.body).toStrictEqual({
             login : "nastya",
             email : "anastasiafateeva2406@gmail.com",
-            id: createResponseUser.body.id,
-            createdAt : expect.any(String),
+            id: createResponseUser.body.id
         })
     })
 
@@ -242,11 +242,47 @@ describe('auth', () => {
 
     });
 
+    //SUCCESSFULLY CHANGE PASSWORD
+
+    it('TEST PASSWORD RECOVERY', async () => {
+        //UNSUCCESSFULLY MAKE REQUEST REGISTRATION
+        await request(app)
+            .post('/auth/password-recovery')
+            .send({
+                email : "fateevanastushatest@yandex.r",
+            })
+            .expect(400)
+        //MAKE REQUEST REGISTRATION
+        await request(app)
+            .post('/auth/password-recovery')
+            .send({
+                email : "fateevanastushatest@yandex.ru",
+            })
+            .expect(204)
+
+
+        const sentMessage = await imapService.waitNewMessage(2)
+        const html: string | null = await imapService.getMessageHtml(sentMessage)
+        expect(html).toBeDefined()
+        const code : string = html!.split("?code=")[1].split("'")[0]
+
+        //NOT EXISTING CODE - EXPECT 400
+
+        await request(app)
+            .post('/auth/password-new')
+            .send({
+                "newPassword": "qwerty11",
+                "recoveryCode": code
+            })
+            .expect(204)
+
+    });
+
     //TESTING LOGIN
 
     it ('TEST LOGIN IN SYSTEM', async  () => {
         await request(app)
-            .post('auth/login')
+            .post('/auth/login')
             .send({
                 loginOrEmail : 'fateevanastushatest@yandex.ru',
                 password : 'WRONG PASSWORD'
@@ -254,10 +290,18 @@ describe('auth', () => {
             .expect(401)
 
         await request(app)
-            .post('auth/login')
+            .post('/auth/login')
             .send({
                 loginOrEmail : 'fateevanastushatest@yandex.ru',
                 password : 'WRONG PASSWORD'
+            })
+            .expect(401)
+
+        await request(app)
+            .post('/auth/login')
+            .send({
+                loginOrEmail : 'fateevanastushatest@yandex.ru',
+                password : 'qwerty11'
             })
             .expect(200)
 

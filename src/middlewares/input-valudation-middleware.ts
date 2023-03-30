@@ -4,6 +4,7 @@ import { CustomValidator } from "express-validator/src/base";
 import { blogsRepository } from "../repositories/blogs-db-repositiory";
 import { body, validationResult } from 'express-validator';
 import {usersRepository} from "../repositories/users-db-repository";
+import exp from "constants";
 
 //errors storage
 export const inputValidationMiddleware = (req: Request, res: Response, next: NextFunction) => {
@@ -120,7 +121,6 @@ export const blogIdCheck = body('blogId').trim().custom(findByIdBlogs).isString(
 
 //check for user
 export const loginCheck = body('login').isString().trim().notEmpty().isLength({min:3, max: 10}).custom(checkForExistingLogin)
-export const passwordAuthCheck = body ('password').trim().custom(checkForPasswordAuth).isLength({min:6, max: 20}).isString()
 export const passwordCheck = body ('password').trim().isLength({min:6, max: 20}).isString()
 export const emailCheck =  body ('email').isString().isEmail().trim().custom(checkForUniqueEmail)
 
@@ -128,6 +128,9 @@ export const emailCheck =  body ('email').isString().isEmail().trim().custom(che
 export const commentContentCheck = body('content').trim().isLength({min:20, max: 300}).isString()
 
 //confirmationCheck
+
 export const codeConfirmationCheck = body('code').trim().isLength({min:12, max: 14}).isString().matches(/^\d+$/).custom(checkForExistingConfirmationCode).custom(checkForNotConfirmedByEmailOrCode)
 export const emailConfirmationCheck =  body ('email').isString().isEmail().trim().custom(checkForEmail).custom(checkForNotConfirmedByEmailOrCode)
-
+export const emailForRecoveryCheck = body ('email').isString().isEmail().trim().custom(checkForEmail)
+export const codeForRecoveryConfirmationCheck = body('recoveryCode').trim().isLength({min:12, max: 14}).isString().matches(/^\d+$/).custom(checkForExistingConfirmationCode)
+export const passwordForRecoveryCheck = body ('newPassword').trim().isLength({min:6, max: 20}).isString()

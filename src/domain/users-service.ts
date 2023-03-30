@@ -32,6 +32,12 @@ export const usersService = {
         const createdUser = await usersRepository.createNewUser(newUser)
         return createdUser
     },
+    //CHANGE PASSWORD
+    async changeUserPassword(code : string, password : string) : Promise<boolean>{
+        const hash = bcrypt.hashSync(password, 10, )
+        return await usersRepository.changeUserPassword(code, hash)
+    },
+
     //DELETE BY ID
     async deleteUserById(id: string) : Promise<boolean>{
         return await usersRepository.deleteUserById(id)

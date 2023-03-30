@@ -65,6 +65,16 @@ exports.usersRepository = {
             return null;
         });
     },
+    //CHANGE PASSWORD
+    changeUserPassword(code, password) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield models_1.UserModel.updateOne({ confirmedCode: code }, { $set: {
+                    password: password
+                }
+            });
+            return result.matchedCount === 1;
+        });
+    },
     //DELETE USER BY ID
     deleteUserById(id) {
         return __awaiter(this, void 0, void 0, function* () {

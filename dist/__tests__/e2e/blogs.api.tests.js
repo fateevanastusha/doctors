@@ -16,13 +16,16 @@ const supertest_1 = __importDefault(require("supertest"));
 const app_1 = require("../../app");
 const tests_functions_1 = require("../../tests-utils/tests-functions");
 const test_string_1 = require("../../tests-utils/test-string");
-jest.setTimeout(60000);
+const db_1 = require("../../db/db");
 //TEST BLOGS
 describe('blogs', () => {
     //DELETE ALL DATA
     beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
+        console.log("deleting");
+        yield (0, db_1.runDb)();
         yield (0, supertest_1.default)(app_1.app)
             .delete('/testing/all-data');
+        console.log("deleting");
     }));
     //CHECK FOR EMPTY BLOG DATA BASE
     it('GET EMPTY BLOG DATA BASE', () => __awaiter(void 0, void 0, void 0, function* () {

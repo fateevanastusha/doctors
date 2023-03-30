@@ -2,9 +2,9 @@ import request from "supertest";
 import {app} from "../../app";
 import {blogCreator} from "../../tests-utils/tests-functions";
 import {blogFilterString01,blogFilterString03, blogFilterString04,blogFilterString05,blogFilterString02} from "../../tests-utils/test-string";
+import {runDb} from "../../db/db";
 
 
-jest.setTimeout(60000)
 
 
 //TEST BLOGS
@@ -12,8 +12,11 @@ jest.setTimeout(60000)
 describe('blogs', () => {
     //DELETE ALL DATA
     beforeAll(async () => {
+        console.log("deleting")
+        await runDb()
         await request(app)
             .delete('/testing/all-data')
+        console.log("deleting")
 
     })
     //CHECK FOR EMPTY BLOG DATA BASE

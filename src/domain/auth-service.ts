@@ -1,5 +1,5 @@
 import {authRepository} from "../repositories/auth-db-repository";
-import {Auth, RefreshToken, RefreshTokensMeta, Token, TokenList, User} from "../types/types";
+import {Auth, RefreshToken, RefreshTokensMeta, AccessToken, TokenList, User} from "../types/types";
 import {jwtService} from "../application/jwt-service";
 import {usersService} from "./users-service";
 import {usersRepository} from "../repositories/users-db-repository";
@@ -62,7 +62,7 @@ export const authService = {
         const userId : string = await jwtService.getUserByIdToken(refreshToken)
         const user = await usersService.getUserById(userId)
         if (user === null) return null
-        const accessToken : Token = await jwtService.createJWTAccess(userId)
+        const accessToken : AccessToken = await jwtService.createJWTAccess(userId)
         const newRefreshToken : RefreshToken = await jwtService.createJWTRefresh(userId, deviceId)
         const date : string | null = await jwtService.getRefreshTokenDate(newRefreshToken.refreshToken)
         if (!date) return null
@@ -102,6 +102,13 @@ export const authService = {
 
     },
 
+    //CHANGE PASSWORD
+
+    async changePasswordWithCode (confirmationCode : string, newPassword : string ) : Promise <boolean>  {
+        //change confirmed code
+        return await usersService.changeUserPassword(confirmationCode, newPassword)
+    },
+
     //UPDATE CONFIRMATION CODE
 
     async updateConfirmationCode (confirmationCode : string, email : string) : Promise <boolean> {
@@ -123,6 +130,25 @@ export const authService = {
         //SEND EMAIL
 
         await businessService.sendConfirmationCode(user.email, confirmationCode)
+        return true
+
+    },
+
+    //PASSWORD RECOVERY
+
+    async passwordRecovery (email : string) : Promise <boolean> {
+
+        let confirmationCode : string = (+new Date()).toString()
+
+        //UPDATE CONFIRMATION CODE
+
+        const status = await authService.updateConfirmationCode(confirmationCode, email)
+        if (!status) {
+            return false
+        }
+        //SEND EMAIL
+
+        await businessService.sendConfirmationCode(email, confirmationCode)
         return true
 
     },

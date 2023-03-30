@@ -1,10 +1,10 @@
 import {Blog, Paginator, Post, User, Comment} from "./types/types";
-import {BlogModel, CommentModel, PostModel, UserModel} from "./types/models";
+import {BlogModelClass, CommentModel, PostModel, UserModel} from "./types/models";
 
 export const QueryRepository = {
     async PaginatorForBlogs(PageCount: number, PageSize: number, Page: number, sortBy: string, sortDirection: 1 | -1, searchNameTerm: string): Promise<Blog[]> {
         const skipSize: number = PageSize * (Page - 1)
-        return BlogModel
+        return BlogModelClass
             .find({name: {$regex: searchNameTerm, $options: 'i'}}, {_id: 0, __v: 0})
             .sort({[sortBy]: sortDirection})
             .skip(skipSize)
@@ -46,7 +46,7 @@ export const QueryRepository = {
                         {login: {$regex: searchLoginTerm, $options: 'i'}},
                         {email: {$regex: searchEmailTerm, $options: 'i'}}
                     ]
-            }, {_id: 0, __v: 0, password : 0})
+            }, {_id: 0, __v: 0, password : 0, confirmedCode : 0})
             .sort({[sortBy]: sortDirection})
             .skip(skipSize)
             .limit(PageSize)

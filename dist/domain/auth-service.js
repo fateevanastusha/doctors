@@ -118,6 +118,13 @@ exports.authService = {
             return yield users_db_repository_1.usersRepository.changeConfirmedStatus(confirmationCode);
         });
     },
+    //CHANGE PASSWORD
+    changePasswordWithCode(confirmationCode, newPassword) {
+        return __awaiter(this, void 0, void 0, function* () {
+            //change confirmed code
+            return yield users_service_1.usersService.changeUserPassword(confirmationCode, newPassword);
+        });
+    },
     //UPDATE CONFIRMATION CODE
     updateConfirmationCode(confirmationCode, email) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -135,6 +142,20 @@ exports.authService = {
             }
             //SEND EMAIL
             yield business_service_1.businessService.sendConfirmationCode(user.email, confirmationCode);
+            return true;
+        });
+    },
+    //PASSWORD RECOVERY
+    passwordRecovery(email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let confirmationCode = (+new Date()).toString();
+            //UPDATE CONFIRMATION CODE
+            const status = yield exports.authService.updateConfirmationCode(confirmationCode, email);
+            if (!status) {
+                return false;
+            }
+            //SEND EMAIL
+            yield business_service_1.businessService.sendConfirmationCode(email, confirmationCode);
             return true;
         });
     },

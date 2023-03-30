@@ -5,17 +5,17 @@ import {
 } from "express";
 import {authService} from "../domain/auth-service";
 import {
-    Token,
+    AccessToken,
     TokenList,
     User
 } from "../types/types";
 import {
-    codeConfirmationCheck,
+    codeConfirmationCheck, codeForRecoveryConfirmationCheck,
     emailCheck,
-    emailConfirmationCheck,
+    emailConfirmationCheck, emailForRecoveryCheck,
     inputValidationMiddleware,
     loginCheck,
-    passwordCheck
+    passwordCheck, passwordForRecoveryCheck
 } from "../middlewares/input-valudation-middleware";
 import {checkForRefreshToken,
     checkForSameDevice
@@ -30,7 +30,7 @@ authRouter.post('/login', requestAttemptsMiddleware, checkForSameDevice, async (
     const title = req.headers["user-agent"] || "unknown"
     const tokenList: TokenList | null = await authService.authRequest(req.body.password, req.ip, req.body.loginOrEmail, title)
     if (tokenList) {
-        let token: Token = {
+        let token: AccessToken = {
             accessToken: tokenList.accessToken
         }
         res.cookie('refreshToken', tokenList.refreshToken, {httpOnly: true, secure: true})
@@ -61,6 +61,38 @@ authRouter.get('/me',
         }
     })
 
+//PASSWORD RECOVERY SENDING EMAIL WITH CODE
+
+authRouter.post('/password-recovery',
+    emailForRecoveryCheck,
+    inputValidationMiddleware,
+    requestAttemptsMiddleware,
+    async (req: Request, res: Response) => {
+        const status : boolean = await authService.passwordRecovery(req.body.email)
+        if (status) {
+            res.sendStatus(204)
+        } else {
+            res.sendStatus(400)
+        }
+})
+
+//PASSWORD RECOVERY. CHANGE PASSWORD
+
+authRouter.post('/password-new',
+    passwordForRecoveryCheck,
+    codeForRecoveryConfirmationCheck,
+    inputValidationMiddleware,
+    requestAttemptsMiddleware,
+    async (req: Request, res: Response) => {
+        const status : boolean = await authService.changePasswordWithCode(req.body.recoveryCode, req.body.newPassword)
+        if(status) {
+            res.sendStatus(204)
+        } else {
+            res.sendStatus(400)
+        }
+})
+
+
 //REGISTRATION IN THE SYSTEM
 
 authRouter.post('/registration',
@@ -80,7 +112,7 @@ authRouter.post('/registration',
         }
         ;
 
-    })
+})
 
 //CODE CONFIRMATION
 
@@ -139,7 +171,7 @@ authRouter.post('/refresh-token',
     const title = req.headers["user-agent"] || "unknown"
     const tokenList: TokenList | null = await authService.createNewToken(req.cookies.refreshToken, req.ip, title)
     if (tokenList) {
-        let token: Token = {
+        let token: AccessToken = {
             accessToken: tokenList.accessToken
         }
         res.cookie('refreshToken', tokenList.refreshToken, {httpOnly: true, secure: true})

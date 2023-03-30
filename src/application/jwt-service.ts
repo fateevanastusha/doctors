@@ -1,9 +1,9 @@
 import jwt from 'jsonwebtoken'
 import {settings} from "../settings";
-import {RefreshToken, Token, User} from "../types/types";
+import {RefreshToken, AccessToken, User} from "../types/types";
 
 export const jwtService = {
-    async createJWTAccess (userId : string) : Promise <Token>{
+    async createJWTAccess (userId : string) : Promise <AccessToken>{
         const accessToken = jwt.sign({ userId : userId }, settings.JWT_SECRET, { expiresIn: '10sec' })
         return {
             accessToken : accessToken

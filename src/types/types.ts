@@ -48,7 +48,7 @@ export type Paginator = {
     items : Blog[] | Post[] | User[] | Comment []
 }
 
-export type Token = {
+export type AccessToken = {
     accessToken : string
 }
 

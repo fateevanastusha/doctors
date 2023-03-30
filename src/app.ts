@@ -1,4 +1,4 @@
-import express, {Request, Response, NextFunction} from 'express'
+import express, {Request, Response} from 'express'
 import { blogsRouter } from './routes/blogs-router';
 import { postsRouter } from './routes/posts-router';
 import { usersRouter } from "./routes/users-router";

@@ -59,6 +59,6 @@ export const userSchema = new mongoose.Schema<User>( {
     password: String,
     createdAt: String,
     isConfirmed: Boolean,
-    confirmedCode : {type : String }
+    confirmedCode : String
 });
 

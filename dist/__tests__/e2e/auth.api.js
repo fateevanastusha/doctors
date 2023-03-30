@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const supertest_1 = __importDefault(require("supertest"));
 const app_1 = require("../../app");
 const imap_service_1 = require("./imap.service");
+const db_1 = require("../../db/db");
 const nodemailerMock = require('nodemailer-mock');
 const MailParser = require('mailparser').MailParser;
 describe('auth', () => {
@@ -22,6 +23,7 @@ describe('auth', () => {
     jest.setTimeout(3 * 60 * 1000);
     const imapService = new imap_service_1.MailBoxImap();
     beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
+        yield (0, db_1.runDb)();
         yield (0, supertest_1.default)(app_1.app)
             .delete('/testing/all-data')
             .expect(204);
@@ -59,8 +61,7 @@ describe('auth', () => {
                     login: "nastya",
                     email: "anastasiafateeva2406@gmail.com",
                     createdAt: expect.any(String),
-                    isConfirmed: true,
-                    confirmedCode: null
+                    isConfirmed: true
                 }
             ]
         });
@@ -140,15 +141,14 @@ describe('auth', () => {
             .expect(200);
     }));
     //GET INFO ABOUT USER
-    it('SUCCESSFULLY GET USER INFO WITH JWT TOKEN', () => __awaiter(void 0, void 0, void 0, function* () {
+    it('SUCCESSFULLY GET USER INFO', () => __awaiter(void 0, void 0, void 0, function* () {
         const res = yield (0, supertest_1.default)(app_1.app)
             .get('/auth/me')
             .send(token.body);
         expect(res.body).toStrictEqual({
             login: "nastya",
             email: "anastasiafateeva2406@gmail.com",
-            id: createResponseUser.body.id,
-            createdAt: expect.any(String),
+            id: createResponseUser.body.id
         });
     }));
     //UNSUCCESSFULLY CREATE NEW COMMENT WITH WRONG TOKEN
@@ -203,20 +203,56 @@ describe('auth', () => {
         })
             .expect(204);
     }));
+    //SUCCESSFULLY CHANGE PASSWORD
+    it('TEST PASSWORD RECOVERY', () => __awaiter(void 0, void 0, void 0, function* () {
+        //UNSUCCESSFULLY MAKE REQUEST REGISTRATION
+        yield (0, supertest_1.default)(app_1.app)
+            .post('/auth/password-recovery')
+            .send({
+            email: "fateevanastushatest@yandex.r",
+        })
+            .expect(400);
+        //MAKE REQUEST REGISTRATION
+        yield (0, supertest_1.default)(app_1.app)
+            .post('/auth/password-recovery')
+            .send({
+            email: "fateevanastushatest@yandex.ru",
+        })
+            .expect(204);
+        const sentMessage = yield imapService.waitNewMessage(2);
+        const html = yield imapService.getMessageHtml(sentMessage);
+        expect(html).toBeDefined();
+        const code = html.split("?code=")[1].split("'")[0];
+        //NOT EXISTING CODE - EXPECT 400
+        yield (0, supertest_1.default)(app_1.app)
+            .post('/auth/password-new')
+            .send({
+            "newPassword": "qwerty11",
+            "recoveryCode": code
+        })
+            .expect(204);
+    }));
     //TESTING LOGIN
     it('TEST LOGIN IN SYSTEM', () => __awaiter(void 0, void 0, void 0, function* () {
         yield (0, supertest_1.default)(app_1.app)
-            .post('auth/login')
+            .post('/auth/login')
             .send({
             loginOrEmail: 'fateevanastushatest@yandex.ru',
             password: 'WRONG PASSWORD'
         })
             .expect(401);
         yield (0, supertest_1.default)(app_1.app)
-            .post('auth/login')
+            .post('/auth/login')
             .send({
             loginOrEmail: 'fateevanastushatest@yandex.ru',
             password: 'WRONG PASSWORD'
+        })
+            .expect(401);
+        yield (0, supertest_1.default)(app_1.app)
+            .post('/auth/login')
+            .send({
+            loginOrEmail: 'fateevanastushatest@yandex.ru',
+            password: 'qwerty11'
         })
             .expect(200);
     }));

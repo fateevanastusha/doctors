@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.emailConfirmationCheck = exports.codeConfirmationCheck = exports.commentContentCheck = exports.emailCheck = exports.passwordCheck = exports.passwordAuthCheck = exports.loginCheck = exports.blogIdCheck = exports.contentCheck = exports.shortDescriptionCheck = exports.titleCheck = exports.checkForPasswordAuth = exports.checkForNotConfirmedByEmailOrCode = exports.checkForExistingConfirmationCode = exports.checkForEmail = exports.checkForUniqueEmail = exports.checkForExistingLogin = exports.findByIdBlogs = exports.websiteUrlCheck = exports.descriptionCheck = exports.nameCheck = exports.createAccountValidationMiddleware = exports.inputValidationMiddleware = void 0;
+exports.passwordForRecoveryCheck = exports.codeForRecoveryConfirmationCheck = exports.emailForRecoveryCheck = exports.emailConfirmationCheck = exports.codeConfirmationCheck = exports.commentContentCheck = exports.emailCheck = exports.passwordCheck = exports.loginCheck = exports.blogIdCheck = exports.contentCheck = exports.shortDescriptionCheck = exports.titleCheck = exports.checkForPasswordAuth = exports.checkForNotConfirmedByEmailOrCode = exports.checkForExistingConfirmationCode = exports.checkForEmail = exports.checkForUniqueEmail = exports.checkForExistingLogin = exports.findByIdBlogs = exports.websiteUrlCheck = exports.descriptionCheck = exports.nameCheck = exports.createAccountValidationMiddleware = exports.inputValidationMiddleware = void 0;
 const blogs_db_repositiory_1 = require("../repositories/blogs-db-repositiory");
 const express_validator_1 = require("express-validator");
 const users_db_repository_1 = require("../repositories/users-db-repository");
@@ -125,7 +125,6 @@ exports.contentCheck = (0, express_validator_1.body)('content').trim().isLength(
 exports.blogIdCheck = (0, express_validator_1.body)('blogId').trim().custom(exports.findByIdBlogs).isString();
 //check for user
 exports.loginCheck = (0, express_validator_1.body)('login').isString().trim().notEmpty().isLength({ min: 3, max: 10 }).custom(exports.checkForExistingLogin);
-exports.passwordAuthCheck = (0, express_validator_1.body)('password').trim().custom(exports.checkForPasswordAuth).isLength({ min: 6, max: 20 }).isString();
 exports.passwordCheck = (0, express_validator_1.body)('password').trim().isLength({ min: 6, max: 20 }).isString();
 exports.emailCheck = (0, express_validator_1.body)('email').isString().isEmail().trim().custom(exports.checkForUniqueEmail);
 //check for comments
@@ -133,3 +132,6 @@ exports.commentContentCheck = (0, express_validator_1.body)('content').trim().is
 //confirmationCheck
 exports.codeConfirmationCheck = (0, express_validator_1.body)('code').trim().isLength({ min: 12, max: 14 }).isString().matches(/^\d+$/).custom(exports.checkForExistingConfirmationCode).custom(exports.checkForNotConfirmedByEmailOrCode);
 exports.emailConfirmationCheck = (0, express_validator_1.body)('email').isString().isEmail().trim().custom(exports.checkForEmail).custom(exports.checkForNotConfirmedByEmailOrCode);
+exports.emailForRecoveryCheck = (0, express_validator_1.body)('email').isString().isEmail().trim().custom(exports.checkForEmail);
+exports.codeForRecoveryConfirmationCheck = (0, express_validator_1.body)('recoveryCode').trim().isLength({ min: 12, max: 14 }).isString().matches(/^\d+$/).custom(exports.checkForExistingConfirmationCode);
+exports.passwordForRecoveryCheck = (0, express_validator_1.body)('newPassword').trim().isLength({ min: 6, max: 20 }).isString();

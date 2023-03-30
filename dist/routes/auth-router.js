@@ -51,6 +51,26 @@ exports.authRouter.get('/me', (req, res) => __awaiter(void 0, void 0, void 0, fu
         res.sendStatus(401);
     }
 }));
+//PASSWORD RECOVERY SENDING EMAIL WITH CODE
+exports.authRouter.post('/password-recovery', input_valudation_middleware_1.emailForRecoveryCheck, input_valudation_middleware_1.inputValidationMiddleware, attempts_middleware_1.requestAttemptsMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const status = yield auth_service_1.authService.passwordRecovery(req.body.email);
+    if (status) {
+        res.sendStatus(204);
+    }
+    else {
+        res.sendStatus(400);
+    }
+}));
+//PASSWORD RECOVERY. CHANGE PASSWORD
+exports.authRouter.post('/password-new', input_valudation_middleware_1.passwordForRecoveryCheck, input_valudation_middleware_1.codeForRecoveryConfirmationCheck, input_valudation_middleware_1.inputValidationMiddleware, attempts_middleware_1.requestAttemptsMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const status = yield auth_service_1.authService.changePasswordWithCode(req.body.recoveryCode, req.body.newPassword);
+    if (status) {
+        res.sendStatus(204);
+    }
+    else {
+        res.sendStatus(400);
+    }
+}));
 //REGISTRATION IN THE SYSTEM
 exports.authRouter.post('/registration', input_valudation_middleware_1.loginCheck, input_valudation_middleware_1.passwordCheck, input_valudation_middleware_1.emailCheck, input_valudation_middleware_1.inputValidationMiddleware, attempts_middleware_1.requestAttemptsMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const status = yield auth_service_1.authService.registrationUser(req.body);

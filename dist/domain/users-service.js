@@ -51,6 +51,13 @@ exports.usersService = {
             return createdUser;
         });
     },
+    //CHANGE PASSWORD
+    changeUserPassword(code, password) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const hash = bcrypt_1.default.hashSync(password, 10);
+            return yield users_db_repository_1.usersRepository.changeUserPassword(code, hash);
+        });
+    },
     //DELETE BY ID
     deleteUserById(id) {
         return __awaiter(this, void 0, void 0, function* () {

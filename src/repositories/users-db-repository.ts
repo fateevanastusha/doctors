@@ -51,6 +51,7 @@ export const usersRepository = {
     },
 
     //CREATE NEW USER
+
     async createNewUser(newUser : User) : Promise <User | null> {
         await UserModel.insertMany([newUser])
         const updatedUser = await this.returnUserById(newUser.id)
@@ -58,6 +59,17 @@ export const usersRepository = {
             return updatedUser
         }
         return null
+    },
+
+    //CHANGE PASSWORD
+
+    async changeUserPassword(code : string, password : string) : Promise <boolean> {
+        const result = await UserModel.updateOne({confirmedCode: code}, {$set :
+                {
+                    password: password
+                }
+        })
+        return result.matchedCount === 1
     },
 
     //DELETE USER BY ID
