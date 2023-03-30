@@ -1,7 +1,7 @@
 import {app} from "./app";
 import {runDb} from "./db/db";
 
-const port = 218;
+const port = 5000;
 export const start = async () => {
     try {
         await runDb()
