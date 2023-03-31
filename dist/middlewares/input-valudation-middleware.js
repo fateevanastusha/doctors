@@ -140,6 +140,6 @@ exports.commentContentCheck = (0, express_validator_1.body)('content').trim().is
 //confirmationCheck
 exports.codeConfirmationCheck = (0, express_validator_1.body)('code').trim().isLength({ min: 12, max: 14 }).isString().matches(/^\d+$/).custom(exports.checkForExistingConfirmationCode).custom(exports.checkForNotConfirmedByEmailOrCode);
 exports.emailConfirmationCheck = (0, express_validator_1.body)('email').isString().isEmail().trim().custom(exports.checkForEmail).custom(exports.checkForNotConfirmedByEmailOrCode);
-exports.emailForRecoveryCheck = (0, express_validator_1.body)('email').isString().isEmail().trim().custom(exports.checkForRecoveryEmail);
+exports.emailForRecoveryCheck = (0, express_validator_1.body)('email').isString().isEmail().trim();
 exports.codeForRecoveryConfirmationCheck = (0, express_validator_1.body)('recoveryCode').trim().isLength({ min: 12, max: 14 }).isString().matches(/^\d+$/).custom(exports.checkForExistingConfirmationCode);
 exports.passwordForRecoveryCheck = (0, express_validator_1.body)('newPassword').trim().isLength({ min: 6, max: 20 }).isString();
