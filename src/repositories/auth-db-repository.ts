@@ -19,6 +19,18 @@ export const authRepository = {
         }
     },
 
+    async recoveryRequest(recoveryCode: string, password: string) : Promise <boolean> {
+
+        //find by loginOrEmail
+
+        const user : User | null = await usersRepository.returnUserByField(recoveryCode)
+        if (user) {
+            return bcrypt.compareSync(password, user.password)
+        } else {
+            return false
+        }
+    },
+
     //CHECK FOR REFRESH TOKEN IN BLACK LIST
 
     async checkRefreshToken(refreshToken : string) : Promise <boolean> {

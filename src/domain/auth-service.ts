@@ -1,11 +1,10 @@
 import {authRepository} from "../repositories/auth-db-repository";
-import {Auth, RefreshToken, RefreshTokensMeta, AccessToken, TokenList, User} from "../types/types";
+import {RefreshToken, RefreshTokensMeta, AccessToken, TokenList, User} from "../types/types";
 import {jwtService} from "../application/jwt-service";
 import {usersService} from "./users-service";
 import {usersRepository} from "../repositories/users-db-repository";
 import {businessService} from "./business-service";
 import {securityRepository} from "../repositories/security-db-repository";
-import jwt from "jsonwebtoken";
 
 export const authService = {
     async authRequest (password : string, ip : string, loginOrEmail : string, title : string) : Promise<TokenList | null> {

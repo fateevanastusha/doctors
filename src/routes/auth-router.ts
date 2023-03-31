@@ -10,15 +10,19 @@ import {
     User
 } from "../types/types";
 import {
-    codeConfirmationCheck, codeForRecoveryConfirmationCheck,
+    codeConfirmationCheck,
+    codeForRecoveryConfirmationCheck,
     emailCheck,
-    emailConfirmationCheck, emailForRecoveryCheck,
+    emailConfirmationCheck,
+    emailForRecoveryCheck,
     inputValidationMiddleware,
     loginCheck,
-    passwordCheck, passwordForRecoveryCheck
+    passwordCheck,
+    passwordForRecoveryCheck
 } from "../middlewares/input-valudation-middleware";
 import {
-    checkForExistingEmail, checkForRefreshToken,
+    checkForExistingEmail, checkForNotSamePassword,
+    checkForRefreshToken,
     checkForSameDevice
 } from "../middlewares/auth-middlewares";
 import {requestAttemptsMiddleware} from "../middlewares/attempts-middleware";
@@ -82,6 +86,7 @@ authRouter.post('/password-recovery',
 
 authRouter.post('/new-password',
     passwordForRecoveryCheck,
+    checkForNotSamePassword,
     codeForRecoveryConfirmationCheck,
     inputValidationMiddleware,
     requestAttemptsMiddleware,
