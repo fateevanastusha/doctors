@@ -17,7 +17,7 @@ export const businessService = {
         await transport.sendMail({
             from: "Blogs And Videos API", // sender address
             to: email, // list of receivers
-            subject: "CONFIRMATION CODE", // Subject line
+            subject: "RECOVERY CODE", // Subject line
             html: `<h1>Password recovery</h1>
        <p>To finish password recovery please follow the link below:
           <a href='https://somesite.com/password-recovery?recoveryCode=${confirmationCode}'>recovery password</a>
