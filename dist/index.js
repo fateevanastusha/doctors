@@ -8,15 +8,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.start = void 0;
-const app_1 = require("./app");
+const app_1 = __importDefault(require("./app"));
 const db_1 = require("./db/db");
 const port = 5000;
 const start = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield (0, db_1.runDb)();
-        app_1.app.listen(port, () => {
+        app_1.default.listen(port, () => {
             console.log(`Example app listening on port ${port}`);
         });
     }
@@ -26,4 +29,4 @@ const start = () => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.start = start;
 (0, exports.start)();
-module.exports = app_1.app;
+exports.default = app_1.default;

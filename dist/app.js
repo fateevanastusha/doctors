@@ -44,3 +44,4 @@ exports.app.delete('/testing/all-data', (req, res) => __awaiter(void 0, void 0, 
     yield security_db_repository_1.securityRepository.deleteAllData();
     res.sendStatus(204);
 }));
+exports.default = exports.app;

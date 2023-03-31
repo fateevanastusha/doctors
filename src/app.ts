@@ -36,3 +36,5 @@ app.delete('/testing/all-data', async (req: Request,res: Response) => {
     await securityRepository.deleteAllData();
     res.sendStatus(204)
 });
+
+export default app
