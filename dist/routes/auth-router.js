@@ -52,7 +52,7 @@ exports.authRouter.get('/me', (req, res) => __awaiter(void 0, void 0, void 0, fu
     }
 }));
 //PASSWORD RECOVERY SENDING EMAIL WITH CODE
-exports.authRouter.post('/password-recovery', input_valudation_middleware_1.emailForRecoveryCheck, input_valudation_middleware_1.inputValidationMiddleware, attempts_middleware_1.requestAttemptsMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.authRouter.post('/password-recovery', auth_middlewares_1.checkForExistingEmail, input_valudation_middleware_1.emailForRecoveryCheck, input_valudation_middleware_1.inputValidationMiddleware, attempts_middleware_1.requestAttemptsMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const status = yield auth_service_1.authService.passwordRecovery(req.body.email);
     if (status) {
         res.sendStatus(204);

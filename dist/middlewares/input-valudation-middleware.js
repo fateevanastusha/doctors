@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.passwordForRecoveryCheck = exports.codeForRecoveryConfirmationCheck = exports.emailForRecoveryCheck = exports.emailConfirmationCheck = exports.codeConfirmationCheck = exports.commentContentCheck = exports.emailCheck = exports.passwordCheck = exports.loginCheck = exports.blogIdCheck = exports.contentCheck = exports.shortDescriptionCheck = exports.titleCheck = exports.checkForPasswordAuth = exports.checkForNotConfirmedByEmailOrCode = exports.checkForExistingConfirmationCode = exports.checkForEmail = exports.checkForUniqueEmail = exports.checkForExistingLogin = exports.findByIdBlogs = exports.websiteUrlCheck = exports.descriptionCheck = exports.nameCheck = exports.createAccountValidationMiddleware = exports.inputValidationMiddleware = void 0;
+exports.passwordForRecoveryCheck = exports.codeForRecoveryConfirmationCheck = exports.emailForRecoveryCheck = exports.emailConfirmationCheck = exports.codeConfirmationCheck = exports.commentContentCheck = exports.emailCheck = exports.passwordCheck = exports.loginCheck = exports.blogIdCheck = exports.contentCheck = exports.shortDescriptionCheck = exports.titleCheck = exports.checkForPasswordAuth = exports.checkForNotConfirmedByEmailOrCode = exports.checkForExistingConfirmationCode = exports.checkForRecoveryEmail = exports.checkForEmail = exports.checkForUniqueEmail = exports.checkForExistingLogin = exports.findByIdBlogs = exports.websiteUrlCheck = exports.descriptionCheck = exports.nameCheck = exports.createAccountValidationMiddleware = exports.inputValidationMiddleware = void 0;
 const blogs_db_repositiory_1 = require("../repositories/blogs-db-repositiory");
 const express_validator_1 = require("express-validator");
 const users_db_repository_1 = require("../repositories/users-db-repository");
@@ -83,6 +83,14 @@ const checkForEmail = (email) => __awaiter(void 0, void 0, void 0, function* () 
     return true;
 });
 exports.checkForEmail = checkForEmail;
+const checkForRecoveryEmail = (email) => __awaiter(void 0, void 0, void 0, function* () {
+    const User = yield users_db_repository_1.usersRepository.returnUserByEmail(email);
+    if (!User) {
+        return true;
+    }
+    return true;
+});
+exports.checkForRecoveryEmail = checkForRecoveryEmail;
 //check for existing confirmation code
 const checkForExistingConfirmationCode = (code) => __awaiter(void 0, void 0, void 0, function* () {
     const status = yield users_db_repository_1.usersRepository.checkForConfirmationCode(code);
@@ -132,6 +140,6 @@ exports.commentContentCheck = (0, express_validator_1.body)('content').trim().is
 //confirmationCheck
 exports.codeConfirmationCheck = (0, express_validator_1.body)('code').trim().isLength({ min: 12, max: 14 }).isString().matches(/^\d+$/).custom(exports.checkForExistingConfirmationCode).custom(exports.checkForNotConfirmedByEmailOrCode);
 exports.emailConfirmationCheck = (0, express_validator_1.body)('email').isString().isEmail().trim().custom(exports.checkForEmail).custom(exports.checkForNotConfirmedByEmailOrCode);
-exports.emailForRecoveryCheck = (0, express_validator_1.body)('email').isString().isEmail().trim();
+exports.emailForRecoveryCheck = (0, express_validator_1.body)('email').isString().isEmail().trim().custom(exports.checkForRecoveryEmail);
 exports.codeForRecoveryConfirmationCheck = (0, express_validator_1.body)('recoveryCode').trim().isLength({ min: 12, max: 14 }).isString().matches(/^\d+$/).custom(exports.checkForExistingConfirmationCode);
 exports.passwordForRecoveryCheck = (0, express_validator_1.body)('newPassword').trim().isLength({ min: 6, max: 20 }).isString();
