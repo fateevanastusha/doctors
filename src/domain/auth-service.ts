@@ -148,7 +148,7 @@ export const authService = {
         }
         //SEND EMAIL
 
-        await businessService.sendConfirmationCode(email, confirmationCode)
+        await businessService.sendRecoveryCode(email, confirmationCode)
         return true
 
     },

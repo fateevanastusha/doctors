@@ -155,7 +155,7 @@ exports.authService = {
                 return false;
             }
             //SEND EMAIL
-            yield business_service_1.businessService.sendConfirmationCode(email, confirmationCode);
+            yield business_service_1.businessService.sendRecoveryCode(email, confirmationCode);
             return true;
         });
     },

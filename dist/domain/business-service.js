@@ -25,5 +25,19 @@ exports.businessService = {
             });
             return confirmationCode;
         });
+    },
+    sendRecoveryCode(email, confirmationCode) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield nodemailer_utils_1.transport.sendMail({
+                from: "Blogs And Videos API",
+                to: email,
+                subject: "CONFIRMATION CODE",
+                html: `<h1>Password recovery</h1>
+       <p>To finish password recovery please follow the link below:
+          <a href='https://somesite.com/password-recovery?recoveryCode=${confirmationCode}'>recovery password</a>
+      </p>`
+            });
+            return confirmationCode;
+        });
     }
 };
