@@ -71,8 +71,8 @@ authRouter.get('/me',
 authRouter.post('/password-recovery',
     requestAttemptsMiddleware,
     emailForRecoveryCheck,
-    checkForExistingEmail,
     inputValidationMiddleware,
+    checkForExistingEmail,
     async (req: Request, res: Response) => {
         const status : boolean = await authService.passwordRecovery(req.body.email)
         if (status) {
