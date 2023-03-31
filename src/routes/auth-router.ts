@@ -69,10 +69,10 @@ authRouter.get('/me',
 //PASSWORD RECOVERY SENDING EMAIL WITH CODE
 
 authRouter.post('/password-recovery',
+    requestAttemptsMiddleware,
     emailForRecoveryCheck,
     checkForExistingEmail,
     inputValidationMiddleware,
-    requestAttemptsMiddleware,
     async (req: Request, res: Response) => {
         const status : boolean = await authService.passwordRecovery(req.body.email)
         if (status) {
@@ -85,11 +85,11 @@ authRouter.post('/password-recovery',
 //PASSWORD RECOVERY. CHANGE PASSWORD
 
 authRouter.post('/new-password',
+    requestAttemptsMiddleware,
     passwordForRecoveryCheck,
     checkForNotSamePassword,
     codeForRecoveryConfirmationCheck,
     inputValidationMiddleware,
-    requestAttemptsMiddleware,
     async (req: Request, res: Response) => {
         const status : boolean = await authService.changePasswordWithCode(req.body.recoveryCode, req.body.newPassword)
         if(status) {
