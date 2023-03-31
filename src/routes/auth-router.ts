@@ -78,7 +78,7 @@ authRouter.post('/password-recovery',
 
 //PASSWORD RECOVERY. CHANGE PASSWORD
 
-authRouter.post('/password-new',
+authRouter.post('/new-password',
     passwordForRecoveryCheck,
     codeForRecoveryConfirmationCheck,
     inputValidationMiddleware,

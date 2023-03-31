@@ -62,7 +62,7 @@ exports.authRouter.post('/password-recovery', input_valudation_middleware_1.emai
     }
 }));
 //PASSWORD RECOVERY. CHANGE PASSWORD
-exports.authRouter.post('/password-new', input_valudation_middleware_1.passwordForRecoveryCheck, input_valudation_middleware_1.codeForRecoveryConfirmationCheck, input_valudation_middleware_1.inputValidationMiddleware, attempts_middleware_1.requestAttemptsMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.authRouter.post('/new-password', input_valudation_middleware_1.passwordForRecoveryCheck, input_valudation_middleware_1.codeForRecoveryConfirmationCheck, input_valudation_middleware_1.inputValidationMiddleware, attempts_middleware_1.requestAttemptsMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const status = yield auth_service_1.authService.changePasswordWithCode(req.body.recoveryCode, req.body.newPassword);
     if (status) {
         res.sendStatus(204);
