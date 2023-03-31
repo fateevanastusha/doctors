@@ -99,9 +99,9 @@ export const checkForExistingEmail  = async (req : Request, res : Response, next
 export const checkForNotSamePassword = async (req: Request, res: Response, next : NextFunction) => {
     const status : boolean = await authRepository.recoveryRequest(req.body.recoveryCode, req.body.newPassword)
     if (status) {
-        throw new Error('its your old password')
+        return res.sendStatus(401)
     } else {
-        return true
+        next()
     }
 }
 
