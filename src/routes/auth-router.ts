@@ -65,6 +65,7 @@ authRouter.get('/me',
 //PASSWORD RECOVERY SENDING EMAIL WITH CODE
 
 authRouter.post('/password-recovery',
+    checkForExistingEmail,
     emailForRecoveryCheck,
     inputValidationMiddleware,
     requestAttemptsMiddleware,
