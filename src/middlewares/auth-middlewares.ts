@@ -7,6 +7,8 @@ import {RefreshTokensMeta, User} from "../types/types";
 import {securityRepository} from "../repositories/security-db-repository";
 import {authService} from "../domain/auth-service";
 import {securityService} from "../domain/security-service";
+import {CustomValidator} from "express-validator/src/base";
+import {usersRepository} from "../repositories/users-db-repository";
 
 
 export const authMiddlewares = async (req: Request, res: Response, next: NextFunction) => {
@@ -83,6 +85,14 @@ export const checkForDeviceId = async (req: Request, res: Response, next: NextFu
     const deviceId : string = req.params.id;
     const session : RefreshTokensMeta | null = await securityRepository.findSessionByDeviceId(deviceId);
     if (!session) return res.sendStatus(404)
+    next()
+}
+
+export const checkForExistingEmail  = async (req : Request, res : Response, next : NextFunction) => {
+    const User = await usersRepository.returnUserByEmail(req.body.email)
+    if (!User) {
+        res.sendStatus(204)
+    }
     next()
 }
 

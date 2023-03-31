@@ -1,4 +1,4 @@
-import {app} from "./app";
+import app from "./app";
 import {runDb} from "./db/db";
 
 const port = 5000;
@@ -14,4 +14,4 @@ export const start = async () => {
 }
 start()
 
-module.exports = app
+export default app

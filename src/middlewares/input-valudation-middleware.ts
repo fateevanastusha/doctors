@@ -77,6 +77,16 @@ export const checkForEmail : CustomValidator = async email => {
     return true
 }
 
+
+export const checkForRecoveryEmail : CustomValidator = async email => {
+    const User = await usersRepository.returnUserByEmail(email)
+    if (!User) {
+        return true
+    }
+    return true
+}
+
+
 //check for existing confirmation code
 
 export const checkForExistingConfirmationCode : CustomValidator = async code => {
@@ -131,6 +141,6 @@ export const commentContentCheck = body('content').trim().isLength({min:20, max:
 
 export const codeConfirmationCheck = body('code').trim().isLength({min:12, max: 14}).isString().matches(/^\d+$/).custom(checkForExistingConfirmationCode).custom(checkForNotConfirmedByEmailOrCode)
 export const emailConfirmationCheck =  body ('email').isString().isEmail().trim().custom(checkForEmail).custom(checkForNotConfirmedByEmailOrCode)
-export const emailForRecoveryCheck = body ('email').isString().isEmail().trim().custom(checkForEmail)
+export const emailForRecoveryCheck = body ('email').isString().isEmail().trim()
 export const codeForRecoveryConfirmationCheck = body('recoveryCode').trim().isLength({min:12, max: 14}).isString().matches(/^\d+$/).custom(checkForExistingConfirmationCode)
 export const passwordForRecoveryCheck = body ('newPassword').trim().isLength({min:6, max: 20}).isString()
