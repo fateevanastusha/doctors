@@ -91,7 +91,7 @@ export const checkForDeviceId = async (req: Request, res: Response, next: NextFu
 export const checkForExistingEmail  = async (req : Request, res : Response, next : NextFunction) => {
     const User = await usersRepository.returnUserByEmail(req.body.email)
     if (!User) {
-        res.sendStatus(204)
+       return  res.sendStatus(204)
     }
     next()
 }

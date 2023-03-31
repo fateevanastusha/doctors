@@ -253,7 +253,7 @@ describe('auth', () => {
             .send({
                 email : "fateevanastushatest@yandex.r",
             })
-            .expect(400)
+            .expect(204)
         //MAKE REQUEST REGISTRATION
         await request(app)
             .post('/auth/password-recovery')
