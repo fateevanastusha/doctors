@@ -9,13 +9,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkForDeviceId = exports.checkForSameUser = exports.checkForSameDevice = exports.checkForRefreshToken = exports.checkForUser = exports.authMiddlewares = void 0;
+exports.checkForExistingEmail = exports.checkForDeviceId = exports.checkForSameUser = exports.checkForSameDevice = exports.checkForRefreshToken = exports.checkForUser = exports.authMiddlewares = void 0;
 const jwt_service_1 = require("../application/jwt-service");
 const comments_service_1 = require("../domain/comments-service");
 const auth_db_repository_1 = require("../repositories/auth-db-repository");
 const security_db_repository_1 = require("../repositories/security-db-repository");
 const auth_service_1 = require("../domain/auth-service");
 const security_service_1 = require("../domain/security-service");
+const users_db_repository_1 = require("../repositories/users-db-repository");
 const authMiddlewares = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.headers.authorization) {
         res.sendStatus(401);
@@ -103,3 +104,11 @@ const checkForDeviceId = (req, res, next) => __awaiter(void 0, void 0, void 0, f
     next();
 });
 exports.checkForDeviceId = checkForDeviceId;
+const checkForExistingEmail = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const User = yield users_db_repository_1.usersRepository.returnUserByEmail(req.body.email);
+    if (!User) {
+        res.sendStatus(204);
+    }
+    next();
+});
+exports.checkForExistingEmail = checkForExistingEmail;

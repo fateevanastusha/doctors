@@ -17,7 +17,8 @@ import {
     loginCheck,
     passwordCheck, passwordForRecoveryCheck
 } from "../middlewares/input-valudation-middleware";
-import {checkForRefreshToken,
+import {
+    checkForExistingEmail, checkForRefreshToken,
     checkForSameDevice
 } from "../middlewares/auth-middlewares";
 import {requestAttemptsMiddleware} from "../middlewares/attempts-middleware";
