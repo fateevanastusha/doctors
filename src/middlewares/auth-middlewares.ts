@@ -7,9 +7,9 @@ import {RefreshTokensMeta, User} from "../types/types";
 import {securityRepository} from "../repositories/security-db-repository";
 import {authService} from "../domain/auth-service";
 import {securityService} from "../domain/security-service";
-import {CustomValidator} from "express-validator/src/base";
-import {usersRepository} from "../repositories/users-db-repository";
+import {UsersRepository} from "../repositories/users-db-repository";
 
+const usersRepository = new UsersRepository()
 
 export const authMiddlewares = async (req: Request, res: Response, next: NextFunction) => {
 

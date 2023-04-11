@@ -6,11 +6,12 @@ import { authRouter } from "./routes/auth-router";
 import { emailRouter } from "./routes/email-router";
 import {securityRouter} from "./routes/security-router";
 import { postsRepository } from './repositories/posts-db-repositiory';
-import { blogsRepository } from './repositories/blogs-db-repositiory';
-import { usersRepository } from "./repositories/users-db-repository";
 import {commentsRouter} from "./routes/comments-router";
 import cookieParser from "cookie-parser"
 import {securityRepository} from "./repositories/security-db-repository";
+import {BlogsRepository} from "./repositories/blogs-db-repositiory";
+import {UsersService} from "./domain/users-service";
+import {UsersRepository} from "./repositories/users-db-repository";
 export const app = express();
 
 app.use(express.json())
@@ -25,7 +26,8 @@ app.use('/comments', commentsRouter)
 app.use('/email', emailRouter)
 app.use('/security', securityRouter)
 
-
+const blogsRepository = new BlogsRepository()
+const usersRepository = new UsersRepository()
 
 //TESTING - DELETE ALL DATA
 

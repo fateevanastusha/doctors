@@ -36,7 +36,7 @@ export class PostsService {
     }
     //delete all data
     async deleteAllData() {
-        this.postsRepository.deleteAllData();
+        await this.postsRepository.deleteAllData();
     }
     //create new post
     async createNewPost(post: Post, blogName: string, blogId : string) : Promise <Post | null>{
@@ -55,9 +55,5 @@ export class PostsService {
     //update post by id
     async updatePostById(post : Post, id : string) : Promise <boolean>{
         return await this.postsRepository.updatePostById(post,id)
-    }
-    //return all posts by blogId
-    async getAllPostsByBlogId(blogId : string) : Promise<Post[]>{
-        return this.postsRepository.getAllPostsByBlogId(blogId)
     }
 }

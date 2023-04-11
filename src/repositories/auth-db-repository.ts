@@ -1,7 +1,9 @@
 import {RefreshToken, User} from "../types/types";
-import {usersRepository} from "./users-db-repository";
 import bcrypt from "bcrypt";
 import {RefreshTokenBlackListModel} from "../types/models";
+import {UsersRepository} from "./users-db-repository";
+
+const usersRepository = new UsersRepository()
 
 export const authRepository = {
 

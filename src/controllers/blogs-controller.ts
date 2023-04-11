@@ -3,7 +3,9 @@ import {Request, Response} from "express";
 import {paginationHelpers} from "../helpers/pagination-helpers";
 import {SortDirection} from "mongodb";
 import {Blog, Post} from "../types/types";
-import {postsService} from "../domain/posts-service";
+import {PostsService} from "../domain/posts-service";
+
+const postsService = new PostsService()
 
 export class BlogsController {
     blogsService : BlogsService
