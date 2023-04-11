@@ -1,19 +1,18 @@
 import {Blog} from "../types/types";
-import {BlogModelClass, UserModel} from "../types/models";
-import {body} from "express-validator";
+import {BlogModelClass} from "../types/models";
 
 
-export const blogsRepository = {
+export class BlogsRepository {
 
     async returnBlogsCount(searchNameTerm : string) : Promise<number>{
         return BlogModelClass
             .countDocuments({name: {$regex: searchNameTerm, $options : 'i'}})
-    },
+    }
     //GET - return by ID
     async returnBlogById(id: string) : Promise<Blog | null>{
         const blog : Blog | null = await BlogModelClass.findOne({id: id}, {_id: 0, __v: 0})
         return blog
-    },
+    }
     //DELETE - delete by ID
     async deleteBlogById(id: string) : Promise<boolean>{
 
@@ -26,12 +25,12 @@ export const blogsRepository = {
         return true;
         //const result = await BlogModelClass.deleteOne({id: id})
         //return result.deletedCount === 1
-    },
+    }
     //delete all data
     async deleteAllData(){
         const result = await BlogModelClass.deleteMany({})
         return []
-    },
+    }
     //POST - create new 
     async createNewBlog(newBlog: Blog) : Promise<Blog | null>{
 
@@ -51,7 +50,7 @@ export const blogsRepository = {
             return createdBlog
         }
         return null
-    },
+    }
     //PUT - update
     async updateBlogById(blog : Blog, id: string) : Promise <boolean>{
 
@@ -68,6 +67,6 @@ export const blogsRepository = {
         return true;
         //const result = await BlogModelClass.updateOne({id: id}, { $set: blog})
         //return result.matchedCount === 1
-    }, 
+    }
 };
 

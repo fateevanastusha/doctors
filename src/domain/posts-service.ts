@@ -1,17 +1,21 @@
-import {postsRepository} from "../repositories/posts-db-repositiory";
+import {PostsRepository} from "../repositories/posts-db-repositiory";
 import {Paginator, Post, SortDirection} from "../types/types";
 import {QueryRepository} from "../queryRepo";
 
-export const postsService = {
+export class PostsService {
+    postsRepository : PostsRepository
+    constructor() {
+        this.postsRepository = new PostsRepository()
+    }
     //return all posts
     async returnAllPost(PageSize: number, Page: number, sortBy : string, sortDirection: SortDirection) : Promise<Paginator>{
-        const total = (await postsRepository.returnAllPost()).length
+        const total = (await this.postsRepository.returnAllPost()).length
         const PageCount = Math.ceil( total / PageSize)
         const Items = await QueryRepository.PaginatorForPosts(PageCount, PageSize, Page, sortBy, sortDirection );
         return QueryRepository.PaginationForm(PageCount, PageSize, Page, total, Items)
-    },
+    }
     async returnAllPostByBlogId (PageSize: number, Page: number, sortBy : string, sortDirection: SortDirection, blogId: string) : Promise<Paginator>{
-        let total = (await postsRepository.getAllPostsByBlogId(blogId))
+        let total = (await this.postsRepository.getAllPostsByBlogId(blogId))
         let totalNumber
         if (total === null) {
             totalNumber = 0
@@ -21,19 +25,19 @@ export const postsService = {
         const PageCount = Math.ceil( totalNumber / PageSize)
         const Items = await QueryRepository.PaginatorForPostsByBlogId(PageCount, PageSize, Page, sortBy, sortDirection, blogId);
         return QueryRepository.PaginationForm(PageCount, PageSize, Page, totalNumber, Items)
-    },
+    }
     //return post by id
     async returnPostById(id: string) : Promise<Post | null>{
-        return postsRepository.returnPostById(id);
-    },
+        return this.postsRepository.returnPostById(id);
+    }
     //delete post by id
     async deletePostById(id:string) : Promise<boolean>{
-        return postsRepository.deletePostById(id);
-    },
+        return this.postsRepository.deletePostById(id);
+    }
     //delete all data
     async deleteAllData() {
-        postsRepository.deleteAllData();
-    },
+        this.postsRepository.deleteAllData();
+    }
     //create new post
     async createNewPost(post: Post, blogName: string, blogId : string) : Promise <Post | null>{
         const newPost = {
@@ -45,15 +49,15 @@ export const postsService = {
             blogName: blogName,
             createdAt : new Date().toISOString()
         };
-        const createdPost = await postsRepository.createNewPost(newPost);
+        const createdPost = await this.postsRepository.createNewPost(newPost);
         return createdPost;
-    },
+    }
     //update post by id
     async updatePostById(post : Post, id : string) : Promise <boolean>{
-        return await postsRepository.updatePostById(post,id)
-    },
+        return await this.postsRepository.updatePostById(post,id)
+    }
     //return all posts by blogId
     async getAllPostsByBlogId(blogId : string) : Promise<Post[]>{
-        return postsRepository.getAllPostsByBlogId(blogId)
+        return this.postsRepository.getAllPostsByBlogId(blogId)
     }
 }

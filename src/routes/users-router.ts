@@ -1,35 +1,19 @@
-import {
-    Request,
-    Response,
-    Router} from "express";
-import {usersService} from "../domain/users-service";
-import {User} from "../types/types";
-import {
-    emailCheck,
-    loginCheck,
-    passwordCheck,
-    inputValidationMiddleware, createAccountValidationMiddleware
-} from "../middlewares/input-valudation-middleware";
+import {Router} from "express";
+import {emailCheck, loginCheck, passwordCheck, inputValidationMiddleware} from "../middlewares/input-valudation-middleware";
 import {adminAuth} from "./blogs-router";
-import {paginationHelpers} from "../helpers/pagination-helpers";
-import {SortDirection} from "mongodb";
+import {UsersController} from "../controllers/users-controller";
+
 
 export const usersRouter = Router()
 
-
+const usersController = new UsersController()
 
 //GET ALL USERS WITH AUTH
 
-usersRouter.get('/', adminAuth, async (req: Request, res: Response) =>{
-    let pageSize : number = paginationHelpers.pageSize(<string>req.query.pageSize)
-    let pageNumber : number = paginationHelpers.pageNumber(<string>req.query.pageNumber)
-    let sortBy : string = paginationHelpers.sortBy(<string>req.query.sortBy)
-    let sortDirection : SortDirection = paginationHelpers.sortDirection(<string>req.query.sortDirection)
-    let searchLoginTerm : string = paginationHelpers.searchLoginTerm(<string>req.query.searchLoginTerm)
-    let searchEmailTerm : string = paginationHelpers.searchEmailTerm(<string>req.query.searchEmailTerm)
-    const allUsers = await usersService.getAllUsers(pageSize, pageNumber, sortBy, sortDirection,searchLoginTerm, searchEmailTerm);
-    res.status(200).send(allUsers)
-});
+usersRouter.get('/',
+    adminAuth,
+    usersController.getAllUsers.bind(usersController)
+);
 
 //POST USER WITH AUTH
 
@@ -39,27 +23,12 @@ usersRouter.post('/',
     passwordCheck,
     emailCheck,
     inputValidationMiddleware,
-    async (req: Request, res: Response) =>{
-
-    const newUser : User | null = await usersService.createNewUser(req.body);
-    if (!newUser) {
-        res.sendStatus(404)
-    } else {
-        res.status(201).send(newUser)
-    }
-
-
-});
+    usersController.createNewUser.bind(usersController),
+);
 
 //DELETE USER BY ID WITH AUTH
 
-usersRouter.delete('/:id', adminAuth, async (req: Request, res: Response) =>{
-
-    const status : boolean = await usersService.deleteUserById(req.params.id)
-    if (status) {
-        res.sendStatus(204)
-    } else {
-        res.sendStatus(404)
-    }
-
-});
+usersRouter.delete('/:id',
+    adminAuth,
+    usersController.deleteUser.bind(usersController)
+);

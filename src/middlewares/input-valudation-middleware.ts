@@ -1,11 +1,12 @@
-import e, { NextFunction } from "express";
+import { NextFunction } from "express";
 import { Response, Request } from "express";
 import { CustomValidator } from "express-validator/src/base";
-import { blogsRepository } from "../repositories/blogs-db-repositiory";
 import { body, validationResult } from 'express-validator';
-import {usersRepository} from "../repositories/users-db-repository";
-import exp from "constants";
-import {authRepository} from "../repositories/auth-db-repository";
+import {UsersRepository} from "../repositories/users-db-repository";
+import {BlogsRepository} from "../repositories/blogs-db-repositiory";
+
+const usersRepository = new UsersRepository();
+const blogsRepository = new BlogsRepository();
 
 //errors storage
 export const inputValidationMiddleware = (req: Request, res: Response, next: NextFunction) => {

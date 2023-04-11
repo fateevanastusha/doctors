@@ -1,7 +1,7 @@
 import {User} from "../types/types";
 import {UserModel} from "../types/models";
 
-export const usersRepository = {
+export class UsersRepository {
 
     //COUNT USERS WITH SEARCH LOGIN TERM AND SEARCH EMAIL TERM
 
@@ -12,7 +12,7 @@ export const usersRepository = {
                     {email: {$regex: searchEmailTerm, $options: 'i'}}
                 ]
         })
-    },
+    }
 
     //GET USER BY ID
 
@@ -20,7 +20,7 @@ export const usersRepository = {
        return UserModel
             .findOne({id: id}, {_id: 0, password : 0,  isConfirmed: 0, confirmedCode : 0, __v: 0})
 
-    },
+    }
 
     //GET USER BY FIELD
 
@@ -30,7 +30,7 @@ export const usersRepository = {
         return user
 
 
-    },
+    }
 
     //GET USER BY LOGIN
 
@@ -39,7 +39,7 @@ export const usersRepository = {
             .findOne({login : login}, {_id: 0, __v: 0})
         return user
 
-    },
+    }
 
     //GET USER BY EMAIL OR LOGIN
 
@@ -48,7 +48,7 @@ export const usersRepository = {
             .findOne({email : email},{_id: 0, __v: 0})
         return user
 
-    },
+    }
 
     //CREATE NEW USER
 
@@ -59,7 +59,7 @@ export const usersRepository = {
             return updatedUser
         }
         return null
-    },
+    }
 
     //CHANGE PASSWORD
 
@@ -70,21 +70,21 @@ export const usersRepository = {
                 }
         })
         return result.matchedCount === 1
-    },
+    }
 
     //DELETE USER BY ID
 
     async deleteUserById(id: string) : Promise<boolean>{
         const result = await UserModel.deleteOne({id: id, __v: 0})
         return result.deletedCount === 1
-    },
+    }
 
     //CHECK FOR CONFIRMATION CODE
 
     async checkForConfirmationCode (confirmedCode : string) : Promise<boolean> {
         const user = await UserModel.findOne({confirmedCode : confirmedCode})
         return user !== null
-    },
+    }
 
     //CHANGE CONFIRMATION STATUS
 
@@ -96,7 +96,7 @@ export const usersRepository = {
                 }
             })
         return status.matchedCount === 1
-    },
+    }
 
     //CHANGE CONFIRMATION CODE
 
@@ -108,7 +108,7 @@ export const usersRepository = {
                 }
             })
         return status.matchedCount === 1
-    },
+    }
 
     //CHECK FOR CONFIRMED ACCOUNT
 
@@ -119,7 +119,7 @@ export const usersRepository = {
         } else {
             return false
         }
-    },
+    }
 
     //DELETE ALL DATA
 
@@ -129,3 +129,4 @@ export const usersRepository = {
     }
 
 }
+
