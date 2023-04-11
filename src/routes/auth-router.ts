@@ -1,14 +1,4 @@
-import {
-    Request,
-    Response,
-    Router
-} from "express";
-import {authService} from "../domain/auth-service";
-import {
-    AccessToken,
-    TokenList,
-    User
-} from "../types/types";
+import {Router} from "express";
 import {
     codeConfirmationCheck,
     codeForRecoveryConfirmationCheck,
@@ -21,50 +11,31 @@ import {
     passwordForRecoveryCheck
 } from "../middlewares/input-valudation-middleware";
 import {
-    checkForExistingEmail, checkForNotSamePassword,
+    checkForExistingEmail,
+    checkForNotSamePassword,
     checkForRefreshToken,
     checkForSameDevice
 } from "../middlewares/auth-middlewares";
 import {requestAttemptsMiddleware} from "../middlewares/attempts-middleware";
+import {AuthController} from "../controllers/auth-controller";
 
 
 export const authRouter = Router()
+const authController = new AuthController()
 
+//LOGIN
 
-authRouter.post('/login', requestAttemptsMiddleware, checkForSameDevice, async (req: Request, res: Response) => {
-    const title = req.headers["user-agent"] || "unknown"
-    const tokenList: TokenList | null = await authService.authRequest(req.body.password, req.ip, req.body.loginOrEmail, title)
-    if (tokenList) {
-        let token: AccessToken = {
-            accessToken: tokenList.accessToken
-        }
-        res.cookie('refreshToken', tokenList.refreshToken, {httpOnly: true, secure: true})
-        res.status(200).send(token)
-    } else {
-        res.sendStatus(401)
-    }
-})
+authRouter.post('/login',
+    requestAttemptsMiddleware,
+    checkForSameDevice,
+    authController.loginRequest.bind(authController)
+)
 
 //GET INFORMATION ABOUT CURRENT AUTH
 
 authRouter.get('/me',
-    async (req: Request, res: Response) => {
-        const auth = req.headers.authorization
-        if (!auth) return res.sendStatus(401)
-        const [authType, token] = auth.split(' ')
-        if (authType !== 'Bearer') return res.sendStatus(401)
-        const user: User | null = await authService.getInformationAboutCurrentUser(token)
-        if (user) {
-            const currentUser = {
-                email: user.email,
-                login : user.login,
-                userId : user.id
-            }
-            res.status(200).send(currentUser)
-        } else {
-            res.sendStatus(401)
-        }
-    })
+    authController.getInfoAboutUser.bind(authController)
+)
 
 //PASSWORD RECOVERY SENDING EMAIL WITH CODE
 
@@ -73,14 +44,8 @@ authRouter.post('/password-recovery',
     emailForRecoveryCheck,
     inputValidationMiddleware,
     checkForExistingEmail,
-    async (req: Request, res: Response) => {
-        const status : boolean = await authService.passwordRecovery(req.body.email)
-        if (status) {
-            res.sendStatus(204)
-        } else {
-            res.sendStatus(400)
-        }
-})
+    authController.passwordRecoverySendEmail.bind(authController)
+)
 
 //PASSWORD RECOVERY. CHANGE PASSWORD
 
@@ -90,14 +55,8 @@ authRouter.post('/new-password',
     checkForNotSamePassword,
     codeForRecoveryConfirmationCheck,
     inputValidationMiddleware,
-    async (req: Request, res: Response) => {
-        const status : boolean = await authService.changePasswordWithCode(req.body.recoveryCode, req.body.newPassword)
-        if(status) {
-            res.sendStatus(204)
-        } else {
-            res.sendStatus(400)
-        }
-})
+    authController.passwordRecoveryChangePassword.bind(authController)
+)
 
 
 //REGISTRATION IN THE SYSTEM
@@ -108,18 +67,8 @@ authRouter.post('/registration',
     emailCheck,
     inputValidationMiddleware,
     requestAttemptsMiddleware,
-    async (req: Request, res: Response) => {
-
-        const status: boolean = await authService.registrationUser(req.body);
-
-        if (status) {
-            res.send(204);
-        } else {
-            res.send(404);
-        }
-        ;
-
-})
+    authController.registrationUser.bind(authController)
+)
 
 //CODE CONFIRMATION
 
@@ -127,16 +76,8 @@ authRouter.post('/registration-confirmation',
     requestAttemptsMiddleware,
     codeConfirmationCheck,
     inputValidationMiddleware,
-    async (req: Request, res: Response) => {
-
-        const status = await authService.checkForConfirmationCode(req.body.code)
-        if (!status) {
-            res.sendStatus(400)
-        } else {
-            res.sendStatus(204)
-        }
-
-    })
+    authController.codeConfirmation.bind(authController)
+)
 
 //RESEND CODE CONFIRMATION
 
@@ -144,48 +85,22 @@ authRouter.post('/registration-email-resending',
     requestAttemptsMiddleware,
     emailConfirmationCheck,
     inputValidationMiddleware,
-    async (req: Request, res: Response) => {
-
-        const status: boolean = await authService.emailResending(req.body)
-        if (status) {
-            res.send(204)
-        } else {
-            res.send(400)
-        }
-
-    })
+    authController.resendCode.bind(authController)
+)
 
 //LOGOUT. KILL REFRESH TOKEN + KILL SESSION
 
 authRouter.post('/logout',
     checkForRefreshToken,
-    async (req: Request, res: Response) => {
-    const status : boolean = await authService.logoutRequest(req.cookies.refreshToken)
-    if (status) {
-        res.sendStatus(204)
-    } else {
-        res.sendStatus(401)
-    }
-
-})
+    authController.logoutRequest.bind(authController)
+)
 
 //REFRESH TOKEN
 
 authRouter.post('/refresh-token',
     requestAttemptsMiddleware,
     checkForRefreshToken,
-    async (req: Request, res: Response) => {
-    const title = req.headers["user-agent"] || "unknown"
-    const tokenList: TokenList | null = await authService.createNewToken(req.cookies.refreshToken, req.ip, title)
-    if (tokenList) {
-        let token: AccessToken = {
-            accessToken: tokenList.accessToken
-        }
-        res.cookie('refreshToken', tokenList.refreshToken, {httpOnly: true, secure: true})
-        res.status(200).send(token)
-    } else {
-        res.sendStatus(401)
-    }
-})
+    authController.refreshTokenRequest.bind(authController)
+)
 
 

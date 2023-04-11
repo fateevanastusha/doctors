@@ -1,24 +1,29 @@
 import {RefreshTokensMeta} from "../types/types";
-import {securityRepository} from "../repositories/security-db-repository";
+import {SecurityRepository} from "../repositories/security-db-repository";
 import {jwtService} from "../application/jwt-service";
-//const createError = require('http-errors');
 
-export const securityService = {
+export class SecurityService {
+    securityRepository : SecurityRepository
+    constructor() {
+        this.securityRepository = new SecurityRepository()
+    }
     async getAllSessions(refreshToken : string) : Promise<RefreshTokensMeta[] | null> {
         const idList = await jwtService.getIdByRefreshToken(refreshToken)
         if(!idList) return null
         const userId = idList.userId
-        return await securityRepository.getAllSessions(userId)
-    },
+        return await this.securityRepository.getAllSessions(userId)
+    }
     async deleteAllSessions(refreshToken : string) : Promise<boolean> {
         const idList = await jwtService.getIdByRefreshToken(refreshToken)
         if(!idList) return false
-        return await securityRepository.deleteAllSessions(idList.deviceId, idList.userId)
-    },
+        return await this.securityRepository.deleteAllSessions(idList.deviceId, idList.userId)
+    }
     async deleteOneSession(deviceId : string) : Promise<boolean> {
-        return await securityRepository.deleteOneSessions(deviceId)
-    },
+        return await this.securityRepository.deleteOneSessions(deviceId)
+    }
     async checkForSameDevice(title : string, userId : string) : Promise<boolean> {
-        return await securityRepository.checkSameDevice(title,userId)
+        return await this.securityRepository.checkSameDevice(title,userId)
     }
 }
+
+export const securityService = new SecurityService()

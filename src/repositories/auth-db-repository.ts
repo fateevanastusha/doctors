@@ -2,10 +2,11 @@ import {RefreshToken, User} from "../types/types";
 import bcrypt from "bcrypt";
 import {RefreshTokenBlackListModel} from "../types/models";
 import {UsersRepository} from "./users-db-repository";
+import exp from "constants";
 
 const usersRepository = new UsersRepository()
 
-export const authRepository = {
+export class AuthRepository {
 
     //AUTH
 
@@ -19,7 +20,7 @@ export const authRepository = {
         } else {
             return false
         }
-    },
+    }
 
     async recoveryRequest(recoveryCode: string, password: string) : Promise <boolean> {
 
@@ -31,7 +32,7 @@ export const authRepository = {
         } else {
             return false
         }
-    },
+    }
 
     //CHECK FOR REFRESH TOKEN IN BLACK LIST
 
@@ -43,7 +44,7 @@ export const authRepository = {
         } else {
             return false
         }
-    },
+    }
 
     //ADD REFRESH TOKEN TO BLACK LIST
 
@@ -59,3 +60,5 @@ export const authRepository = {
     }
 
 }
+
+export const authRepository = new AuthRepository()

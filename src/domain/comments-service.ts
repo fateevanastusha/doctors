@@ -1,21 +1,27 @@
 import {Comment, Paginator, User, SortDirection} from "../types/types";
-import {commentsRepository} from "../repositories/comments-db-repository";
-import {usersService} from "./users-service";
+import {CommentsRepository} from "../repositories/comments-db-repository";
+import {UsersService} from "./users-service";
 import {QueryRepository} from "../queryRepo";
 
-export const commentsService = {
+export class CommentsService {
+    usersService : UsersService
+    commentsRepository : CommentsRepository
+    constructor() {
+        this.commentsRepository = new CommentsRepository()
+        this.usersService = new UsersService()
+    }
 
     async getCommentById (id : string) : Promise<Comment | null> {
-        return commentsRepository.getCommentById(id)
-    },
+        return this.commentsRepository.getCommentById(id)
+    }
     async deleteCommentById (id: string) : Promise<boolean> {
-        return commentsRepository.deleteCommentById(id)
-    },
+        return this.commentsRepository.deleteCommentById(id)
+    }
     async updateCommentById (content: string, id: string) : Promise <boolean> {
-        return await commentsRepository.updateCommentById(content, id)
-    },
+        return await this.commentsRepository.updateCommentById(content, id)
+    }
     async createComment(postId : string, userId: string, content : string) : Promise <Comment | null> {
-        const user : User | null = await usersService.getUserById(userId)
+        const user : User | null = await this.usersService.getUserById(userId)
         const comment : Comment = {
             id : (+new Date()).toString(),
             content : content,
@@ -26,10 +32,10 @@ export const commentsService = {
             createdAt: new Date().toISOString(),
             postId : postId
         }
-        return commentsRepository.createNewComment(comment);
-    },
+        return this.commentsRepository.createNewComment(comment);
+    }
     async getAllCommentsByPostId(PageSize: number, Page: number, sortBy : string, sortDirection: SortDirection, postId: string) : Promise<Paginator> {
-        let total : number | null |  Comment []= await commentsRepository.getAllCommentsByPostId(postId)
+        let total : number | null |  Comment []= await this.commentsRepository.getAllCommentsByPostId(postId)
         if (total === null) {
             total = 0
         } else {
@@ -41,3 +47,5 @@ export const commentsService = {
     }
 
 }
+
+export const commentsService = new CommentsService()
