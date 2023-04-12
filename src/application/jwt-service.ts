@@ -4,13 +4,13 @@ import {RefreshToken, AccessToken} from "../types/types";
 
 export class JwtService {
     async createJWTAccess (userId : string) : Promise <AccessToken>{
-        const accessToken = jwt.sign({ userId : userId }, settings.JWT_SECRET, { expiresIn: '10sec' })
+        const accessToken = jwt.sign({ userId : userId }, settings.JWT_SECRET, { expiresIn: '10m' })
         return {
             accessToken : accessToken
         }
     }
     async createJWTRefresh (userId : string, deviceId: string) : Promise <RefreshToken>{
-        const refreshToken = jwt.sign({ userId : userId, deviceId: deviceId }, settings.JWT_SECRET, { expiresIn: '20sec' })
+        const refreshToken = jwt.sign({ userId : userId, deviceId: deviceId }, settings.JWT_SECRET, { expiresIn: '20m' })
         return {
             refreshToken : refreshToken
         }
