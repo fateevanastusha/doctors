@@ -3,9 +3,7 @@ import {SecurityRepository} from "../repositories/security-db-repository";
 import {jwtService} from "../application/jwt-service";
 
 export class SecurityService {
-    securityRepository : SecurityRepository
-    constructor() {
-        this.securityRepository = new SecurityRepository()
+    constructor(protected securityRepository : SecurityRepository) {
     }
     async getAllSessions(refreshToken : string) : Promise<RefreshTokensMeta[] | null> {
         const idList = await jwtService.getIdByRefreshToken(refreshToken)
@@ -26,4 +24,3 @@ export class SecurityService {
     }
 }
 
-export const securityService = new SecurityService()

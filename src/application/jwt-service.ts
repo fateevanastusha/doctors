@@ -1,20 +1,20 @@
 import jwt from 'jsonwebtoken'
 import {settings} from "../settings";
-import {RefreshToken, AccessToken, User} from "../types/types";
+import {RefreshToken, AccessToken} from "../types/types";
 
-export const jwtService = {
+export class JwtService {
     async createJWTAccess (userId : string) : Promise <AccessToken>{
         const accessToken = jwt.sign({ userId : userId }, settings.JWT_SECRET, { expiresIn: '10sec' })
         return {
             accessToken : accessToken
         }
-    },
+    }
     async createJWTRefresh (userId : string, deviceId: string) : Promise <RefreshToken>{
         const refreshToken = jwt.sign({ userId : userId, deviceId: deviceId }, settings.JWT_SECRET, { expiresIn: '20sec' })
         return {
             refreshToken : refreshToken
         }
-    },
+    }
     async getUserByIdToken (token : string) {
         try {
             const decoded : any = jwt.verify(token, settings.JWT_SECRET);
@@ -22,7 +22,7 @@ export const jwtService = {
         } catch (error) {
             return null
         }
-    },
+    }
     async getIdByRefreshToken (token : string) {
 
         try {
@@ -35,7 +35,7 @@ export const jwtService = {
         } catch (error) {
             return null
         }
-    },
+    }
     async getRefreshTokenDate (token : string) {
         try {
             const decoded : any = jwt.verify(token, settings.JWT_SECRET);
@@ -45,3 +45,5 @@ export const jwtService = {
         }
     }
 }
+
+export const jwtService = new JwtService()

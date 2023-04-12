@@ -1,21 +1,16 @@
-import {AuthRepository, authRepository} from "../repositories/auth-db-repository";
+import {AuthRepository} from "../repositories/auth-db-repository";
 import {RefreshToken, RefreshTokensMeta, AccessToken, TokenList, User} from "../types/types";
 import {jwtService} from "../application/jwt-service";
-import {UsersService, usersService} from "./users-service";
+import {UsersService} from "./users-service";
 import {businessService} from "./business-service";
 import {securityRepository} from "../repositories/security-db-repository";
 import {UsersRepository} from "../repositories/users-db-repository";
 
-const usersRepository = new UsersRepository()
-
 export class AuthService {
-    authRepository : AuthRepository
-    usersService : UsersService
-    usersRepository : UsersRepository
-    constructor() {
-        this.authRepository = new AuthRepository()
-        this.usersService = new UsersService()
-        this.usersRepository = new UsersRepository()
+    constructor(
+        protected authRepository : AuthRepository,
+        protected usersService : UsersService,
+        protected usersRepository : UsersRepository) {
     }
 
     async authRequest (password : string, ip : string, loginOrEmail : string, title : string) : Promise<TokenList | null> {
@@ -70,7 +65,7 @@ export class AuthService {
         if (!session) return null
         const deviceId : string = session.deviceId
         const userId : string = await jwtService.getUserByIdToken(refreshToken)
-        const user = await usersService.getUserById(userId)
+        const user = await this.usersService.getUserById(userId)
         if (user === null) return null
         const accessToken : AccessToken = await jwtService.createJWTAccess(userId)
         const newRefreshToken : RefreshToken = await jwtService.createJWTRefresh(userId, deviceId)
@@ -198,7 +193,4 @@ export class AuthService {
         }
 
     }
-
 }
-
-export const authService = new AuthService()

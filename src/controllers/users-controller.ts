@@ -1,14 +1,11 @@
 import {Request, Response} from "express";
 import {paginationHelpers} from "../helpers/pagination-helpers";
 import {SortDirection} from "mongodb";
-import {UsersService, usersService} from "../domain/users-service";
+import {UsersService} from "../domain/users-service";
 import {User} from "../types/types";
 
 export class UsersController {
-    usersService : UsersService
-    constructor() {
-        this.usersService = new UsersService()
-    }
+    constructor(protected usersService : UsersService) {}
     //GET ALL USERS WITH AUTH
     async getAllUsers(req: Request, res: Response){
         let pageSize : number = paginationHelpers.pageSize(<string>req.query.pageSize)

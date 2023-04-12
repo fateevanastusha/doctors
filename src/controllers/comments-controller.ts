@@ -1,16 +1,14 @@
-import {commentsService, CommentsService} from "../domain/comments-service";
+import {CommentsService} from "../domain/comments-service";
 import {Request, Response} from "express";
 
 export class CommentsController {
-    commentsService : CommentsService
-    constructor() {
-        this.commentsService = new CommentsService()
+    constructor(protected commentsService : CommentsService) {
     }
 
     //GET COMMENT BY ID
 
     async getCommentById(req: Request, res: Response){
-        const comment = await commentsService.getCommentById(req.params.id);
+        const comment = await this.commentsService.getCommentById(req.params.id);
         if (!comment) {
             res.sendStatus(404)
         } else {
@@ -21,7 +19,7 @@ export class CommentsController {
     //DELETE COMMENT BY ID
 
     async deleteCommentById(req: Request, res: Response){
-        const status = await commentsService.deleteCommentById(req.params.id);
+        const status = await this.commentsService.deleteCommentById(req.params.id);
         if (status) {
             res.sendStatus(204)
         } else {
@@ -32,7 +30,7 @@ export class CommentsController {
     //UPDATE COMMENT BY ID
 
     async updateCommentById(req: Request, res: Response){
-        const status : boolean = await commentsService.updateCommentById(req.body.content, req.params.id)
+        const status : boolean = await this.commentsService.updateCommentById(req.body.content, req.params.id)
         if (status) {
             res.sendStatus(204)
         } else {

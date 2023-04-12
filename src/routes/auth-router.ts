@@ -17,11 +17,10 @@ import {
     checkForSameDevice
 } from "../middlewares/auth-middlewares";
 import {requestAttemptsMiddleware} from "../middlewares/attempts-middleware";
-import {AuthController} from "../controllers/auth-controller";
+import {authController} from "../compositon-root";
 
 
 export const authRouter = Router()
-const authController = new AuthController()
 
 //LOGIN
 

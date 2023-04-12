@@ -1,18 +1,16 @@
 import {PostsRepository} from "../repositories/posts-db-repositiory";
 import {Paginator, Post, SortDirection} from "../types/types";
-import {QueryRepository} from "../queryRepo";
+import {queryRepository} from "../queryRepo";
 
 export class PostsService {
-    postsRepository : PostsRepository
-    constructor() {
-        this.postsRepository = new PostsRepository()
+    constructor(protected postsRepository : PostsRepository) {
     }
     //return all posts
     async returnAllPost(PageSize: number, Page: number, sortBy : string, sortDirection: SortDirection) : Promise<Paginator>{
         const total = (await this.postsRepository.returnAllPost()).length
         const PageCount = Math.ceil( total / PageSize)
-        const Items = await QueryRepository.PaginatorForPosts(PageCount, PageSize, Page, sortBy, sortDirection );
-        return QueryRepository.PaginationForm(PageCount, PageSize, Page, total, Items)
+        const Items = await queryRepository.PaginatorForPosts(PageCount, PageSize, Page, sortBy, sortDirection );
+        return queryRepository.PaginationForm(PageCount, PageSize, Page, total, Items)
     }
     async returnAllPostByBlogId (PageSize: number, Page: number, sortBy : string, sortDirection: SortDirection, blogId: string) : Promise<Paginator>{
         let total = (await this.postsRepository.getAllPostsByBlogId(blogId))
@@ -23,8 +21,8 @@ export class PostsService {
             totalNumber = total.length
         }
         const PageCount = Math.ceil( totalNumber / PageSize)
-        const Items = await QueryRepository.PaginatorForPostsByBlogId(PageCount, PageSize, Page, sortBy, sortDirection, blogId);
-        return QueryRepository.PaginationForm(PageCount, PageSize, Page, totalNumber, Items)
+        const Items = await queryRepository.PaginatorForPostsByBlogId(PageCount, PageSize, Page, sortBy, sortDirection, blogId);
+        return queryRepository.PaginationForm(PageCount, PageSize, Page, totalNumber, Items)
     }
     //return post by id
     async returnPostById(id: string) : Promise<Post | null>{

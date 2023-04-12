@@ -1,13 +1,10 @@
 import {BlogsRepository} from "../repositories/blogs-db-repositiory";
 import {Blog, Paginator, SortDirection} from "../types/types";
-import {QueryRepository} from "../queryRepo";
+import {queryRepository} from "../queryRepo";
 
 
 export class BlogsService {
-    blogsRepository : BlogsRepository
-
-    constructor() {
-        this.blogsRepository = new BlogsRepository()
+    constructor(protected blogsRepository : BlogsRepository) {
     }
 
     //GET - return all
@@ -21,7 +18,7 @@ export class BlogsService {
 
         const total = await this.blogsRepository.returnBlogsCount(searchNameTerm)
         const PageCount = Math.ceil( total / PageSize)
-        const Items = await QueryRepository.PaginatorForBlogs(
+        const Items = await queryRepository.PaginatorForBlogs(
             PageCount,
             PageSize,
             Page,
@@ -29,7 +26,7 @@ export class BlogsService {
             sortDirection,
             searchNameTerm
         );
-        return QueryRepository.PaginationForm(
+        return queryRepository.PaginationForm(
             PageCount,
             PageSize,
             Page,

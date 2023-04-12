@@ -8,12 +8,12 @@ import {
     titleCheck
 } from "../middlewares/input-valudation-middleware"
 import {authMiddlewares} from "../middlewares/auth-middlewares";
-import {PostsController} from "../controllers/posts-controller";
+import {postsController} from "../compositon-root";
+
 
 
 export const basicAuth = require('express-basic-auth')
 export const adminAuth = basicAuth({users: { 'admin': 'qwerty' }});
-const postsController = new PostsController()
 
 //GET - return all
 postsRouter.get('/',

@@ -9,14 +9,12 @@ import {
     descriptionCheck,
     websiteUrlCheck
 }
-from "../middlewares/input-valudation-middleware"
-import {BlogsController} from "../controllers/blogs-controller";
+from "../middlewares/input-valudation-middleware";
+import {blogsController} from "../compositon-root";
 
 
 export const basicAuth = require('express-basic-auth')
 export const adminAuth = basicAuth({users: { 'admin': 'qwerty' }});
-
-const blogsController = new BlogsController()
 
 //GET - return all
 blogsRouter.get('/',

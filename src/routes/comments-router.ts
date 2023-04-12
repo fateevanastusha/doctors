@@ -1,10 +1,9 @@
 import {Router} from "express";
 import {commentContentCheck, inputValidationMiddleware} from "../middlewares/input-valudation-middleware";
 import {authMiddlewares, checkForUser} from "../middlewares/auth-middlewares";
-import {CommentsController} from "../controllers/comments-controller";
+import {commentsController} from "../compositon-root";
 
 export const commentsRouter = Router()
-const commentsController = new CommentsController()
 
 //GET COMMENT BY ID
 commentsRouter.get('/:id',

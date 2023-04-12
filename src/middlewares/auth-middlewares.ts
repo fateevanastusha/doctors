@@ -1,13 +1,11 @@
 import { NextFunction } from "express";
 import { Response, Request } from "express";
 import {jwtService} from "../application/jwt-service";
-import {commentsService} from "../domain/comments-service";
 import {authRepository} from "../repositories/auth-db-repository";
 import {RefreshTokensMeta, User} from "../types/types";
 import {securityRepository} from "../repositories/security-db-repository";
-import {authService} from "../domain/auth-service";
-import {securityService} from "../domain/security-service";
 import {UsersRepository} from "../repositories/users-db-repository";
+import {authService, commentsService, securityService} from "../compositon-root";
 
 const usersRepository = new UsersRepository()
 

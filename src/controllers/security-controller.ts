@@ -3,9 +3,7 @@ import {RefreshTokensMeta} from "../types/types";
 import {SecurityService} from "../domain/security-service";
 
 export class SecurityController {
-    securityService : SecurityService
-    constructor() {
-        this.securityService = new SecurityService()
+    constructor(protected securityService : SecurityService) {
     }
     //GET ALL SESSIONS
 

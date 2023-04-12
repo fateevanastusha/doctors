@@ -5,12 +5,8 @@ import {SortDirection} from "mongodb";
 import {Blog, Post} from "../types/types";
 import {PostsService} from "../domain/posts-service";
 
-const postsService = new PostsService()
-
 export class BlogsController {
-    blogsService : BlogsService
-    constructor() {
-        this.blogsService = new BlogsService()
+    constructor(protected blogsService : BlogsService, protected postsService : PostsService) {
     }
     //GET - return all
     async getAllBlogs(req: Request, res: Response){
@@ -64,7 +60,7 @@ export class BlogsController {
         } else {
             const blogId = foundBlog.id;
             const blogName = foundBlog.name;
-            const newPost : Post | null = await postsService.createNewPost(req.body, blogName, blogId);
+            const newPost : Post | null = await this.postsService.createNewPost(req.body, blogName, blogId);
             res.status(201).send(newPost)
         }
     }
@@ -80,7 +76,7 @@ export class BlogsController {
         let pageNumber : number = paginationHelpers.pageNumber(<string>req.query.pageNumber);
         let sortBy : string = paginationHelpers.sortBy(<string>req.query.sortBy);
         let sortDirection : SortDirection = paginationHelpers.sortDirection(<string>req.query.sortDirection);
-        let allPosts = await postsService.returnAllPostByBlogId(pageSize, pageNumber, sortBy, sortDirection, blogId);
+        let allPosts = await this.postsService.returnAllPostByBlogId(pageSize, pageNumber, sortBy, sortDirection, blogId);
         if (allPosts.items) {
             res.status(200).send(allPosts)
         }

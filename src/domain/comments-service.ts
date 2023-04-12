@@ -1,14 +1,10 @@
 import {Comment, Paginator, User, SortDirection} from "../types/types";
 import {CommentsRepository} from "../repositories/comments-db-repository";
 import {UsersService} from "./users-service";
-import {QueryRepository} from "../queryRepo";
+import {queryRepository} from "../queryRepo";
 
 export class CommentsService {
-    usersService : UsersService
-    commentsRepository : CommentsRepository
-    constructor() {
-        this.commentsRepository = new CommentsRepository()
-        this.usersService = new UsersService()
+    constructor(protected usersService : UsersService, protected commentsRepository : CommentsRepository) {
     }
 
     async getCommentById (id : string) : Promise<Comment | null> {
@@ -42,10 +38,8 @@ export class CommentsService {
             total = total.length
         }
         const PageCount = Math.ceil( total / PageSize)
-        const Items = await QueryRepository.PaginatorForCommentsByBlogId(PageCount, PageSize, Page, sortBy, sortDirection, postId);
-        return QueryRepository.PaginationForm(PageCount, PageSize, Page, total, Items)
+        const Items = await queryRepository.PaginatorForCommentsByBlogId(PageCount, PageSize, Page, sortBy, sortDirection, postId);
+        return queryRepository.PaginationForm(PageCount, PageSize, Page, total, Items)
     }
 
 }
-
-export const commentsService = new CommentsService()

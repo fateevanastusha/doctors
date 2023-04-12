@@ -1,12 +1,10 @@
 import {Router} from "express";
 import {emailCheck, loginCheck, passwordCheck, inputValidationMiddleware} from "../middlewares/input-valudation-middleware";
 import {adminAuth} from "./blogs-router";
-import {UsersController} from "../controllers/users-controller";
-
+import {usersController} from "../compositon-root";
 
 export const usersRouter = Router()
 
-const usersController = new UsersController()
 
 //GET ALL USERS WITH AUTH
 

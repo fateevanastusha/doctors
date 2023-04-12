@@ -3,19 +3,18 @@ import {Request, Response} from "express";
 import {paginationHelpers} from "../helpers/pagination-helpers";
 import {SortDirection} from "mongodb";
 import {Blog, Post} from "../types/types";
-import {PostsRepository, postsRepository} from "../repositories/posts-db-repositiory";
+import {PostsRepository} from "../repositories/posts-db-repositiory";
 import {jwtService} from "../application/jwt-service";
-import {commentsService} from "../domain/comments-service";
 import {BlogsService} from "../domain/blogs-service";
+import {CommentsService} from "../domain/comments-service";
 
 export class PostsController {
-    postsService : PostsService
-    blogsService : BlogsService
-    postsRepository : PostsRepository
-    constructor() {
-        this.postsService = new PostsService()
-        this.blogsService = new BlogsService()
-        this.postsRepository = new PostsRepository()
+    constructor(
+        protected postsService : PostsService,
+        protected blogsService : BlogsService,
+        protected postsRepository : PostsRepository,
+        protected commentsService : CommentsService
+        ) {
     }
     //GET - return all
     async getAllPosts(req: Request, res: Response){
@@ -88,7 +87,7 @@ export class PostsController {
         } else {
             const postId = req.params.id
             let userId = await jwtService.getUserByIdToken(req.headers.authorization!.split(" ")[1])
-            const createdComment = await commentsService.createComment(postId, userId, req.body.content)
+            const createdComment = await this.commentsService.createComment(postId, userId, req.body.content)
             if (createdComment) {
                 res.status(201).send(createdComment)
             } else {
@@ -108,7 +107,7 @@ export class PostsController {
             let pageNumber : number = paginationHelpers.pageNumber(<string>req.query.pageNumber)
             let sortBy : string = paginationHelpers.sortBy(<string>req.query.sortBy);
             let sortDirection : SortDirection = paginationHelpers.sortDirection(<string>req.query.sortDirection);
-            const foundComments = await commentsService.getAllCommentsByPostId(pageSize, pageNumber, sortBy, sortDirection, req.params.id)
+            const foundComments = await this.commentsService.getAllCommentsByPostId(pageSize, pageNumber, sortBy, sortDirection, req.params.id)
             res.status(200).send(foundComments)
         }
     }

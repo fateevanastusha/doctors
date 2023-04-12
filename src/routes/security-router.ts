@@ -1,9 +1,8 @@
 import {Router} from 'express'
 import {checkForDeviceId, checkForRefreshToken, checkForSameUser} from "../middlewares/auth-middlewares";
-import {SecurityController} from "../controllers/security-controller";
+import {securityController} from "../compositon-root";
 
 export const securityRouter = Router()
-const securityController = new SecurityController()
 
 //GET ALL SESSIONS
 
