@@ -10,7 +10,8 @@ export class CommentsController {
     //GET COMMENT BY ID
 
     async getCommentById(req: Request, res: Response){
-        const comment = await this.commentsService.getCommentById(req.params.id);
+        let userId : string = await jwtService.getUserByIdToken(req.headers.authorization!.split(" ")[1]);
+        const comment = await this.commentsService.getCommentById(req.params.id, userId);
         if (!comment) {
             res.sendStatus(404)
         } else {

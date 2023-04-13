@@ -4,14 +4,19 @@ import {UsersService} from "./users-service";
 import {queryRepository} from "../queryRepo";
 import {LikesRepository} from "../repositories/likes-db-repository";
 import {LikesHelpers} from "../helpers/likes-helpers";
+import {commentsController} from "../compositon-root";
 
 export class CommentsService {
 
     constructor(protected usersService : UsersService, protected commentsRepository : CommentsRepository, protected likesRepository : LikesRepository, protected likesHelper : LikesHelpers) {
     }
 
-    async getCommentById (id : string) : Promise<Comment | null> {
-        return this.commentsRepository.getCommentById(id)
+    async getCommentById (id : string, userId : string) : Promise<Comment | null> {
+        const currentStatus = await this.likesHelper.requestType(await this.likesRepository.findStatus(id, userId))
+        let comment : Comment | null = await this.commentsRepository.getCommentById(id)
+        if (!comment) return null
+        comment.likesInfo.myStatus == currentStatus
+        return comment
     }
     async deleteCommentById (id: string) : Promise<boolean> {
         return this.commentsRepository.deleteCommentById(id)
@@ -38,7 +43,7 @@ export class CommentsService {
         }
         return this.commentsRepository.createNewComment(comment);
     }
-    async getAllCommentsByPostId(PageSize: number, Page: number, sortBy : string, sortDirection: SortDirection, postId: string) : Promise<Paginator> {
+    async getAllCommentsByPostId(PageSize: number, Page: number, sortBy : string, sortDirection: SortDirection, postId: string, userId : string) : Promise<Paginator> {
         let total : number | null |  Comment []= await this.commentsRepository.getAllCommentsByPostId(postId)
         if (total === null) {
             total = 0
@@ -47,7 +52,14 @@ export class CommentsService {
         }
         const PageCount = Math.ceil( total / PageSize)
         const Items = await queryRepository.PaginatorForCommentsByBlogId(PageCount, PageSize, Page, sortBy, sortDirection, postId);
-        return queryRepository.PaginationForm(PageCount, PageSize, Page, total, Items)
+        let comments = await queryRepository.PaginationForm(PageCount, PageSize, Page, total, Items)
+        let idList = []
+        for (let i = 0; i < comments.items.length; i ++){
+            idList.push(comments.items[0].id)
+        }
+        const statusList = idList.map(async a => await this.likesHelper.requestType(await this.likesRepository.findStatus(a, userId)))
+        comments.items.map((a, b) => a.likesInfo.myStatus = statusList[b])
+        return comments
     }
 
     async changeLikeStatus(requestType : string, commentId : string, userId : string) : Promise <boolean> {

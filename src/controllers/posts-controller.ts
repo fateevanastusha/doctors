@@ -107,7 +107,8 @@ export class PostsController {
             let pageNumber : number = paginationHelpers.pageNumber(<string>req.query.pageNumber)
             let sortBy : string = paginationHelpers.sortBy(<string>req.query.sortBy);
             let sortDirection : SortDirection = paginationHelpers.sortDirection(<string>req.query.sortDirection);
-            const foundComments = await this.commentsService.getAllCommentsByPostId(pageSize, pageNumber, sortBy, sortDirection, req.params.id)
+            let userId = await jwtService.getUserByIdToken(req.headers.authorization!.split(" ")[1])
+            const foundComments = await this.commentsService.getAllCommentsByPostId(pageSize, pageNumber, sortBy, sortDirection, req.params.id, userId)
             res.status(200).send(foundComments)
         }
     }
