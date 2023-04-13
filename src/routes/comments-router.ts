@@ -1,5 +1,9 @@
 import {Router} from "express";
-import {commentContentCheck, inputValidationMiddleware} from "../middlewares/input-valudation-middleware";
+import {
+    commentContentCheck,
+    inputValidationMiddleware,
+    likeRequestCheck
+} from "../middlewares/input-valudation-middleware";
 import {authMiddlewares, checkForUser} from "../middlewares/auth-middlewares";
 import {commentsController} from "../compositon-root";
 
@@ -23,3 +27,10 @@ commentsRouter.put('/:id',
     inputValidationMiddleware,
     commentsController.updateCommentById.bind(commentsController)
 );
+
+commentsRouter.put('/:id/like-status',
+    authMiddlewares,
+    likeRequestCheck,
+    inputValidationMiddleware,
+    commentsController.changeLikeStatus.bind(commentsController)
+)

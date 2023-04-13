@@ -1,14 +1,14 @@
 import {RefreshTokensMeta} from "../types/types";
-import {RefreshTokensMetaModel} from "../types/models";
+import {RefreshTokensMetaModelClass} from "../types/models";
 
 export class SecurityRepository {
     async getAllSessions(userId : string) : Promise<RefreshTokensMeta[] | null> {
-        return RefreshTokensMetaModel
+        return RefreshTokensMetaModelClass
             .find({userId}, {_id: 0, __v: 0, userId : 0})
             .lean()
     }
     async deleteAllSessions(deviceId : string, userId : string) : Promise<boolean> {
-        const result = await RefreshTokensMetaModel
+        const result = await RefreshTokensMetaModelClass
             .deleteMany({
                 userId,
                 deviceId : {$ne : deviceId}
@@ -16,12 +16,12 @@ export class SecurityRepository {
         return result.deletedCount > 0
     }
     async deleteOneSessions(deviceId : string) : Promise<boolean> {
-        const result = await RefreshTokensMetaModel
+        const result = await RefreshTokensMetaModelClass
             .deleteOne({deviceId})
         return result.deletedCount === 1
     }
     async createNewSession(refreshTokensMeta : RefreshTokensMeta) : Promise<boolean> {
-        await RefreshTokensMetaModel
+        await RefreshTokensMetaModelClass
             .insertMany({
                 userId : refreshTokensMeta.userId,
                 ip: refreshTokensMeta.ip,
@@ -36,19 +36,19 @@ export class SecurityRepository {
 
     }
     async findSessionByIp(ip : string) : Promise<RefreshTokensMeta | null> {
-        return RefreshTokensMetaModel
+        return RefreshTokensMetaModelClass
             .findOne({ip: ip})
     }
     async findSessionByDeviceId(deviceId: string) : Promise<RefreshTokensMeta | null> {
-        return RefreshTokensMetaModel
+        return RefreshTokensMetaModelClass
             .findOne({deviceId: deviceId})
     }
     async findSessionByDeviceIdAndUserId(userId : string, deviceId: string) : Promise<RefreshTokensMeta | null> {
-        return RefreshTokensMetaModel
+        return RefreshTokensMetaModelClass
             .findOne({userId : userId, deviceId: deviceId})
     }
     async updateSession(ip : string, title : string, lastActiveDate : string, deviceId : string) : Promise<boolean>{
-        const result = await RefreshTokensMetaModel
+        const result = await RefreshTokensMetaModelClass
             .updateOne({deviceId : deviceId},
                  {$set : {
                          ip: ip,
@@ -61,12 +61,12 @@ export class SecurityRepository {
     }
     //DELETE ALL DATA
     async deleteAllData() {
-        await RefreshTokensMetaModel.deleteMany({});
+        await RefreshTokensMetaModelClass.deleteMany({});
         return [];
     }
     //CHECK FOR THE SAME SESSION
     async checkSameDevice(title : string, userId : string) : Promise<boolean> {
-        const result = await RefreshTokensMetaModel.find({title: title, userId : userId})
+        const result = await RefreshTokensMetaModelClass.find({title: title, userId : userId})
         if (result) return true
         return false
     }

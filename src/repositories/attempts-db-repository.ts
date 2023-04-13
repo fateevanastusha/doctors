@@ -1,11 +1,11 @@
 import {Attempts} from "../types/types";
-import {AttemptsModel} from "../types/models";
+import {AttemptsModelClass} from "../types/models";
 
 export const attemptsRepository = {
     async addAttempts(attempt : Attempts) {
-        return AttemptsModel.insertMany(attempt)
+        return AttemptsModelClass.insertMany(attempt)
     },
     async countOfAttempts(userIP: string, url: string, timeLimit: Date) {
-        return AttemptsModel.countDocuments({userIP, url, time: {$gt: timeLimit}})
+        return AttemptsModelClass.countDocuments({userIP, url, time: {$gt: timeLimit}})
     }
 }

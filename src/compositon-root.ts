@@ -16,6 +16,11 @@ import {BlogsController} from "./controllers/blogs-controller";
 import {AuthRepository} from "./repositories/auth-db-repository";
 import {AuthService} from "./domain/auth-service";
 import {AuthController} from "./controllers/auth-controller";
+import {LikesHelpers} from "./helpers/likes-helpers";
+import {LikesRepository} from "./repositories/likes-db-repository";
+
+export const likesHelpers = new LikesHelpers()
+export const likesRepository = new LikesRepository()
 
 export const securityRepository = new SecurityRepository()
 export const securityService = new SecurityService(securityRepository)
@@ -26,8 +31,8 @@ export const usersService = new UsersService(usersRepository)
 export const usersController = new UsersController(usersService)
 
 export const commentsRepository = new CommentsRepository()
-export const commentsService = new CommentsService(usersService, commentsRepository)
-export const commentsController = new CommentsController(commentsService)
+export const commentsService = new CommentsService(usersService, commentsRepository, likesRepository, likesHelpers)
+export const commentsController = new CommentsController(commentsService, likesHelpers)
 
 export const postsRepository = new PostsRepository()
 export const postsService = new PostsService(postsRepository)

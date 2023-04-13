@@ -1,12 +1,12 @@
 import {User} from "../types/types";
-import {UserModel} from "../types/models";
+import {UserModelClass} from "../types/models";
 
 export class UsersRepository {
 
     //COUNT USERS WITH SEARCH LOGIN TERM AND SEARCH EMAIL TERM
 
     async returnUsersCount(searchLoginTerm : string, searchEmailTerm : string) : Promise<number>{
-        return UserModel.countDocuments({
+        return UserModelClass.countDocuments({
                 $or: [
                     {login: {$regex: searchLoginTerm, $options: 'i'}},
                     {email: {$regex: searchEmailTerm, $options: 'i'}}
@@ -17,7 +17,7 @@ export class UsersRepository {
     //GET USER BY ID
 
     async returnUserById(id : string) : Promise <User | null> {
-       return UserModel
+       return UserModelClass
             .findOne({id: id}, {_id: 0, password : 0,  isConfirmed: 0, confirmedCode : 0, __v: 0})
 
     }
@@ -25,7 +25,7 @@ export class UsersRepository {
     //GET USER BY FIELD
 
     async returnUserByField(field : string) : Promise <User | null> {
-        const user = await UserModel
+        const user = await UserModelClass
             .findOne({$or : [{login: field} , {email: field}]})
         return user
 
@@ -35,7 +35,7 @@ export class UsersRepository {
     //GET USER BY LOGIN
 
     async returnUserByLogin(login : string) : Promise <User | null> {
-        const user =  UserModel
+        const user =  UserModelClass
             .findOne({login : login}, {_id: 0, __v: 0})
         return user
 
@@ -44,7 +44,7 @@ export class UsersRepository {
     //GET USER BY EMAIL OR LOGIN
 
     async returnUserByEmail(email : string) : Promise <User | null> {
-        const user =  UserModel
+        const user =  UserModelClass
             .findOne({email : email},{_id: 0, __v: 0})
         return user
 
@@ -53,7 +53,7 @@ export class UsersRepository {
     //CREATE NEW USER
 
     async createNewUser(newUser : User) : Promise <User | null> {
-        await UserModel.insertMany([newUser])
+        await UserModelClass.insertMany([newUser])
         const updatedUser = await this.returnUserById(newUser.id)
         if (updatedUser) {
             return updatedUser
@@ -64,7 +64,7 @@ export class UsersRepository {
     //CHANGE PASSWORD
 
     async changeUserPassword(code : string, password : string) : Promise <boolean> {
-        const result = await UserModel.updateOne({confirmedCode: code}, {$set :
+        const result = await UserModelClass.updateOne({confirmedCode: code}, {$set :
                 {
                     password: password
                 }
@@ -75,21 +75,21 @@ export class UsersRepository {
     //DELETE USER BY ID
 
     async deleteUserById(id: string) : Promise<boolean>{
-        const result = await UserModel.deleteOne({id: id, __v: 0})
+        const result = await UserModelClass.deleteOne({id: id, __v: 0})
         return result.deletedCount === 1
     }
 
     //CHECK FOR CONFIRMATION CODE
 
     async checkForConfirmationCode (confirmedCode : string) : Promise<boolean> {
-        const user = await UserModel.findOne({confirmedCode : confirmedCode})
+        const user = await UserModelClass.findOne({confirmedCode : confirmedCode})
         return user !== null
     }
 
     //CHANGE CONFIRMATION STATUS
 
     async changeConfirmedStatus (confirmedCode : string) : Promise<boolean> {
-        const status = await UserModel.updateOne(
+        const status = await UserModelClass.updateOne(
             {confirmedCode : confirmedCode},
             { $set : {
                     isConfirmed : true
@@ -101,7 +101,7 @@ export class UsersRepository {
     //CHANGE CONFIRMATION CODE
 
     async changeConfirmationCode (confirmationCode : string, email : string) : Promise <boolean> {
-        const status = await UserModel.updateOne(
+        const status = await UserModelClass.updateOne(
             {email : email},
             { $set : {
                     confirmedCode : confirmationCode
@@ -113,7 +113,7 @@ export class UsersRepository {
     //CHECK FOR CONFIRMED ACCOUNT
 
     async checkForConfirmedAccountByEmailOrCode (emailOrCode : string) : Promise <boolean> {
-        const user = await UserModel.findOne({$or: [{email: emailOrCode}, {confirmedCode: emailOrCode}]})
+        const user = await UserModelClass.findOne({$or: [{email: emailOrCode}, {confirmedCode: emailOrCode}]})
         if (user?.isConfirmed) {
             return true
         } else {
@@ -124,7 +124,7 @@ export class UsersRepository {
     //DELETE ALL DATA
 
     async deleteAllData(){
-        await UserModel.deleteMany({})
+        await UserModelClass.deleteMany({})
         return []
     }
 

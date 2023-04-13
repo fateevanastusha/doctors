@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import {
     Attempts,
     Blog,
-    Comment,
+    Comment, Like,
     Post,
     RefreshToken,
     RefreshTokensMeta,
@@ -34,7 +34,12 @@ export const commentSchema = new mongoose.Schema<Comment>({
         userLogin: String
     },
     createdAt: String,
-    postId : String
+    postId : String,
+    likesInfo: {
+        likesCount: Number,
+        dislikesCount: Number,
+        myStatus: String
+    }
 })
 export const refreshTokenSchema = new mongoose.Schema<RefreshToken>({
     refreshToken : String
@@ -53,7 +58,7 @@ export const attemptsSchema = new mongoose.Schema<Attempts>({
     time: Date
 })
 export const userSchema = new mongoose.Schema<User>( {
-    id: {type : String, required : true},
+    id: String,
     login : String,
     email : String,
     password: String,
@@ -61,4 +66,11 @@ export const userSchema = new mongoose.Schema<User>( {
     isConfirmed: Boolean,
     confirmedCode : String
 });
+
+export const likesSchema = new mongoose.Schema<Like>({
+    status : String,
+    userId : String,
+    postOrCommentId : String,
+    createdAt : String
+})
 

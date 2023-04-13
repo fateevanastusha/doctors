@@ -1,6 +1,6 @@
 import {RefreshToken, User} from "../types/types";
 import bcrypt from "bcrypt";
-import {RefreshTokenBlackListModel} from "../types/models";
+import {RefreshTokenBlackListModelClass} from "../types/models";
 import {UsersRepository} from "./users-db-repository";
 import exp from "constants";
 
@@ -38,7 +38,7 @@ export class AuthRepository {
 
     async checkRefreshToken(refreshToken : string) : Promise <boolean> {
         //find by loginOrEmail
-        const status : RefreshToken | null =  await RefreshTokenBlackListModel.findOne({refreshToken : refreshToken})
+        const status : RefreshToken | null =  await RefreshTokenBlackListModelClass.findOne({refreshToken : refreshToken})
         if (status) {
             return true
         } else {
@@ -50,7 +50,7 @@ export class AuthRepository {
 
     async addRefreshTokenToBlackList(refreshToken : string) : Promise <boolean> {
         //find by loginOrEmail
-        await RefreshTokenBlackListModel.insertMany({refreshToken : refreshToken})
+        await RefreshTokenBlackListModelClass.insertMany({refreshToken : refreshToken})
         const status = await this.checkRefreshToken(refreshToken)
         if (status) {
             return true

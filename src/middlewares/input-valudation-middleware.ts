@@ -111,6 +111,14 @@ export const checkForNotConfirmedByEmailOrCode : CustomValidator = async email =
     }
 }
 
+export const checkForLikeRequest : CustomValidator = async likeStatus => {
+    if (likeStatus === 'Like' || likeStatus === 'Dislike' || likeStatus === 'None'){
+        return true;
+    } else {
+        throw new Error('status is invalid')
+    }
+}
+
 export const checkForPasswordAuth : CustomValidator = async (login, { req }) => {
     const User = await usersRepository.returnUserByField(login)
     if (!User){
@@ -146,3 +154,7 @@ export const emailConfirmationCheck =  body ('email').isString().isEmail().trim(
 export const emailForRecoveryCheck = body ('email').isEmail().isString().trim()
 export const codeForRecoveryConfirmationCheck = body('recoveryCode').trim().isLength({min:12, max: 14}).isString().matches(/^\d+$/).custom(checkForExistingConfirmationCode)
 export const passwordForRecoveryCheck = body ('newPassword').trim().isLength({min:6, max: 20}).isString()
+
+//like request check
+
+export const likeRequestCheck = body('likeStatus').trim().isString().isLength({min : 1}).custom(checkForLikeRequest)

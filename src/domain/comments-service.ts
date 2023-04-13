@@ -1,10 +1,13 @@
-import {Comment, Paginator, User, SortDirection} from "../types/types";
+import {Comment, Paginator, User, SortDirection, Like} from "../types/types";
 import {CommentsRepository} from "../repositories/comments-db-repository";
 import {UsersService} from "./users-service";
 import {queryRepository} from "../queryRepo";
+import {LikesRepository} from "../repositories/likes-db-repository";
+import {LikesHelpers} from "../helpers/likes-helpers";
 
 export class CommentsService {
-    constructor(protected usersService : UsersService, protected commentsRepository : CommentsRepository) {
+
+    constructor(protected usersService : UsersService, protected commentsRepository : CommentsRepository, protected likesRepository : LikesRepository, protected likesHelper : LikesHelpers) {
     }
 
     async getCommentById (id : string) : Promise<Comment | null> {
@@ -26,7 +29,12 @@ export class CommentsService {
                 userLogin: user!.login
             },
             createdAt: new Date().toISOString(),
-            postId : postId
+            postId : postId,
+            likesInfo: {
+                likesCount: 0,
+                dislikesCount: 0,
+                myStatus: "None"
+            }
         }
         return this.commentsRepository.createNewComment(comment);
     }
@@ -40,6 +48,42 @@ export class CommentsService {
         const PageCount = Math.ceil( total / PageSize)
         const Items = await queryRepository.PaginatorForCommentsByBlogId(PageCount, PageSize, Page, sortBy, sortDirection, postId);
         return queryRepository.PaginationForm(PageCount, PageSize, Page, total, Items)
+    }
+
+    async changeLikeStatus(requestType : string, commentId : string, userId : string) : Promise <boolean> {
+        const comment : Comment | null = await this.commentsRepository.getCommentById(commentId)
+        if (!comment) {
+            return false;
+        }
+        const currentStatus = await this.likesHelper.requestType(await this.likesRepository.findStatus(commentId, userId))
+        const status = {
+            status : requestType,
+            userId : userId,
+            postOrCommentId : commentId,
+            createdAt : new Date().toISOString()
+        }
+        //if no status
+        if (currentStatus === "None"){
+            //add new like or dislike
+            this.likesRepository.createNewStatus(status)
+        }
+
+        else if (requestType === "None"){
+            //delete status
+            this.likesRepository.deleteStatus(commentId, userId)
+        } else {
+            //change status
+            this.likesRepository.updateStatus(status)
+        }
+        //change total
+        this.changeTotalCount(commentId)
+        return true;
+    }
+
+    async changeTotalCount(commentId : string) : Promise<boolean> {
+        const likesCount : number = await this.likesRepository.findLikes(commentId)
+        const dislikesCount : number = await this.likesRepository.findDislikes(commentId)
+        return this.commentsRepository.changeLikesTotalCount(commentId, likesCount, dislikesCount)
     }
 
 }

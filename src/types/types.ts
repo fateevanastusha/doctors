@@ -38,8 +38,14 @@ export type Comment = {
         userLogin: string
     },
     createdAt: string,
-    postId : string
+    postId : string,
+    likesInfo: {
+        likesCount: number,
+        dislikesCount: number,
+        myStatus: "None" | "Like" | "Dislike",
+    }
 }
+
 export type Paginator = {
     pagesCount: number,
     page: number,
@@ -73,6 +79,13 @@ export type Attempts = {
     userIP: String,
     url: String,
     time: Date
+}
+
+export type Like = {
+    status : string,
+    userId : string,
+    postOrCommentId : string,
+    createdAt : string
 }
 
 export type SortDirection = 1 | -1
