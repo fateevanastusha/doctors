@@ -44,12 +44,9 @@ export class CommentsRepository {
 
 
     async changeLikesTotalCount(commentId : string, likesCount : number, dislikesCount : number) : Promise<boolean>{
-        const status = await CommentModelClass.updateOne({id : commentId}, {$set: {
-                likesInfo : {
-                    likesCount : likesCount,
-                    dislikesCount : dislikesCount
-            }
-            }})
+        const status = await CommentModelClass.updateOne({id : commentId,
+                'likesInfo.likesCount' :likesCount,
+                'likesInfo.dislikesCount' :dislikesCount})
         return status.matchedCount === 1
     }
 }

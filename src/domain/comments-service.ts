@@ -1,10 +1,9 @@
-import {Comment, Paginator, User, SortDirection, Like} from "../types/types";
+import {Comment, Paginator, User, SortDirection} from "../types/types";
 import {CommentsRepository} from "../repositories/comments-db-repository";
 import {UsersService} from "./users-service";
 import {queryRepository} from "../queryRepo";
 import {LikesRepository} from "../repositories/likes-db-repository";
 import {LikesHelpers} from "../helpers/likes-helpers";
-import {commentsController} from "../compositon-root";
 
 export class CommentsService {
 
@@ -77,18 +76,18 @@ export class CommentsService {
         //if no status
         if (currentStatus === "None"){
             //add new like or dislike
-            this.likesRepository.createNewStatus(status)
+            await this.likesRepository.createNewStatus(status)
         }
 
         else if (requestType === "None"){
             //delete status
-            this.likesRepository.deleteStatus(commentId, userId)
+            await this.likesRepository.deleteStatus(commentId, userId)
         } else {
             //change status
-            this.likesRepository.updateStatus(status)
+            await this.likesRepository.updateStatus(status)
         }
         //change total
-        this.changeTotalCount(commentId)
+        await this.changeTotalCount(commentId)
         return true;
     }
 
