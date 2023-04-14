@@ -1,5 +1,5 @@
 import {Comment} from "../types/types";
-import {CommentModelClass} from "../types/models";
+import {BlogModelClass, CommentModelClass} from "../types/models";
 
 export class CommentsRepository {
     async getCommentById(id: string) : Promise <Comment | null> {
@@ -48,6 +48,10 @@ export class CommentsRepository {
                 'likesInfo.likesCount' :likesCount,
                 'likesInfo.dislikesCount' :dislikesCount})
         return status.matchedCount === 1
+    }
+    async deleteAllData(){
+        const result = await CommentModelClass.deleteMany({})
+        return []
     }
 }
 

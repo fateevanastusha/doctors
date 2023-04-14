@@ -124,5 +124,4 @@ export class AuthController {
             res.sendStatus(401)
         }
     }
-
 }

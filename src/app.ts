@@ -12,6 +12,7 @@ import {SecurityRepository} from "./repositories/security-db-repository";
 import {BlogsRepository} from "./repositories/blogs-db-repositiory";
 import {UsersRepository} from "./repositories/users-db-repository";
 import {LikesRepository} from "./repositories/likes-db-repository";
+import {CommentsRepository} from "./repositories/comments-db-repository";
 export const app = express();
 
 app.use(express.json())
@@ -31,6 +32,7 @@ const blogsRepository = new BlogsRepository()
 const usersRepository = new UsersRepository()
 const securityRepository = new SecurityRepository()
 const likesRepository = new LikesRepository()
+const commentsRepository = new CommentsRepository()
 
 //TESTING - DELETE ALL DATA
 
@@ -43,7 +45,8 @@ app.delete('/testing/all-data', async (req: Request,res: Response) => {
     await blogsRepository.deleteAllData();
     await usersRepository.deleteAllData();
     await securityRepository.deleteAllData();
-    await likesRepository.deleteAllData()
+    await likesRepository.deleteAllData();
+    await commentsRepository.deleteAllData()
     res.sendStatus(204)
 });
 
