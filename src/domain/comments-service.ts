@@ -61,7 +61,6 @@ export class CommentsService {
     }
 
     async changeLikeStatus(requestType : string, commentId : string, userId : string) : Promise <boolean> {
-        debugger
         const comment : Comment | null = await this.commentsRepository.getCommentById(commentId)
         if (!comment) {
             return false;
