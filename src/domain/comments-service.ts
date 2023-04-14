@@ -14,7 +14,7 @@ export class CommentsService {
         const currentStatus = await this.likesHelper.requestType(await this.likesRepository.findStatus(id, userId))
         let comment : Comment | null = await this.commentsRepository.getCommentById(id)
         if (!comment) return null
-        comment.likesInfo.myStatus == currentStatus
+        comment.likesInfo.myStatus = currentStatus
         return comment
     }
     async deleteCommentById (id: string) : Promise<boolean> {
@@ -57,11 +57,11 @@ export class CommentsService {
             idList.push(comments.items[0].id)
         }
         const statusList = idList.map(async a => await this.likesHelper.requestType(await this.likesRepository.findStatus(a, userId)))
-        comments.items.map((a, b) => a.likesInfo.myStatus = statusList[b])
         return comments
     }
 
     async changeLikeStatus(requestType : string, commentId : string, userId : string) : Promise <boolean> {
+        debugger
         const comment : Comment | null = await this.commentsRepository.getCommentById(commentId)
         if (!comment) {
             return false;

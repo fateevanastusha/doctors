@@ -9,7 +9,7 @@ export class CommentsRepository {
                 _id: 0, __v: 0,
                 postId : 0,
             }
-            );
+            ).lean()
     }
     async deleteCommentById(id: string) : Promise <boolean> {
         const result = await CommentModelClass.deleteOne({id : id})

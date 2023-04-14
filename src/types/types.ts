@@ -42,7 +42,7 @@ export type Comment = {
     likesInfo: {
         likesCount: number,
         dislikesCount: number,
-        myStatus: "None" | "Like" | "Dislike",
+        myStatus: string,
     }
 }
 

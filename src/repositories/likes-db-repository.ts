@@ -12,8 +12,8 @@ export class LikesRepository {
             return false
         }
     }
-    async findStatus(commentId : string, userId : string) : Promise<Like | null> {
-        return await LikeModelClass.findOne({postOrCommentId : commentId, userId : userId}).lean()
+    async findStatus(postOrCommentId : string, userId : string) : Promise<Like | null> {
+        return await LikeModelClass.findOne({postOrCommentId : postOrCommentId, userId : userId})
     }
     async deleteStatus(commentId : string, userId : string) : Promise<boolean> {
         const result = await LikeModelClass.deleteOne({postOrCommentId : commentId, userId : userId})
@@ -22,7 +22,10 @@ export class LikesRepository {
     async updateStatus(status : Like) : Promise<boolean> {
         const result = await LikeModelClass.updateOne({postOrCommentId : status.postOrCommentId, userId : status.userId}, {
             $set: {
-                status
+                status : status.status,
+                userId : status.userId,
+                postOrCommentId : status.postOrCommentId,
+                createdAt : status.createdAt
             }
         })
         return result.matchedCount === 1
@@ -34,7 +37,8 @@ export class LikesRepository {
         return await LikeModelClass.countDocuments({postOrCommentId : commentId, status : "Dislike"})
     }
     async deleteAllData(){
-        return await LikeModelClass.deleteMany({})
+        await LikeModelClass.deleteMany({})
+        return []
     }
     async getAllLikes() : Promise <Like[]>{
         return await LikeModelClass.find({}).lean()

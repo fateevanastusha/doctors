@@ -16,6 +16,7 @@ export class JwtService {
         }
     }
     async getUserByIdToken (token : string) {
+
         try {
             const decoded : any = jwt.verify(token, settings.JWT_SECRET);
             return decoded.userId
