@@ -1,6 +1,6 @@
 import {LikeModelClass} from "../types/models";
 import {Like} from "../types/types";
-import {LikesHelpers} from "../helpers/likes-helpers";
+
 
 export class LikesRepository {
     async createNewStatus(status : Like) : Promise<boolean> {
@@ -13,7 +13,7 @@ export class LikesRepository {
         }
     }
     async findStatus(commentId : string, userId : string) : Promise<Like | null> {
-        return await LikeModelClass.findOne({postOrCommentId : commentId, userId : userId})
+        return await LikeModelClass.findOne({postOrCommentId : commentId, userId : userId}).lean()
     }
     async deleteStatus(commentId : string, userId : string) : Promise<boolean> {
         const result = await LikeModelClass.deleteOne({postOrCommentId : commentId, userId : userId})
@@ -32,5 +32,11 @@ export class LikesRepository {
     }
     async findDislikes(commentId: string) : Promise<number>{
         return await LikeModelClass.countDocuments({postOrCommentId : commentId, status : "Dislike"})
+    }
+    async deleteAllData(){
+        return await LikeModelClass.deleteMany({})
+    }
+    async getAllLikes() : Promise <Like[]>{
+        return await LikeModelClass.find({}).lean()
     }
 }

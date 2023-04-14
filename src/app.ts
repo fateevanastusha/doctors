@@ -5,13 +5,13 @@ import { usersRouter } from "./routes/users-router";
 import { authRouter } from "./routes/auth-router";
 import { emailRouter } from "./routes/email-router";
 import {securityRouter} from "./routes/security-router";
-import { postsRepository } from './repositories/posts-db-repositiory';
+import {PostsRepository} from './repositories/posts-db-repositiory';
 import {commentsRouter} from "./routes/comments-router";
 import cookieParser from "cookie-parser"
-import {securityRepository} from "./repositories/security-db-repository";
+import {SecurityRepository} from "./repositories/security-db-repository";
 import {BlogsRepository} from "./repositories/blogs-db-repositiory";
-import {UsersService} from "./domain/users-service";
 import {UsersRepository} from "./repositories/users-db-repository";
+import {LikesRepository} from "./repositories/likes-db-repository";
 export const app = express();
 
 app.use(express.json())
@@ -26,16 +26,24 @@ app.use('/comments', commentsRouter)
 app.use('/email', emailRouter)
 app.use('/security', securityRouter)
 
+const postsRepository = new PostsRepository()
 const blogsRepository = new BlogsRepository()
 const usersRepository = new UsersRepository()
+const securityRepository = new SecurityRepository()
+const likesRepository = new LikesRepository()
 
 //TESTING - DELETE ALL DATA
+
+app.get('/likes', async (req : Request, res : Response) => {
+    res.status(200).send(await likesRepository.getAllLikes())
+})
 
 app.delete('/testing/all-data', async (req: Request,res: Response) => {
     await postsRepository.deleteAllData();
     await blogsRepository.deleteAllData();
     await usersRepository.deleteAllData();
     await securityRepository.deleteAllData();
+    await likesRepository.deleteAllData()
     res.sendStatus(204)
 });
 

@@ -1,13 +1,14 @@
 import {CommentsService} from "../domain/comments-service";
 import {Request, Response} from "express";
-import {jwtService} from "../application/jwt-service";
+
 import {LikesHelpers} from "../helpers/likes-helpers";
+import {JwtService, jwtService} from "../application/jwt-service";
 
 export class CommentsController {
-    constructor(protected commentsService : CommentsService, protected likesHelpers : LikesHelpers) {
+    constructor(protected commentsService : CommentsService, protected likesHelpers : LikesHelpers, protected jwtService : JwtService) {
     }
 
-    //GET COMMENT BY ID
+    //  GET COMMENT BY ID
 
     async getCommentById(req: Request, res: Response){
         let userId : string = await jwtService.getUserByIdToken(req.headers.authorization!.split(" ")[1]);
@@ -44,9 +45,11 @@ export class CommentsController {
     //CHANGE LIKE STATUS
 
     async changeLikeStatus(req: Request, res : Response){
+        debugger
         const requestType : string = req.body.likeStatus
         const commentId : string = req.params.id;
-        let userId : string = await jwtService.getUserByIdToken(req.headers.authorization!.split(" ")[1]);
+        const token = req.headers.authorization!.split(" ")[1]
+        let userId : string = await this.jwtService.getUserByIdToken(token);
         const status : boolean = await this.commentsService.changeLikeStatus(requestType, commentId, userId)
         if (status){
             res.sendStatus(204)
