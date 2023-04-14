@@ -13,6 +13,9 @@ export class CommentsController {
     //  GET COMMENT BY ID
 
     async getCommentById(req: Request, res: Response){
+        if (!req.headers.authorization){
+            res.sendStatus(401)
+        }
         const token = req.headers.authorization!.split(" ")[1]
         let userId : string = await this.jwtService.getUserByIdToken(token);
         if(!userId){
