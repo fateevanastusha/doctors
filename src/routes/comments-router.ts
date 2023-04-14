@@ -11,7 +11,6 @@ export const commentsRouter = Router()
 
 //GET COMMENT BY ID
 commentsRouter.get('/:id',
-    authMiddlewares,
     commentsController.getCommentById.bind(commentsController)
 );
 //DELETE COMMENT BY ID

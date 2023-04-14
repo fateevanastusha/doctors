@@ -3,6 +3,7 @@ import {Request, Response} from "express";
 
 import {LikesHelpers} from "../helpers/likes-helpers";
 import {JwtService} from "../application/jwt-service";
+import {Comment} from "../types/types";
 
 
 
@@ -13,19 +14,23 @@ export class CommentsController {
     //  GET COMMENT BY ID
 
     async getCommentById(req: Request, res: Response){
-        if (!req.headers.authorization){
-            res.sendStatus(401)
-        }
-        const token = req.headers.authorization!.split(" ")[1]
-        let userId : string = await this.jwtService.getUserByIdToken(token);
-        if(!userId){
-            res.sendStatus(401)
-        }
-        const comment = await this.commentsService.getCommentById(req.params.id, userId);
-        if (!comment) {
-            res.sendStatus(404)
+        const tok = req.headers.authorization
+        if (!tok){
+            const com : Comment | null = await this.commentsService.getCommentById(req.params.id)
+            if (!com) {
+                res.sendStatus(404)
+            } else {
+                res.status(200).send(com)
+            }
         } else {
-            res.send(comment).status(200)
+            const token = req.headers.authorization!.split(" ")[1]
+            let userId : string = await this.jwtService.getUserByIdToken(token);
+            const comment = await this.commentsService.getCommentByIdWithUser(req.params.id, userId);
+            if (!comment) {
+                res.sendStatus(404)
+            } else {
+                res.send(comment).status(200)
+            }
         }
     }
 

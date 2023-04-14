@@ -10,7 +10,13 @@ export class CommentsService {
     constructor(protected usersService : UsersService, protected commentsRepository : CommentsRepository, protected likesRepository : LikesRepository, protected likesHelper : LikesHelpers) {
     }
 
-    async getCommentById (id : string, userId : string) : Promise<Comment | null> {
+    async getCommentById (id : string) : Promise<Comment | null> {
+        let comment : Comment | null = await this.commentsRepository.getCommentById(id)
+        if (!comment) return null
+        return comment
+    }
+
+    async getCommentByIdWithUser (id : string, userId : string) : Promise<Comment | null> {
         const currentStatus = await this.likesHelper.requestType(await this.likesRepository.findStatus(id, userId))
         let comment : Comment | null = await this.commentsRepository.getCommentById(id)
         if (!comment) return null
