@@ -18,12 +18,14 @@ import {AuthService} from "./domain/auth-service";
 import {AuthController} from "./controllers/auth-controller";
 import {LikesHelpers} from "./helpers/likes-helpers";
 import {LikesRepository} from "./repositories/likes-db-repository";
+import {JwtService} from "./application/jwt-service";
 
 export const likesHelpers = new LikesHelpers()
 export const likesRepository = new LikesRepository()
+const jwtService=  new JwtService()
 
 export const securityRepository = new SecurityRepository()
-export const securityService = new SecurityService(securityRepository)
+export const securityService = new SecurityService(securityRepository, jwtService)
 export const securityController = new SecurityController(securityService)
 
 export const usersRepository = new UsersRepository()
@@ -32,7 +34,7 @@ export const usersController = new UsersController(usersService)
 
 export const commentsRepository = new CommentsRepository()
 export const commentsService = new CommentsService(usersService, commentsRepository, likesRepository, likesHelpers)
-export const commentsController = new CommentsController(commentsService, likesHelpers)
+export const commentsController = new CommentsController(commentsService, likesHelpers, jwtService)
 
 export const postsRepository = new PostsRepository()
 export const postsService = new PostsService(postsRepository)
@@ -41,8 +43,8 @@ export const blogsRepository = new BlogsRepository()
 export const blogsService = new BlogsService(blogsRepository)
 export const blogsController = new BlogsController(blogsService, postsService)
 
-export const postsController = new PostsController(postsService, blogsService, postsRepository, commentsService)
+export const postsController = new PostsController(postsService, blogsService, postsRepository, commentsService, jwtService)
 
 export const authRepository = new AuthRepository()
-export const authService = new AuthService(authRepository, usersService, usersRepository)
+export const authService = new AuthService(authRepository, usersService, usersRepository, jwtService)
 export const authController = new AuthController(authService)

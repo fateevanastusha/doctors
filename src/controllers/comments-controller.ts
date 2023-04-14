@@ -2,7 +2,9 @@ import {CommentsService} from "../domain/comments-service";
 import {Request, Response} from "express";
 
 import {LikesHelpers} from "../helpers/likes-helpers";
-import {JwtService, jwtService} from "../application/jwt-service";
+import {JwtService} from "../application/jwt-service";
+
+
 
 export class CommentsController {
     constructor(protected commentsService : CommentsService, protected likesHelpers : LikesHelpers, protected jwtService : JwtService) {
@@ -11,7 +13,7 @@ export class CommentsController {
     //  GET COMMENT BY ID
 
     async getCommentById(req: Request, res: Response){
-        let userId : string = await jwtService.getUserByIdToken(req.headers.authorization!.split(" ")[1]);
+        let userId : string = await this.jwtService.getUserByIdToken(req.headers.authorization!.split(" ")[1]);
         const comment = await this.commentsService.getCommentById(req.params.id, userId);
         if (!comment) {
             res.sendStatus(404)

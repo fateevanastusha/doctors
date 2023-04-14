@@ -1,18 +1,20 @@
 import {RefreshTokensMeta} from "../types/types";
 import {SecurityRepository} from "../repositories/security-db-repository";
-import {jwtService} from "../application/jwt-service";
+import {JwtService} from "../application/jwt-service";
+
+
 
 export class SecurityService {
-    constructor(protected securityRepository : SecurityRepository) {
+    constructor(protected securityRepository : SecurityRepository, protected jwtService : JwtService) {
     }
     async getAllSessions(refreshToken : string) : Promise<RefreshTokensMeta[] | null> {
-        const idList = await jwtService.getIdByRefreshToken(refreshToken)
+        const idList = await this.jwtService.getIdByRefreshToken(refreshToken)
         if(!idList) return null
         const userId = idList.userId
         return await this.securityRepository.getAllSessions(userId)
     }
     async deleteAllSessions(refreshToken : string) : Promise<boolean> {
-        const idList = await jwtService.getIdByRefreshToken(refreshToken)
+        const idList = await this.jwtService.getIdByRefreshToken(refreshToken)
         if(!idList) return false
         return await this.securityRepository.deleteAllSessions(idList.deviceId, idList.userId)
     }

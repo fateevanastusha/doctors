@@ -1,6 +1,6 @@
 import {AuthRepository} from "../repositories/auth-db-repository";
 import {RefreshToken, RefreshTokensMeta, AccessToken, TokenList, User} from "../types/types";
-import {jwtService} from "../application/jwt-service";
+import {JwtService} from "../application/jwt-service";
 import {UsersService} from "./users-service";
 import {businessService} from "./business-service";
 import {securityRepository} from "../repositories/security-db-repository";
@@ -10,7 +10,9 @@ export class AuthService {
     constructor(
         protected authRepository : AuthRepository,
         protected usersService : UsersService,
-        protected usersRepository : UsersRepository) {
+        protected usersRepository : UsersRepository,
+        protected jwtService : JwtService
+        ) {
     }
 
     async authRequest (password : string, ip : string, loginOrEmail : string, title : string) : Promise<TokenList | null> {
@@ -25,10 +27,10 @@ export class AuthService {
         //GET USER ID
         const userId : string = user.id;
         //GET TOKENS
-        const refreshToken : RefreshToken = await jwtService.createJWTRefresh(userId, deviceId);
-        const accessToken = await jwtService.createJWTAccess(userId)
+        const refreshToken : RefreshToken = await this.jwtService.createJWTRefresh(userId, deviceId);
+        const accessToken = await this.jwtService.createJWTAccess(userId)
         //GET DATE
-        const date : string | null = await jwtService.getRefreshTokenDate(refreshToken.refreshToken)
+        const date : string | null = await this.jwtService.getRefreshTokenDate(refreshToken.refreshToken)
         if (!date) return null
         //CREATE REFRESH TOKENS META
         const refreshTokenMeta : RefreshTokensMeta = {
@@ -51,7 +53,7 @@ export class AuthService {
         const statusBlackList : boolean = await this.addRefreshTokenToBlackList(refreshToken)
         if (!statusBlackList) return false
         //GET USER ID AND DEVICE ID BY REFRESH TOKEN
-        const idList = await jwtService.getIdByRefreshToken(refreshToken)
+        const idList = await this.jwtService.getIdByRefreshToken(refreshToken)
         if (!idList) return false
         return await securityRepository.deleteOneSessions(idList.deviceId)
 
@@ -64,12 +66,12 @@ export class AuthService {
         const session : RefreshTokensMeta | null = await securityRepository.findSessionByIp(ip)
         if (!session) return null
         const deviceId : string = session.deviceId
-        const userId : string = await jwtService.getUserByIdToken(refreshToken)
+        const userId : string = await this.jwtService.getUserByIdToken(refreshToken)
         const user = await this.usersService.getUserById(userId)
         if (user === null) return null
-        const accessToken : AccessToken = await jwtService.createJWTAccess(userId)
-        const newRefreshToken : RefreshToken = await jwtService.createJWTRefresh(userId, deviceId)
-        const date : string | null = await jwtService.getRefreshTokenDate(newRefreshToken.refreshToken)
+        const accessToken : AccessToken = await this.jwtService.createJWTAccess(userId)
+        const newRefreshToken : RefreshToken = await this.jwtService.createJWTRefresh(userId, deviceId)
+        const date : string | null = await this.jwtService.getRefreshTokenDate(newRefreshToken.refreshToken)
         if (!date) return null
         //UPDATE SESSION
         await securityRepository.updateSession(ip, title, date, deviceId)
@@ -87,7 +89,7 @@ export class AuthService {
     //GET USER BY TOKEN
 
     async getUserByToken (token : string) : Promise<User | null> {
-        const userId : string = await jwtService.getUserByIdToken(token)
+        const userId : string = await this.jwtService.getUserByIdToken(token)
         const user : User | null = await this.usersService.getUserById(userId)
         return user
     }

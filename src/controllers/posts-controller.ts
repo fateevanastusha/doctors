@@ -4,7 +4,7 @@ import {paginationHelpers} from "../helpers/pagination-helpers";
 import {SortDirection} from "mongodb";
 import {Blog, Post} from "../types/types";
 import {PostsRepository} from "../repositories/posts-db-repositiory";
-import {jwtService} from "../application/jwt-service";
+import {JwtService} from "../application/jwt-service";
 import {BlogsService} from "../domain/blogs-service";
 import {CommentsService} from "../domain/comments-service";
 
@@ -13,7 +13,8 @@ export class PostsController {
         protected postsService : PostsService,
         protected blogsService : BlogsService,
         protected postsRepository : PostsRepository,
-        protected commentsService : CommentsService
+        protected commentsService : CommentsService,
+        protected jwtService : JwtService
         ) {
     }
     //GET - return all
@@ -86,7 +87,7 @@ export class PostsController {
             res.sendStatus(404)
         } else {
             const postId = req.params.id
-            let userId = await jwtService.getUserByIdToken(req.headers.authorization!.split(" ")[1])
+            let userId = await this.jwtService.getUserByIdToken(req.headers.authorization!.split(" ")[1])
             const createdComment = await this.commentsService.createComment(postId, userId, req.body.content)
             if (createdComment) {
                 res.status(201).send(createdComment)
@@ -107,7 +108,7 @@ export class PostsController {
             let pageNumber : number = paginationHelpers.pageNumber(<string>req.query.pageNumber)
             let sortBy : string = paginationHelpers.sortBy(<string>req.query.sortBy);
             let sortDirection : SortDirection = paginationHelpers.sortDirection(<string>req.query.sortDirection);
-            let userId = await jwtService.getUserByIdToken(req.headers.authorization!.split(" ")[1])
+            let userId = await this.jwtService.getUserByIdToken(req.headers.authorization!.split(" ")[1])
             const foundComments = await this.commentsService.getAllCommentsByPostId(pageSize, pageNumber, sortBy, sortDirection, req.params.id, userId)
             res.status(200).send(foundComments)
         }

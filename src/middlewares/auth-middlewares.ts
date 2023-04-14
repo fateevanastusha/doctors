@@ -1,12 +1,14 @@
 import { NextFunction } from "express";
 import { Response, Request } from "express";
-import {jwtService} from "../application/jwt-service";
+import {JwtService} from "../application/jwt-service";
 import {authRepository} from "../repositories/auth-db-repository";
 import {RefreshTokensMeta, User} from "../types/types";
 import {securityRepository} from "../repositories/security-db-repository";
 import {UsersRepository} from "../repositories/users-db-repository";
 import {authService, commentsService, securityService} from "../compositon-root";
 
+
+const jwtService = new JwtService()
 const usersRepository = new UsersRepository()
 
 export const authMiddlewares = async (req: Request, res: Response, next: NextFunction) => {
