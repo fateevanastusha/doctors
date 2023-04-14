@@ -57,13 +57,9 @@ export class CommentsService {
         }
         const PageCount = Math.ceil( total / PageSize)
         const Items = await queryRepository.PaginatorForCommentsByBlogId(PageCount, PageSize, Page, sortBy, sortDirection, postId);
-        let comments = await queryRepository.PaginationForm(PageCount, PageSize, Page, total, Items)
-        let idList = []
-        for (let i = 0; i < comments.items.length; i ++){
-            idList.push(comments.items[0].id)
-        }
-        const statusList = idList.map(async a => await this.likesHelper.requestType(await this.likesRepository.findStatus(a, userId)))
-        return comments
+        let comments = await queryRepository.CommentsMapping(Items, userId)
+        let paginatedComments = await queryRepository.PaginationForm(PageCount, PageSize, Page, total, comments)
+        return paginatedComments
     }
 
     async changeLikeStatus(requestType : string, commentId : string, userId : string) : Promise <boolean> {

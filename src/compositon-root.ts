@@ -22,7 +22,7 @@ import {JwtService} from "./application/jwt-service";
 
 export const likesHelpers = new LikesHelpers()
 export const likesRepository = new LikesRepository()
-const jwtService=  new JwtService()
+export const jwtService=  new JwtService()
 
 export const securityRepository = new SecurityRepository()
 export const securityService = new SecurityService(securityRepository, jwtService)
