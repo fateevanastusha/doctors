@@ -40,6 +40,10 @@ app.get('/likes', async (req : Request, res : Response) => {
     res.status(200).send(await likesRepository.getAllLikes())
 })
 
+app.get('/comments', async (req: Request, res: Response) => {
+    res.status(200).send(await commentsRepository.getAllComments())
+})
+
 app.delete('/testing/all-data', async (req: Request,res: Response) => {
     await postsRepository.deleteAllData();
     await blogsRepository.deleteAllData();

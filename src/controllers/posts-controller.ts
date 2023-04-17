@@ -113,5 +113,4 @@ export class PostsController {
             res.status(200).send(foundComments)
         }
     }
-
 }

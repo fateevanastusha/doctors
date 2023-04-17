@@ -68,6 +68,9 @@ export class CommentsService {
             return false;
         }
         const currentStatus = await this.likesHelper.requestType(await this.likesRepository.findStatus(commentId, userId))
+        if (currentStatus === requestType) {
+            return true
+        }
         const status = {
             status : requestType,
             userId : userId,
