@@ -84,14 +84,20 @@ export class CommentsService {
         if (currentStatus === "None"){
             //add new like or dislike
             await this.likesRepository.createNewStatus(status)
+            const comment2 : Comment | null = await this.commentsRepository.getCommentById(commentId)
+            console.log('currentStatus === "None"', comment2)
         }
 
         else if (requestType === "None"){
             //delete status
             await this.likesRepository.deleteStatus(commentId, userId)
+            const comment2 : Comment | null = await this.commentsRepository.getCommentById(commentId)
+            console.log('requestType === "None"', comment2)
         } else {
             //change status
             await this.likesRepository.updateStatus(status)
+            const comment2 : Comment | null = await this.commentsRepository.getCommentById(commentId)
+            console.log('else', comment2)
         }
         const comment2 : Comment | null = await this.commentsRepository.getCommentById(commentId)
         console.log('comment after', comment2)
