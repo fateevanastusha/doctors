@@ -64,6 +64,7 @@ export class CommentsController {
         const commentId : string = req.params.id;
         const token = req.headers.authorization!.split(" ")[1]
         let userId : string = await this.jwtService.getUserByIdToken(token);
+        console.log({user: userId, wantTo: requestType, commentId: commentId})
         const status : boolean = await this.commentsService.changeLikeStatus(requestType, commentId, userId)
         if (status){
             res.sendStatus(204)

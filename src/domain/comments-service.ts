@@ -64,10 +64,12 @@ export class CommentsService {
 
     async changeLikeStatus(requestType : string, commentId : string, userId : string) : Promise <boolean> {
         const comment : Comment | null = await this.commentsRepository.getCommentById(commentId)
+        console.log('comment before', comment)
         if (!comment) {
             return false;
         }
-        const currentStatus = await this.likesHelper.requestType(await this.likesRepository.findStatus(commentId, userId))
+        const status1 = await this.likesRepository.findStatus(commentId, userId)
+        const currentStatus = await this.likesHelper.requestType(status1)
         if (currentStatus === requestType) {
             return true
         }
@@ -77,6 +79,7 @@ export class CommentsService {
             postOrCommentId : commentId,
             createdAt : new Date().toISOString()
         }
+
         //if no status
         if (currentStatus === "None"){
             //add new like or dislike
@@ -90,8 +93,12 @@ export class CommentsService {
             //change status
             await this.likesRepository.updateStatus(status)
         }
+        const comment2 : Comment | null = await this.commentsRepository.getCommentById(commentId)
+        console.log('comment after', comment2)
         //change total
         await this.changeTotalCount(commentId)
+        const comment3 : Comment | null = await this.commentsRepository.getCommentById(commentId)
+        console.log('comment after', comment3)
         return true;
     }
 
