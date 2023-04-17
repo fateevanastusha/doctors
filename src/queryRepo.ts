@@ -71,10 +71,11 @@ export class QueryRepository {
         return Promise.all(
             comments.map(async (comment) => {
 
-                let status;
+                let status = null;
 
                 if (userId) {
                     status = await likesRepository.findStatus(comment.id, userId);
+                    if (status) status = status.status
                 }
 
                 return {
