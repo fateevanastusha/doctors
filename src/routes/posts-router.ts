@@ -3,7 +3,7 @@ export const postsRouter = Router()
 import {
     blogIdCheck, commentContentCheck,
     contentCheck,
-    inputValidationMiddleware,
+    inputValidationMiddleware, likeRequestCheck,
     shortDescriptionCheck,
     titleCheck
 } from "../middlewares/input-valudation-middleware"
@@ -47,7 +47,9 @@ postsRouter.put('/:id', adminAuth,
     inputValidationMiddleware,
     postsController.updatePost.bind(postsController)
 )
+
 //CREATE COMMENT BY POST ID
+
 postsRouter.post('/:id/comments',
     authMiddlewares,
     commentContentCheck,
@@ -55,8 +57,17 @@ postsRouter.post('/:id/comments',
     postsController.createComment.bind(postsController)
 )
 
-//GET COMMENTS
+//GET ALL COMMENTS
 
 postsRouter.get('/:id/comments',
     postsController.getCommentsByPost.bind(postsController)
+)
+
+//LIKE
+
+postsRouter.put('/:id/like-status',
+    authMiddlewares,
+    likeRequestCheck,
+    inputValidationMiddleware,
+    postsController.changeLikeStatus.bind(postsController)
 )

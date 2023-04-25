@@ -14,13 +14,13 @@ export class CommentsController {
     //  GET COMMENT BY ID
 
     async getCommentById(req: Request, res: Response){
-        const tok = req.headers.authorization
-        if (!tok){
-            const com : Comment | null = await this.commentsService.getCommentById(req.params.id)
-            if (!com) {
+        const token = req.headers.authorization
+        if (!token){
+            const comment : Comment | null = await this.commentsService.getCommentById(req.params.id)
+            if (!comment) {
                 res.sendStatus(404)
             } else {
-                res.status(200).send(com)
+                res.status(200).send(comment)
             }
         } else {
             const token = req.headers.authorization!.split(" ")[1]
@@ -59,12 +59,10 @@ export class CommentsController {
     //CHANGE LIKE STATUS
 
     async changeLikeStatus(req: Request, res : Response){
-        debugger
         const requestType : string = req.body.likeStatus
         const commentId : string = req.params.id;
         const token = req.headers.authorization!.split(" ")[1]
         let userId : string = await this.jwtService.getUserByIdToken(token);
-        console.log({user: userId, wantTo: requestType, commentId: commentId})
         const status : boolean = await this.commentsService.changeLikeStatus(requestType, commentId, userId)
         if (status){
             res.sendStatus(204)

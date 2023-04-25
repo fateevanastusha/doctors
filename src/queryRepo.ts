@@ -65,7 +65,7 @@ export class QueryRepository {
     }
 
 
-    //PAGINATION FOR COMMENTS
+    //PAGINATION FOR COMMENTS. mean - set current status of user for comment
 
     async CommentsMapping(comments : Comment[], userId : string) {
         return Promise.all(
@@ -92,6 +92,36 @@ export class QueryRepository {
                         myStatus: status || "None",
                     },
                 };
+            })
+        );
+    }
+
+    //PAGINATION FOR POSTS
+
+    async PostsMapping(posts : Post[], userId : string) {
+        return Promise.all(
+            posts.map(async (post) => {
+
+                let status = null;
+
+                if (userId) {
+                    status = await likesRepository.findStatus(post.id, userId);
+                    if (status) status = status.status
+                }
+                return {
+                    id: post.id,
+                    title: post.title,
+                    shortDescription: post.title,
+                    content: post.content,
+                    blogId: post.blogId,
+                    blogName: post.blogName,
+                    createdAt: post.createdAt,
+                    extendedLikesInfo: {
+                        likesCount: post.extendedLikesInfo.likesCount,
+                        dislikesCount: post.extendedLikesInfo.dislikesCount,
+                        myStatus: status || "None"
+                    }
+                }
             })
         );
     }

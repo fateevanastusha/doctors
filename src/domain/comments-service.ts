@@ -62,9 +62,10 @@ export class CommentsService {
         return paginatedComments
     }
 
+    //change like status
+
     async changeLikeStatus(requestType : string, commentId : string, userId : string) : Promise <boolean> {
         const comment : Comment | null = await this.commentsRepository.getCommentById(commentId)
-        console.log('comment before', comment)
         if (!comment) {
             return false;
         }
@@ -84,27 +85,17 @@ export class CommentsService {
         if (currentStatus === "None"){
             //add new like or dislike
             await this.likesRepository.createNewStatus(status)
-            const comment2 : Comment | null = await this.commentsRepository.getCommentById(commentId)
-            console.log('currentStatus === "None"', comment2)
         }
 
         else if (requestType === "None"){
             //delete status
             await this.likesRepository.deleteStatus(commentId, userId)
-            const comment2 : Comment | null = await this.commentsRepository.getCommentById(commentId)
-            console.log('requestType === "None"', comment2)
         } else {
             //change status
             await this.likesRepository.updateStatus(status)
-            const comment2 : Comment | null = await this.commentsRepository.getCommentById(commentId)
-            console.log('else', comment2)
         }
-        const comment2 : Comment | null = await this.commentsRepository.getCommentById(commentId)
-        console.log('comment after', comment2)
         //change total
         await this.changeTotalCount(commentId)
-        const comment3 : Comment | null = await this.commentsRepository.getCommentById(commentId)
-        console.log('comment after', comment3)
         return true;
     }
 
@@ -113,5 +104,7 @@ export class CommentsService {
         const dislikesCount : number = await this.likesRepository.findDislikes(commentId)
         return this.commentsRepository.changeLikesTotalCount(commentId, likesCount, dislikesCount)
     }
+
+
 
 }

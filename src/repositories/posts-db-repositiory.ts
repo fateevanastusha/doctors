@@ -1,5 +1,5 @@
 import {Post} from "../types/types";
-import {PostModelClass} from "../types/models";
+import {CommentModelClass, PostModelClass} from "../types/models";
 
 export class PostsRepository {
   //return all posts
@@ -37,6 +37,18 @@ export class PostsRepository {
   //return all posts by blogId
   async getAllPostsByBlogId(blogId : string) : Promise<Post[]>{
     return PostModelClass.find({blogId}, {projection: {_id: 0}}).lean()
+  }
+
+  async changeLikesTotalCount(postId: string, likesCount: number, dislikesCount: number): Promise<boolean> {
+    const status = await PostModelClass.updateOne({
+      id: postId,
+    }, {
+      $set: {
+        'extendedLikesInfo.likesCount': likesCount,
+        'extendedLikesInfo.dislikesCount': dislikesCount
+      }
+    })
+    return status.matchedCount === 1
   }
 };
 

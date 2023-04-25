@@ -2,9 +2,12 @@ import {RefreshToken, User} from "../types/types";
 import bcrypt from "bcrypt";
 import {RefreshTokenBlackListModelClass} from "../types/models";
 import {UsersRepository} from "./users-db-repository";
-import exp from "constants";
+import {injectable} from "inversify";
+import "reflect-metadata"
 
 const usersRepository = new UsersRepository()
+
+@injectable()
 
 export class AuthRepository {
 

@@ -5,6 +5,10 @@ import {UsersService} from "./users-service";
 import {businessService} from "./business-service";
 import {securityRepository} from "../repositories/security-db-repository";
 import {UsersRepository} from "../repositories/users-db-repository";
+import {injectable} from "inversify";
+import "reflect-metadata"
+
+@injectable()
 
 export class AuthService {
     constructor(

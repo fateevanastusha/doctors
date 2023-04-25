@@ -15,7 +15,12 @@ export type Post = {
     content: string,
     blogId: string,
     blogName: string,
-    createdAt: string
+    createdAt: string,
+    extendedLikesInfo: {
+        likesCount: number,
+        dislikesCount: number,
+        myStatus: string
+    }
 }
 export type User = {
     id: string,

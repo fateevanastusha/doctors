@@ -7,6 +7,7 @@ import {PostsRepository} from "../repositories/posts-db-repositiory";
 import {JwtService} from "../application/jwt-service";
 import {BlogsService} from "../domain/blogs-service";
 import {CommentsService} from "../domain/comments-service";
+import {postsService} from "../compositon-root";
 
 export class PostsController {
     constructor(
@@ -23,19 +24,33 @@ export class PostsController {
         let pageNumber : number = paginationHelpers.pageNumber(<string>req.query.pageNumber)
         let sortBy : string = paginationHelpers.sortBy(<string>req.query.sortBy);
         let sortDirection : SortDirection = paginationHelpers.sortDirection(<string>req.query.sortDirection);
-        let allPosts = await this.postsService.returnAllPost(pageSize, pageNumber, sortBy, sortDirection);
+        const token = req.headers.authorization!.split(" ")[1]
+        let userId : string = await this.jwtService.getUserByIdToken(token);
+        let allPosts = await this.postsService.returnAllPost(pageSize, pageNumber, sortBy, sortDirection, userId);
         res.status(200).send(allPosts)
     }
     //GET - return by ID
 
     async getPostsById(req: Request, res: Response){
-        const foundPost : Post | null = await this.postsService.returnPostById(req.params.id)
-        if (foundPost){
-            res.status(200).send(foundPost)
+        const token = req.headers.authorization
+        if (!token){
+            const foundPost : Post | null = await this.postsService.returnPostById(req.params.id)
+            if (foundPost){
+                res.status(200).send(foundPost)
 
+            } else {
+                res.sendStatus(404)
+
+            }
         } else {
-            res.sendStatus(404)
-
+            const token = req.headers.authorization!.split(" ")[1]
+            let userId : string = await this.jwtService.getUserByIdToken(token);
+            const post : Post | null = await this.postsService.returnPostByIdWithUser(req.params.id, userId)
+            if (!post) {
+                res.sendStatus(404)
+            } else {
+                res.send(post).status(200)
+            }
         }
     }
 
@@ -111,6 +126,21 @@ export class PostsController {
             let userId = await this.jwtService.getUserByIdToken(req.headers.authorization!.split(" ")[1])
             const foundComments = await this.commentsService.getAllCommentsByPostId(pageSize, pageNumber, sortBy, sortDirection, req.params.id, userId)
             res.status(200).send(foundComments)
+        }
+    }
+
+    //LIKE STATUS
+
+    async changeLikeStatus(req: Request, res: Response){
+        const requestType : string = req.body.likeStatus
+        const postId : string = req.params.id;
+        const token = req.headers.authorization!.split(" ")[1]
+        let userId : string = await this.jwtService.getUserByIdToken(token)
+        const status : boolean = await postsService.changeLikeStatus(requestType, postId, userId)
+        if (status){
+            res.sendStatus(204)
+        } else {
+            res.sendStatus(404)
         }
     }
 }

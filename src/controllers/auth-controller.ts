@@ -1,6 +1,10 @@
 import {Request, Response} from "express";
 import {AuthService} from "../domain/auth-service";
 import {AccessToken, TokenList, User} from "../types/types";
+import {injectable} from "inversify";
+import "reflect-metadata"
+
+@injectable()
 
 export class AuthController {
     constructor(protected authService : AuthService) {

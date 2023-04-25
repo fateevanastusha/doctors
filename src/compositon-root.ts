@@ -19,6 +19,8 @@ import {AuthController} from "./controllers/auth-controller";
 import {LikesHelpers} from "./helpers/likes-helpers";
 import {LikesRepository} from "./repositories/likes-db-repository";
 import {JwtService} from "./application/jwt-service";
+import {Container} from "inversify";
+import "reflect-metadata"
 
 export const likesHelpers = new LikesHelpers()
 export const likesRepository = new LikesRepository()
@@ -37,14 +39,19 @@ export const commentsService = new CommentsService(usersService, commentsReposit
 export const commentsController = new CommentsController(commentsService, likesHelpers, jwtService)
 
 export const postsRepository = new PostsRepository()
-export const postsService = new PostsService(postsRepository)
+export const postsService = new PostsService(postsRepository, likesRepository, likesHelpers)
 
 export const blogsRepository = new BlogsRepository()
 export const blogsService = new BlogsService(blogsRepository)
-export const blogsController = new BlogsController(blogsService, postsService)
+export const blogsController = new BlogsController(blogsService, postsService, jwtService)
 
 export const postsController = new PostsController(postsService, blogsService, postsRepository, commentsService, jwtService)
 
 export const authRepository = new AuthRepository()
 export const authService = new AuthService(authRepository, usersService, usersRepository, jwtService)
 export const authController = new AuthController(authService)
+
+export const container = new Container();
+container.bind(UsersController).to(UsersController)
+container.bind<UsersService>(UsersService).to(UsersService)
+container.bind<UsersRepository>(UsersRepository).to(UsersRepository)

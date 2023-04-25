@@ -24,7 +24,12 @@ export const postSchema = new mongoose.Schema<Post>({
     content: String,
     blogId: String,
     blogName: String,
-    createdAt: String
+    createdAt: String,
+    extendedLikesInfo: {
+        likesCount: Number,
+        dislikesCount: Number,
+        myStatus: String
+    }
 })
 export const commentSchema = new mongoose.Schema<Comment>({
     id : String,
