@@ -122,7 +122,7 @@ export class QueryRepository {
     //PAGINATION FOR POSTS
 
     async PostsMapping(posts : Post[], userId : string) {
-        return Promise.all(
+        return await Promise.all(
             posts.map(async (post) => {
                 let newestLikes = await this.getLastLikes(post.id)
                 let status = null;
@@ -134,7 +134,7 @@ export class QueryRepository {
                 return {
                     id: post.id,
                     title: post.title,
-                    shortDescription: post.title,
+                    shortDescription: post.shortDescription,
                     content: post.content,
                     blogId: post.blogId,
                     blogName: post.blogName,
