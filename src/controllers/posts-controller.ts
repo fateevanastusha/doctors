@@ -81,9 +81,7 @@ export class PostsController {
             const blogId = foundBlog.id
             const blogName = foundBlog.name
             const newPost = await this.postsService.createNewPost(req.body, blogName, blogId);
-            const post = {...newPost, extendedLikesInfo: {...newPost!.extendedLikesInfo, newestLikes: []}}
-            console.log(post)
-            res.status(201).send(post)
+            res.status(201).send(newPost)
         }
     }
 

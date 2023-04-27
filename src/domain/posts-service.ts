@@ -48,7 +48,6 @@ export class PostsService {
         if (!post) return null
         post.extendedLikesInfo.myStatus = currentStatus
         post.extendedLikesInfo.newestLikes = []
-
         const newPost = {...post, extendedLikesInfo: {...post.extendedLikesInfo, newestLikes: likes}}
         return newPost
     }
@@ -61,7 +60,7 @@ export class PostsService {
         await this.postsRepository.deleteAllData();
     }
     //create new post
-    async createNewPost(post: Post, blogName: string, blogId : string) : Promise <Post | null>{
+    async createNewPost(post: Post, blogName: string, blogId : string) : Promise <PostView | null>{
         const newPost = {
             id: '' + (+(new Date())),
             title : post.title,
@@ -77,7 +76,9 @@ export class PostsService {
             }
         };
         const createdPost = await this.postsRepository.createNewPost(newPost);
-        return createdPost;
+        if (!createdPost) return null
+        const mappedPost : PostView = {...createdPost, extendedLikesInfo: {...createdPost.extendedLikesInfo, newestLikes: []}}
+        return mappedPost;
     }
     //update post by id
     async updatePostById(post : Post, id : string) : Promise <boolean>{
