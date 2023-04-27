@@ -26,7 +26,7 @@ export type Post = {
 export type LikeView = {
     addedAt : string,
     userId : string,
-    userLogin : string
+    login : string
 }
 
 export type PostView = {

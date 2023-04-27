@@ -78,7 +78,7 @@ export class QueryRepository {
             return {
                 addedAt : like.createdAt,
                 userId : like.userId,
-                userLogin : await usersRepository.getLoginById(like.userId)
+                login : await usersRepository.getLoginById(like.userId)
             }
         }).slice(0,3))
         //sort likes by created at
