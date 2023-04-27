@@ -201,7 +201,7 @@ describe('likes', () => {
                     {
                         addedAt : expect.any(String),
                         userId : createResponseUser.body.id,
-                        userLogin : "nastya"
+                        login : "nastya"
                     }
                 ]
             }
@@ -228,7 +228,7 @@ describe('likes', () => {
                     {
                         addedAt : expect.any(String),
                         userId : createResponseUser.body.id,
-                        userLogin : "nastya"
+                        login : "nastya"
                     }
                 ]
             }
@@ -290,7 +290,7 @@ describe('likes', () => {
                     {
                         addedAt : expect.any(String),
                         userId : createResponseUser.body.id,
-                        userLogin : "nastya"
+                        login : "nastya"
                     }
                 ]
 
@@ -328,7 +328,7 @@ describe('likes', () => {
                             {
                                 addedAt : expect.any(String),
                                 userId : createResponseUser.body.id,
-                                userLogin : createResponseUser.body.login
+                                login : createResponseUser.body.login
                             }
                         ]
                     }
@@ -363,7 +363,8 @@ describe('likes', () => {
             likesInfo : {
                 dislikesCount : 0,
                 likesCount : 0,
-                myStatus : "None"
+                myStatus : "None",
+                newestLikes : []
             }
 
         })

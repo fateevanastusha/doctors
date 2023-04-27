@@ -38,7 +38,6 @@ export class PostsController {
 
     async getPostsById(req: Request, res: Response){
         if (!req.headers.authorization){
-            console.log('anauthorized')
             const foundPost = await this.postsService.returnPostById(req.params.id)
             if (foundPost){
                 res.status(200).send(foundPost)
@@ -81,8 +80,10 @@ export class PostsController {
         } else {
             const blogId = foundBlog.id
             const blogName = foundBlog.name
-            const newPost : Post | null = await this.postsService.createNewPost(req.body, blogName, blogId);
-            res.status(201).send(newPost)
+            const newPost = await this.postsService.createNewPost(req.body, blogName, blogId);
+            const post = {...newPost, extendedLikesInfo: {...newPost!.extendedLikesInfo, newestLikes: []}}
+            console.log(post)
+            res.status(201).send(post)
         }
     }
 
