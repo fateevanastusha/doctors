@@ -355,7 +355,7 @@ describe('likes', () => {
         expect(createResponseComment.body).toStrictEqual({
             commentatorInfo : {
                 userId : createResponseUser.body.id,
-                userLogin : "nastya"
+                userLogin : "nastyas"
             },
             content : "content of comment 111111111111",
             createdAt : expect.any(String),
