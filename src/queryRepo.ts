@@ -74,6 +74,7 @@ export class QueryRepository {
             .sort(function( a, b) {
             return (a.createdAt < b.createdAt) ? -1 : ((a.createdAt > b.createdAt) ? 1 : 0);
         })
+            .reverse()
             .map(async like => {
             return {
                 addedAt : like.createdAt,
