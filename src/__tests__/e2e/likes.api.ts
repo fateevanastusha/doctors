@@ -363,8 +363,7 @@ describe('likes', () => {
             likesInfo : {
                 dislikesCount : 0,
                 likesCount : 0,
-                myStatus : "None",
-                newestLikes : []
+                myStatus : "None"
             }
 
         })
