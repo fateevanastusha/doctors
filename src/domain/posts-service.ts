@@ -1,5 +1,5 @@
 import {PostsRepository} from "../repositories/posts-db-repositiory";
-import {Paginator, Post, SortDirection} from "../types/types";
+import {Paginator, Post, PostView, SortDirection} from "../types/types";
 import {queryRepository} from "../queryRepo";
 import {LikesRepository} from "../repositories/likes-db-repository";
 import {LikesHelpers} from "../helpers/likes-helpers";
@@ -31,8 +31,12 @@ export class PostsService {
         return paginatedPost
     }
     //return post by id
-    async returnPostById(id: string) : Promise<Post | null>{
-        return await this.postsRepository.returnPostById(id)
+    async returnPostById(id: string) : Promise<null | PostView> {
+        const likes = await queryRepository.getLastLikes(id)
+        const post =  await this.postsRepository.returnPostById(id)
+        if (!post) return null
+        post.extendedLikesInfo.newestLikes = likes
+        return post
     }
 
     async returnPostByIdWithUser(id: string, userId : string) : Promise<Post | null>{

@@ -1,5 +1,6 @@
 import {LikeModelClass} from "../types/models";
 import {Like} from "../types/types";
+import addressparser from "nodemailer/lib/addressparser";
 
 
 export class LikesRepository {
@@ -29,6 +30,9 @@ export class LikesRepository {
             }
         })
         return result.matchedCount === 1
+    }
+    async getLikesById(commentId: string) : Promise<Like[]>{
+        return await LikeModelClass.find({postOrCommentId : commentId, status : "Like"}, {_id: 0, __v: 0}).lean()
     }
     async findLikes(commentId: string) : Promise<number>{
         return await LikeModelClass.countDocuments({postOrCommentId : commentId, status : "Like"})

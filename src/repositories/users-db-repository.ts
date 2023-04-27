@@ -22,6 +22,13 @@ export class UsersRepository {
 
     }
 
+    async getLoginById(id : string) : Promise <string> {
+        const user = await UserModelClass
+            .findOne({id: id}, {_id: 0, password : 0,  isConfirmed: 0, confirmedCode : 0, __v: 0})
+        if (!user) return 'login'
+        return user.login
+    }
+
     //GET USER BY FIELD
 
     async returnUserByField(field : string) : Promise <User | null> {

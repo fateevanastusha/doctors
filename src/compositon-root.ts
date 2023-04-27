@@ -1,3 +1,4 @@
+import "reflect-metadata"
 import {UsersRepository} from "./repositories/users-db-repository";
 import {UsersService} from "./domain/users-service";
 import {UsersController} from "./controllers/users-controller";
@@ -20,7 +21,7 @@ import {LikesHelpers} from "./helpers/likes-helpers";
 import {LikesRepository} from "./repositories/likes-db-repository";
 import {JwtService} from "./application/jwt-service";
 import {Container} from "inversify";
-import "reflect-metadata"
+
 
 export const likesHelpers = new LikesHelpers()
 export const likesRepository = new LikesRepository()

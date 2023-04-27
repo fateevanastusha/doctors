@@ -24,7 +24,12 @@ export class PostsController {
         let pageNumber : number = paginationHelpers.pageNumber(<string>req.query.pageNumber)
         let sortBy : string = paginationHelpers.sortBy(<string>req.query.sortBy);
         let sortDirection : SortDirection = paginationHelpers.sortDirection(<string>req.query.sortDirection);
-        const token = req.headers.authorization!.split(" ")[1]
+        let token
+        if (!req.headers.authorization){
+            token = 'lala'
+        } else {
+            token = req.headers.authorization!.split(" ")[1]
+        }
         let userId : string = await this.jwtService.getUserByIdToken(token);
         let allPosts = await this.postsService.returnAllPost(pageSize, pageNumber, sortBy, sortDirection, userId);
         res.status(200).send(allPosts)
@@ -32,9 +37,8 @@ export class PostsController {
     //GET - return by ID
 
     async getPostsById(req: Request, res: Response){
-        const token = req.headers.authorization
-        if (!token){
-            const foundPost : Post | null = await this.postsService.returnPostById(req.params.id)
+        if (!req.headers.authorization){
+            const foundPost = await this.postsService.returnPostById(req.params.id)
             if (foundPost){
                 res.status(200).send(foundPost)
 
@@ -42,7 +46,7 @@ export class PostsController {
                 res.sendStatus(404)
 
             }
-        } else {
+        } else if (req.headers.authorization){
             const token = req.headers.authorization!.split(" ")[1]
             let userId : string = await this.jwtService.getUserByIdToken(token);
             const post : Post | null = await this.postsService.returnPostByIdWithUser(req.params.id, userId)
@@ -77,7 +81,6 @@ export class PostsController {
             const blogId = foundBlog.id
             const blogName = foundBlog.name
             const newPost : Post | null = await this.postsService.createNewPost(req.body, blogName, blogId);
-            console.log(newPost)
             res.status(201).send(newPost)
         }
     }

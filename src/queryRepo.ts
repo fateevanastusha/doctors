@@ -1,7 +1,8 @@
-import {Blog, Paginator, Post, User, Comment, CommentViewModel} from "./types/types";
+import {Blog, Paginator, Post, User, Comment, CommentViewModel, Like, LikeView} from "./types/types";
 import {BlogModelClass, CommentModelClass, PostModelClass, UserModelClass} from "./types/models";
 
-import {likesRepository} from "./compositon-root";
+import {likesRepository, usersRepository} from "./compositon-root";
+import {raw} from "express";
 
 export class QueryRepository {
     async PaginatorForBlogs(PageCount: number, PageSize: number, Page: number, sortBy: string, sortDirection: 1 | -1, searchNameTerm: string): Promise<Blog[]> {
@@ -64,6 +65,27 @@ export class QueryRepository {
         }
     }
 
+    //GET 3 LAST LIKES
+
+    async getLastLikes(id : string) : Promise<LikeView[]> {
+        //get all likes
+        let likes : Like[] = await likesRepository.getLikesById(id)
+        return Promise.all(await likes
+            .sort(function( a, b) {
+            return (a.createdAt < b.createdAt) ? -1 : ((a.createdAt > b.createdAt) ? 1 : 0);
+        })
+            .map(async like => {
+            return {
+                addedAt : like.createdAt,
+                userId : like.userId,
+                userLogin : await usersRepository.getLoginById(like.userId)
+            }
+        }).slice(0,3))
+        //sort likes by created at
+
+
+    }
+
 
     //PAGINATION FOR COMMENTS. mean - set current status of user for comment
 
@@ -101,7 +123,8 @@ export class QueryRepository {
     async PostsMapping(posts : Post[], userId : string) {
         return Promise.all(
             posts.map(async (post) => {
-
+                let newestLikes = await this.getLastLikes(post.id)
+                console.log(newestLikes)
                 let status = null;
 
                 if (userId) {
@@ -119,7 +142,8 @@ export class QueryRepository {
                     extendedLikesInfo: {
                         likesCount: post.extendedLikesInfo.likesCount,
                         dislikesCount: post.extendedLikesInfo.dislikesCount,
-                        myStatus: status || "None"
+                        myStatus: status || "None",
+                        newestLikes : newestLikes
                     }
                 }
             })

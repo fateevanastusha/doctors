@@ -22,6 +22,28 @@ export type Post = {
         myStatus: string
     }
 }
+
+export type LikeView = {
+    addedAt : string,
+    userId : string,
+    userLogin : string
+}
+
+export type PostView = {
+    id: string,
+    title: string,
+    shortDescription: string,
+    content: string,
+    blogId: string,
+    blogName: string,
+    createdAt: string,
+    extendedLikesInfo: {
+        newestLikes : LikeView[]
+        likesCount: number,
+        dislikesCount: number,
+        myStatus: string
+    }
+}
 export type User = {
     id: string,
     login : string,

@@ -1,4 +1,4 @@
-import {Post} from "../types/types";
+import {Post, PostView} from "../types/types";
 import {CommentModelClass, PostModelClass} from "../types/models";
 
 export class PostsRepository {
@@ -9,7 +9,7 @@ export class PostsRepository {
         .lean()
   }
   //return post by Id
-  async returnPostById(id: string) : Promise<Post | null>{
+  async returnPostById(id: string) : Promise<PostView | null>{
     return PostModelClass.findOne({id : id}, {_id: 0, __v: 0});
   }
   //delete post by Id
