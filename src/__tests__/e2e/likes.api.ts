@@ -115,6 +115,7 @@ describe('likes', () => {
                 "dislikesCount": 0,
                 "likesCount": 0,
                 "myStatus": "None",
+                "newestLikes" : []
             }
         })
     })
@@ -164,6 +165,7 @@ describe('likes', () => {
                 "dislikesCount": 1,
                 "likesCount": 0,
                 "myStatus": "None",
+                "newestLikes" : []
             }
         })
 
@@ -195,9 +197,42 @@ describe('likes', () => {
                 "dislikesCount": 0,
                 "likesCount": 1,
                 "myStatus": "None",
+                "newestLikes" : [
+                    {
+                        addedAt : expect.any(String),
+                        userId : createResponseUser.body.id,
+                        userLogin : "nastya"
+                    }
+                ]
             }
         })
 
+    })
+
+    it ('check for like', async () => {
+        const post = await request(app)
+            .get('/posts/' + createResponsePost.body.id)
+        expect(post.body).toStrictEqual({
+            "title": "string",
+            "shortDescription": "string",
+            "content": "string",
+            "blogId": createResponseBlog.body.id,
+            "blogName" : createResponseBlog.body.name,
+            "createdAt" : expect.any(String),
+            "id" : createResponsePost.body.id,
+            "extendedLikesInfo": {
+                "dislikesCount": 0,
+                "likesCount": 1,
+                "myStatus": "None",
+                "newestLikes" : [
+                    {
+                        addedAt : expect.any(String),
+                        userId : createResponseUser.body.id,
+                        userLogin : "nastya"
+                    }
+                ]
+            }
+        })
     })
 
     //unsuccessful like request
@@ -251,6 +286,14 @@ describe('likes', () => {
                 "dislikesCount": 0,
                 "likesCount": 1,
                 "myStatus": "None",
+                "newestLikes" : [
+                    {
+                        addedAt : expect.any(String),
+                        userId : createResponseUser.body.id,
+                        userLogin : "nastya"
+                    }
+                ]
+
             }
         })
 

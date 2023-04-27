@@ -38,10 +38,10 @@ export type PostView = {
     blogName: string,
     createdAt: string,
     extendedLikesInfo: {
-        newestLikes : LikeView[]
         likesCount: number,
         dislikesCount: number,
-        myStatus: string
+        myStatus: string,
+        newestLikes : LikeView[]
     }
 }
 export type User = {

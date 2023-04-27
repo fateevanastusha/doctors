@@ -10,7 +10,7 @@ export class PostsRepository {
   }
   //return post by Id
   async returnPostById(id: string) : Promise<PostView | null>{
-    return PostModelClass.findOne({id : id}, {_id: 0, __v: 0});
+    return PostModelClass.findOne({id : id}, {_id: 0, __v: 0}).lean();
   }
   //delete post by Id
   async deletePostById(id:string) : Promise<boolean>{

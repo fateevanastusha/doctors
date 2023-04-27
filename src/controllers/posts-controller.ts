@@ -38,6 +38,7 @@ export class PostsController {
 
     async getPostsById(req: Request, res: Response){
         if (!req.headers.authorization){
+            console.log('anauthorized')
             const foundPost = await this.postsService.returnPostById(req.params.id)
             if (foundPost){
                 res.status(200).send(foundPost)
@@ -49,7 +50,7 @@ export class PostsController {
         } else if (req.headers.authorization){
             const token = req.headers.authorization!.split(" ")[1]
             let userId : string = await this.jwtService.getUserByIdToken(token);
-            const post : Post | null = await this.postsService.returnPostByIdWithUser(req.params.id, userId)
+            const post = await this.postsService.returnPostByIdWithUser(req.params.id, userId)
             if (!post) {
                 res.sendStatus(404)
             } else {

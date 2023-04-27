@@ -1,4 +1,4 @@
-import {Blog, Paginator, Post, User, Comment, CommentViewModel, Like, LikeView} from "./types/types";
+import {Blog, Paginator, Post, User, Comment, CommentViewModel, Like, LikeView, PostView} from "./types/types";
 import {BlogModelClass, CommentModelClass, PostModelClass, UserModelClass} from "./types/models";
 
 import {likesRepository, usersRepository} from "./compositon-root";
@@ -70,7 +70,7 @@ export class QueryRepository {
     async getLastLikes(id : string) : Promise<LikeView[]> {
         //get all likes
         let likes : Like[] = await likesRepository.getLikesById(id)
-        return Promise.all(await likes
+        const like = await Promise.all(await likes
             .sort(function( a, b) {
             return (a.createdAt < b.createdAt) ? -1 : ((a.createdAt > b.createdAt) ? 1 : 0);
         })
@@ -82,7 +82,7 @@ export class QueryRepository {
             }
         }).slice(0,3))
         //sort likes by created at
-
+        return like;
 
     }
 
@@ -124,7 +124,6 @@ export class QueryRepository {
         return Promise.all(
             posts.map(async (post) => {
                 let newestLikes = await this.getLastLikes(post.id)
-                console.log(newestLikes)
                 let status = null;
 
                 if (userId) {

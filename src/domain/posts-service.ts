@@ -1,5 +1,5 @@
 import {PostsRepository} from "../repositories/posts-db-repositiory";
-import {Paginator, Post, PostView, SortDirection} from "../types/types";
+import {LikeView, Paginator, Post, PostView, SortDirection} from "../types/types";
 import {queryRepository} from "../queryRepo";
 import {LikesRepository} from "../repositories/likes-db-repository";
 import {LikesHelpers} from "../helpers/likes-helpers";
@@ -32,19 +32,25 @@ export class PostsService {
     }
     //return post by id
     async returnPostById(id: string) : Promise<null | PostView> {
-        const likes = await queryRepository.getLastLikes(id)
+        const likes : LikeView[] = await queryRepository.getLastLikes(id)
         const post =  await this.postsRepository.returnPostById(id)
         if (!post) return null
         post.extendedLikesInfo.newestLikes = likes
-        return post
+        const newPost = {...post, extendedLikesInfo: {...post.extendedLikesInfo, newestLikes: likes}}
+
+        return newPost
     }
 
-    async returnPostByIdWithUser(id: string, userId : string) : Promise<Post | null>{
+    async returnPostByIdWithUser(id: string, userId : string) : Promise<PostView | null>{
         const currentStatus = await this.likesHelper.requestType(await this.likesRepository.findStatus(id, userId))
-        const post : Post | null = await this.postsRepository.returnPostById(id);
+        const likes = await queryRepository.getLastLikes(id)
+        const post = await this.postsRepository.returnPostById(id);
         if (!post) return null
         post.extendedLikesInfo.myStatus = currentStatus
-        return post
+        post.extendedLikesInfo.newestLikes = []
+
+        const newPost = {...post, extendedLikesInfo: {...post.extendedLikesInfo, newestLikes: likes}}
+        return newPost
     }
     //delete post by id
     async deletePostById(id:string) : Promise<boolean>{
